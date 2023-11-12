@@ -37,6 +37,35 @@ try:
         minutes_played INT,  
         FOREIGN KEY (player_id) REFERENCES players(player_id),
         FOREIGN KEY (game_id) REFERENCES games(game_id));
+        
+        CREATE TABLE club_games (
+        game_id INT NOT NULL,
+        club_id INT NOT NULL,
+        own_goals INT,
+        own_position INT,
+        own_manager_name VARCHAR(255),
+        opponent_id INT,
+        opponent_goals INT,
+        opponent_position INT,
+        opponent_manager_name VARCHAR(255),
+        hosting VARCHAR(50),
+        is_win BOOLEAN,
+        FOREIGN KEY (game_id) REFERENCES games(game_id),
+        FOREIGN KEY (club_id) REFERENCES clubs(club_id)
+        );
+        
+        CREATE TABLE competitions (
+        competition_id VARCHAR(50) PRIMARY KEY,
+        competition_code VARCHAR(50) NOT NULL,
+        name VARCHAR(255),
+        sub_type VARCHAR(50),
+        type VARCHAR(50),
+        country_id INT,
+        country_name VARCHAR(50),
+        domestic_league_code VARCHAR(50),
+        confederation VARCHAR(50),
+        url VARCHAR(255)
+        )
     '''
 
     cursor.execute(create_table_queries)
