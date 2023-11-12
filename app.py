@@ -39,7 +39,7 @@ try:
         FOREIGN KEY (game_id) REFERENCES games(game_id));
         
         CREATE TABLE club_games (
-        game_id INT NOT NULL,
+        game_id INT PRIMARY KEY,
         club_id INT NOT NULL,
         own_goals INT,
         own_position INT,
@@ -50,7 +50,7 @@ try:
         opponent_manager_name VARCHAR(255),
         hosting VARCHAR(50),
         is_win BOOLEAN,
-        FOREIGN KEY (game_id) REFERENCES games(game_id),
+        FOREIGN KEY (opponent_id) REFERENCES games(club_id),
         FOREIGN KEY (club_id) REFERENCES clubs(club_id)
         );
         
