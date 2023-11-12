@@ -1,0 +1,2 @@
+WEEK 6: 
+app.py file has been updated: "club games" and "competitions" tables are inserted.
