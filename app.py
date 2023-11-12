@@ -66,6 +66,57 @@ try:
         confederation VARCHAR(50),
         url VARCHAR(255)
         )
+
+        CREATE TABLE games (
+            game_id INT PRIMARY KEY, 
+
+            competition_id VARCHAR(50) NOT NULL, 
+            season INT, 
+            round VARCHAR(50), 
+            date DATE, 
+            home_club_id INT NOT NULL,
+            away_club_id INT NOT NULL, 
+            home_club_goals INT, 
+            away_club_goals INT,
+            home_club_position INT, 
+            away_club_position INT, 
+            home_club_manager_name VARCHAR(50),
+            away_club_manager_name VARCHAR(50), 
+            stadium VARCHAR(50), 
+            attendance INT, 
+            referee VARCHAR(50), 
+            url VARCHAR(255),
+            home_club_name VARCHAR(50), 
+            away_club_name VARCHAR(50), 
+            aggregate VARCHAR(50), 
+            competition_type VARCHAR(50)
+
+            FOREIGN KEY (competition_id) REFERENCES competitions(competition_id),
+            FOREIGN KEY (home_club_id) REFERENCES clubs(club_id)
+            FOREIGN KEY (away_club_id) REFERENCES clubs(club_id)
+        );
+
+        CREATE TABLE clubs (
+            club_id INT PRIMARY KEY, 
+
+            club_code VARCHAR(50), 
+            name VARCHAR(50), 
+            domestic_competition_id INT NOT NULL,
+            total_market_value VARCHAR(50), 
+            squad_size INT, 
+            average_age DECIMAL(3,1), 
+            foreigners_number INT,
+            foreigners_percentage DECIMAL(3,1), 
+            national_team_players INT, 
+            stadium_name VARCHAR(50),
+            stadium_seats INT, 
+            net_transfer_record VARCHAR(50), 
+            coach_name VARCHAR(50), 
+            last_season INT,
+            url VARCHAR(255)
+
+            FOREIGN KEY (domestic_competition_id) REFERENCES competitions(competition_id),
+        );
     '''
 
     cursor.execute(create_table_queries)
