@@ -1,0 +1,4 @@
+Week 6:
+Created config.py
+Created games table
+Created clubs table
