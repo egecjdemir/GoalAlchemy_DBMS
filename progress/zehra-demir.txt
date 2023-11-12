@@ -1,0 +1,3 @@
+Week 6
+Created app.py file.
+Inside app.py, created "appearances" and "players" tables.

@@ -38,6 +38,33 @@ try:
         FOREIGN KEY (player_id) REFERENCES players(player_id),
         FOREIGN KEY (game_id) REFERENCES games(game_id));
         
+        CREATE TABLE players (
+        player_id INT PRIMARY KEY,
+        first_name VARCHAR(255),
+        last_name VARCHAR(255),
+        name VARCHAR(255),
+        last_season INT,
+        current_club_id INT,
+        player_code VARCHAR(50),
+        country_of_birth VARCHAR(50),
+        city_of_birth VARCHAR(50),
+        country_of_citizenship VARCHAR(50),
+        date_of_birth DATE,
+        sub_position VARCHAR(50),
+        position VARCHAR(50),
+        foot VARCHAR(50),
+        height_in_cm INT,
+        market_value_in_eur INT, 
+        highest_market_value_in_eur INT,
+        contract_expiration_date DATE,
+        agent_name VARCHAR(255),
+        image_url VARCHAR(255),
+        url VARCHAR(255),
+        current_club_domestic_competition_id INT,
+        current_club_name VARCHAR(50),
+        FOREIGN KEY (current_club_id) REFERENCES clubs(club_id)
+        );
+        
         CREATE TABLE club_games (
         game_id INT PRIMARY KEY,
         club_id INT NOT NULL,
