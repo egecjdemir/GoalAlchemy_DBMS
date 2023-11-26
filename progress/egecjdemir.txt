@@ -2,3 +2,7 @@ Week 6:
 Created config.py
 Created games table
 Created clubs table
+
+Week 8:
+Created csv_to_sql_table.py
+Imported games.csv and clubs.csv files to their corresponding MySQL tables.
