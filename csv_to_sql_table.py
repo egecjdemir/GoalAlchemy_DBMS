@@ -37,7 +37,9 @@ try:
 
     csv_to_sql_table('data/clubs.csv', 'clubs')
     csv_to_sql_table('data/games.csv', 'games')
-
+    csv_to_sql_table('data/players.csv', 'players')
+    csv_to_sql_table('data/appearances.csv', 'appearances')
+    
 except Error as e:
     print(f'Error: {e}')
 
