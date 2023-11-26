@@ -1,3 +1,5 @@
 Week 6
 Created app.py file.
 Inside app.py, created "appearances" and "players" tables.
+Week 8
+Added my tables to csv_to_sql_table.py and data folder.
