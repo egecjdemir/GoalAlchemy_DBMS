@@ -40,7 +40,7 @@ try:
     csv_to_sql_table('data/players.csv', 'players')
     csv_to_sql_table('data/appearances.csv', 'appearances')
     csv_to_sql_table('data/competitions.csv', 'competitions')
-    csv_to_sql_table('data/clubgames.csv', 'club games')
+    csv_to_sql_table('data/club_games.csv', 'club games')
     
 except Error as e:
     print(f'Error: {e}')
