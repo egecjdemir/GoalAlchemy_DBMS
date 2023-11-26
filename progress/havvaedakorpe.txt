@@ -1,5 +1,5 @@
 WEEK 6: 
 app.py file has been updated: "club games" and "competitions" tables are inserted.
-WEEK 7:
+WEEK 8:
 Added my tables to csv_to_sql_table.py
 Added "club_games.csv" and "competitions.csv" data folder.
