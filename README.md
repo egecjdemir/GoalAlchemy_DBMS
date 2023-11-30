@@ -5,7 +5,9 @@ Dataset Title: Football Data from Transfermarkt
 Dataset URL: https://data.world/dcereijo/player-scores
 
 Responsibility Distribution:
-Ege Demir - 150200319:
+
+Ege Demir - 150200319
+
   Responsible for ‘games table’ and ‘clubs’ table.
   1. ‘games’ table will be used for game results 
   tracing system. Shows club names, 
@@ -22,6 +24,7 @@ Ege Demir - 150200319:
   players.
 
 Zehra Demir - 150200305
+
   Responsible for ‘appearances’ table and ‘players’ table.
   1. ‘appearances’ table will be used for player 
   performance tracing system. Shows goals, 
@@ -37,6 +40,7 @@ Zehra Demir - 150200305
   season.
 
 Havva Eda Körpe - 150200029
+
   Responsible for ‘club_games’ table and ‘competitions’ table
   1. ‘club_games’ table will be used for club 
   situation and performance tracing system. 
