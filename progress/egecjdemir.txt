@@ -6,3 +6,6 @@ Created clubs table
 Week 8:
 Created csv_to_sql_table.py
 Imported games.csv and clubs.csv files to their corresponding MySQL tables.
+
+Week 9:
+Added responsibility distribution and dataset url to README.md
