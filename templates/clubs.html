@@ -12,5 +12,47 @@
         <a href="{{ url_for('appearances') }}">Appearances</a>
         <a href="{{ url_for('game_events') }}">Game Events</a>   
     </nav>
+
+<table>
+    <tr>
+        <th>Club ID</th>
+        <th>Club Code</th>
+        <th>Club Name </th>
+        <th>Domestic Competition Id </th>
+        <th>Total Market Value</th>
+        <th>Squad Size </th>
+        <th>Average Age</th>
+        <th>Foreigners Number </th>
+        <th>Foreigners Percentage </th>
+        <th>National Team Players </th>
+        <th>Stadium Name </th>
+        <th>Stadium Seats  </th>
+        <th>Net Transfer Record </th>
+        <th>Coach Name</th>
+        <th>Last Season  </th>
+        <th>URL </th>
+    </tr>
+    {% for club in clubs %}
+    <tr>
+        <td>{{ club.club_id }}</td>
+        <td>{{ club.club_code }}</td>
+        <td>{{ club.name }}</td>
+        <td>{{ club.domestic_competition_id }}</td>
+        <td>{{ club.total_market_value }}</td>
+        <td>{{ club.squad_size }}</td>
+        <td>{{ club.average_age }}</td>
+        <td>{{ club.foreigners_number }}</td>
+        <td>{{ club.foreigners_percentage }}</td>
+        <td>{{ club.national_team_players }}</td>
+        <td>{{ club.stadium_name }}</td>
+        <td>{{ club.stadium_seats }}</td>
+        <td>{{ club.net_transfer_record }}</td>
+        <td>{{ club.coach_name }}</td>
+        <td>{{ club.last_season }}</td>
+        <td>{{ club.url }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
 </body>
 </html>
