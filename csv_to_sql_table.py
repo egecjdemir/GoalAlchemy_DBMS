@@ -1,15 +1,12 @@
 import mysql.connector
 from mysql.connector import Error
-import configparser
+import config
 import csv
 
-config = configparser.ConfigParser()
-config.read('config.py')
-
-user = config.get('database', 'user')
-password = config.get('database', 'password')
-host = config.get('database', 'host')
-database = config.get('database', 'database')
+user = config.db_user
+password = config.db_password
+host = config.db_host
+database = config.db_database
 
 try:
     connection = mysql.connector.connect(
@@ -44,12 +41,12 @@ try:
             print(f"Error: {e}")
 
         
-    csv_to_sql_table('../data/competitions.csv', 'competitions')
-    csv_to_sql_table('../data/clubs.csv', 'clubs')
-    csv_to_sql_table('../data/players.csv', 'players')
-    csv_to_sql_table('../data/games_cleaned.csv', 'games')
-    csv_to_sql_table('../data/appearances_cleaned.csv', 'appearances') 
-    csv_to_sql_table('../data/club_games_cleaned.csv', 'club_games')
+    csv_to_sql_table('data/competitions.csv', 'competitions')
+    csv_to_sql_table('data/clubs.csv', 'clubs')
+    csv_to_sql_table('data/players.csv', 'players')
+    csv_to_sql_table('data/games_cleaned.csv', 'games')
+    csv_to_sql_table('data/appearances_cleaned.csv', 'appearances') 
+    csv_to_sql_table('data/club_games_cleaned.csv', 'club_games')
     
 except Error as e:
     print(f'Error: {e}')
