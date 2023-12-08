@@ -1,11 +1,4 @@
-import mysql.connector
-
-def connect_2_mysql(password):
-    db = mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password= password,
-        database="itudb2320"
-    )
-    
-    return db
+db_host = 'localhost'
+db_user = 'root'
+db_password = str(input("Enter your admin password: "))
+db_database = 'itudb2320'
