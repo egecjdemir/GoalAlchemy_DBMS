@@ -8,7 +8,24 @@ def home():
 
 @app.route('/clubs')
 def clubs():
-    return render_template('clubs.html')
+    connection = mysql.connector.connect(
+        host=host,
+        user=user,
+        password=password,
+        database=database
+    )    
+    
+    cursor = connection.cursor(dictionary=True)
+
+    query = "SELECT * FROM clubs"
+    cursor.execute(query)
+
+    clubs_data = cursor.fetchall()
+
+    cursor.close()
+    connection.close()
+
+    return render_template('clubs.html', clubs=clubs_data)
 
 @app.route('/games')
 def games():
