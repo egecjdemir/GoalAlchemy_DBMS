@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="UTF-8">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
+</head>
+<body>
+    <h1>Welcome to GoalAlchemy</h1>
+    
+    <!-- Buttons to navigate to the other routes -->
+    <a href="{{ url_for('view_players') }}" class="button">View Players</a>
+    <a href="{{ url_for('view_games') }}" class="button">View Games</a>
+    <a href="{{ url_for('view_competitions') }}" class="button">View Competitions</a>
+    <a href="{{ url_for('view_clubs') }}" class="button">View Clubs</a>
+    <a href="{{ url_for('view_club_games') }}" class="button">View Club Games</a>
+    <a href="{{ url_for('view_appearances') }}" class="button">View Appearances</a>
+</body>
+</html>

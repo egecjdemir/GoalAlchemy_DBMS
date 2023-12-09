@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="UTF-8">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+    <title>View Players</title>
+</head>
+<body>
+    <h1>Players</h1>
+    <table border="1">
+        <tr>
+            <th>Player ID</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Name</th>
+            <th>Last Season</th>
+            <th>Current Club ID</th>
+            <th>Player Code</th>
+            <th>Country of Birth</th>
+            <th>City of Birth</th>
+            <th>Country of Citizenship</th>
+            <th>Date of Birth</th>
+            <th>Sub Position</th>
+            <th>Position</th>
+            <th>Foot</th>
+            <th>Height in cm</th>
+            <th>Market Value in EUR</th>
+            <th>Highest Market Value in EUR</th>
+        </tr>
+        {% for player in players %}
+        <tr>
+            <td>{{ player[0] }}</td>  <!-- this each row indicates a column in table-->
+            <td>{{ player[1] }}</td>
+            <td>{{ player[2] }}</td>
+            <td>{{ player[3] }}</td>
+            <td>{{ player[4] }}</td>
+            <td>{{ player[5] }}</td>
+            <td>{{ player[6] }}</td>
+            <td>{{ player[7] }}</td>
+            <td>{{ player[8] }}</td>
+            <td>{{ player[9] }}</td>
+            <td>{{ player[10] }}</td>
+            <td>{{ player[11] }}</td>
+            <td>{{ player[12] }}</td>
+            <td>{{ player[13] }}</td>
+            <td>{{ player[14] }}</td>
+            <td>{{ player[15] }}</td>
+            <td>{{ player[16] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <!-- Pagination links with sliding window -->
+    <div class="pagination">
+        {% if page > 1 %}
+            <a href="{{ url_for('view_players', page=page-1) }}">Previous</a>
+        {% endif %}
+
+        {% for num in range(start_page, end_page+1) %}
+            {% if num == page %}
+                <strong>{{ num }}</strong>
+            {% else %}
+                <a href="{{ url_for('view_players', page=num) }}">{{ num }}</a>
+            {% endif %}
+        {% endfor %}
+
+        {% if page < total_pages %}
+            <a href="{{ url_for('view_players', page=page+1) }}">Next</a>
+        {% endif %}
+    </div>
+    <a href="{{ url_for('index') }}" class="back-button">Back to Main Page</a>
+</body>
+</html>

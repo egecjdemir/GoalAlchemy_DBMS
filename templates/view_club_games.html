@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="UTF-8">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+    <title>View Club Games</title>
+</head>
+<body>
+    <h1>Club Games</h1>
+    <table border="1">
+        <tr>
+            <th>Game ID</th>
+            <th>Club ID</th>
+            <th>Own Goals</th>
+            <th>Own Position</th>
+            <th>Own Manager Name</th>
+            <th>Opponent ID</th>
+            <th>Opponent Goals</th>
+            <th>Opponent Position</th>
+            <th>Opponent Manager Name</th>
+            <th>Hosting</th>
+            <th>Is Win</th>
+        </tr>
+        {% for club_game in club_games %}
+        <tr>
+            <td>{{ club_game[0] }}</td>  <!-- this each row indicates a column in table-->
+            <td>{{ club_game[1] }}</td>
+            <td>{{ club_game[2] }}</td>
+            <td>{{ club_game[3] }}</td>
+            <td>{{ club_game[4] }}</td>
+            <td>{{ club_game[5] }}</td>
+            <td>{{ club_game[6] }}</td>
+            <td>{{ club_game[7] }}</td>
+            <td>{{ club_game[8] }}</td>
+            <td>{{ club_game[9] }}</td>
+            <td>{{ club_game[10] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <!-- Pagination links with sliding window -->
+    <div class="pagination">
+        {% if page > 1 %}
+            <a href="{{ url_for('view_club_games', page=page-1) }}">Previous</a>
+        {% endif %}
+
+        {% for num in range(start_page, end_page+1) %}
+            {% if num == page %}
+                <strong>{{ num }}</strong>
+            {% else %}
+                <a href="{{ url_for('view_club_games', page=num) }}">{{ num }}</a>
+            {% endif %}
+        {% endfor %}
+
+        {% if page < total_pages %}
+            <a href="{{ url_for('view_club_games', page=page+1) }}">Next</a>
+        {% endif %}
+    </div>
+    <a href="{{ url_for('index') }}" class="back-button">Back to Main Page</a>
+</body>
+</html>

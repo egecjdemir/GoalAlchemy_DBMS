@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="UTF-8">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+    <title>View Clubs</title>
+</head>
+<body>
+    <h1>Clubs</h1>
+    <table border="1">
+        <tr>
+            <th>Club ID</th>
+            <th>Club Code</th>
+            <th>Club Name</th>
+            <th>Domestic Competition ID</th>
+            <th>Total Market Value</th>
+            <th>Squad Size</th>
+            <th>Average Age</th>
+            <th>Foreigners Number</th>
+            <th>Foreigners Percentage</th>
+            <th>National Team Players</th>
+            <th>Stadium Name</th>
+            <th>Stadium Seats</th>
+            <th>Net Transfer Record</th>
+            <th>Coach Name</th>
+            <th>Last Season</th>
+        </tr>
+        {% for club in clubs %}
+        <tr>
+            <td>{{ club[0] }}</td>  <!-- this each row indicates a column in table-->
+            <td>{{ club[1] }}</td>
+            <td>{{ club[2] }}</td>
+            <td>{{ club[3] }}</td>
+            <td>{{ club[4] }}</td>
+            <td>{{ club[5] }}</td>
+            <td>{{ club[6] }}</td>
+            <td>{{ club[7] }}</td>
+            <td>{{ club[8] }}</td>
+            <td>{{ club[9] }}</td>
+            <td>{{ club[10] }}</td>
+            <td>{{ club[11] }}</td>
+            <td>{{ club[12] }}</td>
+            <td>{{ club[13] }}</td>
+            <td>{{ club[14] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <!-- Pagination links with sliding window -->
+    <div class="pagination">
+        {% if page > 1 %}
+            <a href="{{ url_for('view_clubs', page=page-1) }}">Previous</a>
+        {% endif %}
+
+        {% for num in range(start_page, end_page+1) %}
+            {% if num == page %}
+                <strong>{{ num }}</strong>
+            {% else %}
+                <a href="{{ url_for('view_clubs', page=num) }}">{{ num }}</a>
+            {% endif %}
+        {% endfor %}
+
+        {% if page < total_pages %}
+            <a href="{{ url_for('view_clubs', page=page+1) }}">Next</a>
+        {% endif %}
+    </div>
+    <a href="{{ url_for('index') }}" class="back-button">Back to Main Page</a>
+</body>
+</html>
