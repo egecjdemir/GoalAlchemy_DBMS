@@ -5,3 +5,5 @@ Week 8
 Added my tables to csv_to_sql_table.py and data folder.
 Week 9
 I changed the creation order of tables, fixed some foreign key mistakes, forgotten commas, and wrong data types. I changed club_games table's primary key. Also changed the content of csv_to_sql_table to handle Null values and changed the path of csv files. I created data_cleaning.ipynb to drop some unmatched rows and I writed new data to cleaned csv files.
+Week 10
+I added the necessary html files for routes and added two css files. I also updated the flask_app.py with different routes. I changed the database name in config.py.
