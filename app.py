@@ -200,7 +200,7 @@ def insert_competition():
 
 @app.route('/add_club_game')
 def add_club_game():
-    return render_template('add_competition.html')
+    return render_template('add_club_game.html')
 
 @app.route('/add_club_game', methods=['POST'])
 def insert_club_game():
