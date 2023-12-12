@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="UTF-8">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+    <title>Add New Competitions</title>
+</head>
+<body>
+    <div class="container">
+        <form action="/add_competition" method="POST" class="mx-1 mx-md-4">
+            <h1>Add Competition: </h1>
+            <label for="competition_id">Competition ID:</label>
+            <input type="text" name="competition_id" placeholder="Player ID" />
+    
+            <label for="competition_code">Competition Code:</label>
+            <input type="text" name="competition_code" placeholder="Competition Code" />
+    
+            <label for="name">Name:</label>
+            <input type="text" name="name" placeholder="Name" />
+    
+            <label for="sub_type">Subtype:</label>
+            <input type="text" name="sub_type" placeholder="Ex: uefa_champions_league" />
+
+            <label for="type">Type:</label>
+            <input type="text" name="type" placeholder="Ex: international_cup" />
+
+            <label for="country_id">Country ID:</label>
+            <input type="number" name="country_id" placeholder="Player ID" />
+    
+            <label for="country_name">Country Name:</label>
+            <input type="text" name="country_name" placeholder="Country Name" />
+
+            <label for="domestic_league_code">Domestic League Code:</label>
+            <input type="text" name="domestic_league_code" placeholder="Domestic League Code" />
+    
+            <label for="confederation">Confederation:</label>
+            <input type="text" name="confederation" placeholder="Confederation" />
+            
+            <label for="url">url:</label>
+            <input type="text" name="url" placeholder="url" />
+    
+            <input type="submit" value="Add">
+    
+          </form>
+    
+        </div>
+    <a href="{{ url_for('index') }}" class="back-button">Back to Main Page</a>
+</body>
+</html>
