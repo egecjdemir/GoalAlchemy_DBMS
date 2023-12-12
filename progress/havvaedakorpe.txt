@@ -5,3 +5,6 @@ Added my tables to csv_to_sql_table.py
 Added "club_games.csv" and "competitions.csv" data folder.
 WEEK 9:
 Created HTML files ("main.html", "clubs.html", "games.html", "club_games.html", "appearances.html", "competitions.html", "game_events.html") and added navigations between them.
+WEEK 10:
+New files are created for "INSERT" operation for "competitions" and "club_games" tables.
+"app.py" and "VIEW" html files are updated.
