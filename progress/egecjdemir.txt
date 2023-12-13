@@ -9,3 +9,11 @@ Imported games.csv and clubs.csv files to their corresponding MySQL tables.
 
 Week 9:
 Added responsibility distribution and dataset url to README.md
+
+Week 10:
+Fixed connection and configuration problems in create_table.py and csv_to_sql_table.py. They work now.
+  Also changed file paths in the csv_to_sql_table.py file so they are compatible with github directory.
+Updated config.py in a way that all group members can connect to the database by running same py files.
+Added flask_app.py (now called app.py), that creates a flask application.
+  In this file, added a route that gets all results in clubs table.
+  Also, updated clubs.html so it can show all records in clubs table.
