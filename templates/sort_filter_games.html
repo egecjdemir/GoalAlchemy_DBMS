@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>View Football Games</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    </head>
+<body>
+    <h1>Games</h1>
+
+    <!-- Form for Sorting and Filtering -->
+    <form action="{{ url_for('sort_filter_games') }}" method="get">
+        <!-- Filtering Criteria -->
+        <div>
+            <label for="competition_id">Competition ID:</label>
+            <input type="text" id="competition_id" name="competition_id">
+        </div>
+        <div>
+            <label for="round">Round:</label>
+            <input type="text" id="round" name="round">
+        </div>
+        <div>
+            <label for="home_club_manager_name">Home Club Manager Name:</label>
+            <input type="text" id="home_club_manager_name" name="home_club_manager_name">
+        </div>
+        <div>
+            <label for="away_club_manager_name">Away Club Manager Name:</label>
+            <input type="text" id="away_club_manager_name" name="away_club_manager_name">
+        </div>
+        <div>
+            <label for="home_club_name">Home Club Name:</label>
+            <input type="text" id="home_club_name" name="home_club_name">
+        </div>
+        <div>
+            <label for="away_club_name">Away Club Name:</label>
+            <input type="text" id="away_club_name" name="away_club_name">
+        </div>
+        <div>
+            <label for="aggregate">Aggregate:</label>
+            <input type="text" id="aggregate" name="aggregate">
+        </div>
+        <div>
+            <label for="competition_type">Competition Type:</label>
+            <select id="competition_type" name="competition_type">
+                <option value="">Select Type</option>
+                <option value="other">Other</option>
+                <option value="domestic_cup">Domestic Cup</option>
+                <option value="international_cup">International Cup</option>
+                <option value="domestic_league">Domestic League</option>
+            </select>
+        </div>
+
+        <div>
+            <label for="referee">Referee:</label>
+            <input type="text" id="referee" name="referee">
+        </div>
+
+        <!-- Sorting Options -->
+        <div>
+            <label for="sort_by">Sort by:</label>
+            <select id="sort_by" name="sort_by">
+                <option value="season">Season</option>
+                <option value="attendance">Attendance</option>
+                <option value="home_club_position">Home Club Position</option>
+                <option value="away_club_position">Away Club Position</option>
+                <option value="home_club_goals">Home Club Goals</option>
+                <option value="away_club_goals">Away Club Goals</option>
+                <option value="date">Date</option>
+            </select>
+        </div>
+
+        <button type="submit">Apply Filters</button>
+    </form>
+
+    <table border="1">
+        <tr>
+            <th>Game ID</th>
+            <th>Competition ID</th>
+            <th>Season</th>
+            <th>Round</th>
+            <th>Date</th>
+            <th>Home Club ID</th>
+            <th>Away Club ID</th>
+            <th>Home Goals</th>
+            <th>Away Goals</th>
+            <th>Home Club Position</th>
+            <th>Away Club Position</th>
+            <th>Home Club Manager Name</th>
+            <th>Away Club Manager Name</th>
+            <th>Stadium</th>
+            <th>Attendance</th>
+            <th>Referee Name</th>
+        </tr>
+        {% for game in games %}
+        <tr>
+            <td>{{ game[0] }}</td>
+            <td>{{ game[1] }}</td>
+            <td>{{ game[2] }}</td>
+            <td>{{ game[3] }}</td>
+            <td>{{ game[4] }}</td>
+            <td>{{ game[5] }}</td>
+            <td>{{ game[6] }}</td>
+            <td>{{ game[7] }}</td>
+            <td>{{ game[8] }}</td>
+            <td>{{ game[9] }}</td>
+            <td>{{ game[10] }}</td>
+            <td>{{ game[11] }}</td>
+            <td>{{ game[12] }}</td>
+            <td>{{ game[13] }}</td>
+            <td>{{ game[14] }}</td>
+            <td>{{ game[15] }}</td>
+            
+        </tr>
+        {% endfor %}
+    </table>
+    <!-- Pagination links with sliding window -->
+    <div class="pagination">
+        {% if page > 1 %}
+            <a href="{{ url_for('view_games', page=page-1) }}">Previous</a>
+        {% endif %}
+
+        {% for num in range(start_page, end_page+1) %}
+            {% if num == page %}
+                <strong>{{ num }}</strong>
+            {% else %}
+                <a href="{{ url_for('view_games', page=num) }}">{{ num }}</a>
+            {% endif %}
+        {% endfor %}
+
+        {% if page < total_pages %}
+            <a href="{{ url_for('view_games', page=page+1) }}">Next</a>
+        {% endif %}
+    </div>
+    <a href="{{ url_for('index') }}" class="back-button">Back to Main Page</a>
+</body>
+</html>
+
