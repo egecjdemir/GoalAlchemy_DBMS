@@ -69,7 +69,24 @@
         </tr>
         {% endfor %}
     </table>
+    <!-- Pagination links with sliding window -->
+    <div class="pagination">
+        {% if page > 1 %}
+            <a href="{{ url_for('sort_filter_clubs', page=page-1) }}">Previous</a>
+        {% endif %}
 
+        {% for num in range(start_page, end_page+1) %}
+            {% if num == page %}
+                <strong>{{ num }}</strong>
+            {% else %}
+                <a href="{{ url_for('sort_filter_clubs', page=num) }}">{{ num }}</a>
+            {% endif %}
+        {% endfor %}
+
+        {% if page < total_pages %}
+            <a href="{{ url_for('sort_filter_clubs', page=page+1) }}">Next</a>
+        {% endif %}
+    </div>
     <a href="{{ url_for('index') }}" class="back-button">Back to Main Page</a>
 </body>
 </html>
