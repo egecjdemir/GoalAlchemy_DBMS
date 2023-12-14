@@ -115,6 +115,72 @@ def view_games():
     return render_template('view_games.html', games=games, page=page, total_pages=total_pages,
                            start_page=start_page, end_page=end_page)
 
+@app.route('/sort_filter_games')
+def sort_filter_games():
+    # Pagination parameters
+    page = request.args.get('page', 1, type=int)
+    offset = (page - 1) * PER_PAGE
+
+    # Sorting and filtering parameters
+    sort_by = request.args.get('sort_by')
+    filter_params = {
+        'competition_id': request.args.get('competition_id'),
+        'round': request.args.get('round'),
+        'home_club_manager_name': request.args.get('home_club_manager_name'),
+        'away_club_manager_name': request.args.get('away_club_manager_name'),
+        'home_club_name': request.args.get('home_club_name'),
+        'away_club_name': request.args.get('away_club_name'),
+        'aggregate': request.args.get('aggregate'),
+        'competition_type': request.args.get('competition_type'),
+        'referee': request.args.get('referee')
+    }
+
+    # Construct the base query
+    base_query = "FROM games"
+    where_clauses = []
+    query_params = []
+
+    # Add filtering conditions
+    for key, value in filter_params.items():
+        if value:
+            if key == 'competition_type' and value in ['other', 'domestic_cup', 'international_cup', 'domestic_league']:
+                where_clauses.append(f"{key} = %s")
+                query_params.append(value)
+            else:
+                where_clauses.append(f"{key} LIKE %s")
+                query_params.append(f"%{value}%")
+
+    # Complete SQL query for fetching data
+    data_query = "SELECT * " + base_query
+    if where_clauses:
+        data_query += " WHERE " + " AND ".join(where_clauses)
+    if sort_by:
+        data_query += f" ORDER BY {sort_by}"
+    data_query += " LIMIT %s OFFSET %s"
+
+    # Execute the query for fetching data
+    cursor.execute(data_query, tuple(query_params + [PER_PAGE, offset]))
+    games = cursor.fetchall()
+
+    # Complete SQL query for counting total games
+    count_query = "SELECT COUNT(*) " + base_query
+    if where_clauses:
+        count_query += " WHERE " + " AND ".join(where_clauses)
+
+    # Execute the query for counting total games
+    cursor.execute(count_query, tuple(query_params))
+    total_games = cursor.fetchone()[0]
+
+    # Calculate total pages and pagination window
+    total_pages = (total_games + PER_PAGE - 1) // PER_PAGE
+    visible_pages = 5
+    half_window = visible_pages // 2
+    start_page = max(1, page - half_window)
+    end_page = min(total_pages, start_page + visible_pages - 1)
+
+    return render_template('sort_filter_games.html', games=games, page=page, total_pages=total_pages,
+                           start_page=start_page, end_page=end_page)
+
 @app.route('/view_appearances')
 def view_appearances():
     page = request.args.get('page', 1, type=int)
