@@ -54,6 +54,10 @@ def view_clubs():
 
 @app.route('/sort_filter_clubs')
 def sort_filter_clubs():
+    # Pagination parameters
+    page = request.args.get('page', 1, type=int)
+    offset = (page - 1) * PER_PAGE
+    
     # Get sorting and filtering parameters from the query string
     sort_by = request.args.get('sort_by')
     name = request.args.get('name')
@@ -61,7 +65,7 @@ def sort_filter_clubs():
     domestic_competition_id = request.args.get('domestic_competition_id')
 
     # Construct the base query
-    base_query = "SELECT * FROM clubs"
+    base_query = "FROM clubs"
     where_clauses = []
     query_params = []
 
@@ -76,19 +80,38 @@ def sort_filter_clubs():
         where_clauses.append("domestic_competition_id = %s")
         query_params.append(domestic_competition_id)
 
-    # Add the WHERE clause if there are any conditions
+    # Complete SQL query for fetching data
+    data_query = "SELECT * " + base_query
     if where_clauses:
-        base_query += " WHERE " + " AND ".join(where_clauses)
+        data_query += " WHERE " + " AND ".join(where_clauses)
 
     # Add sorting condition
     if sort_by in ['stadium_seats', 'average_age', 'national_team_players', 'foreigners_percentage']:
-        base_query += f" ORDER BY {sort_by} DESC"
+        data_query += f" ORDER BY {sort_by} DESC"
+    data_query += " LIMIT %s OFFSET %s"
 
-    # Execute the query
-    cursor.execute(base_query, tuple(query_params))
+    # Execute the query for fetching data
+    cursor.execute(data_query, tuple(query_params + [PER_PAGE, offset]))
     clubs = cursor.fetchall()
 
-    return render_template('sort_filter_clubs.html', clubs=clubs)
+    # Complete SQL query for counting total games
+    count_query = "SELECT COUNT(*) " + base_query
+    if where_clauses:
+        count_query += " WHERE " + " AND ".join(where_clauses)
+    
+    # Execute the query for counting total games
+    cursor.execute(count_query, tuple(query_params))
+    total_clubs = cursor.fetchone()[0]
+
+    # Calculate total pages and pagination window
+    total_pages = (total_clubs + PER_PAGE - 1) // PER_PAGE
+    visible_pages = 5
+    half_window = visible_pages // 2
+    start_page = max(1, page - half_window)
+    end_page = min(total_pages, start_page + visible_pages - 1)
+
+    return render_template('sort_filter_clubs.html', clubs=clubs, page=page, total_pages=total_pages,
+                           start_page=start_page, end_page=end_page)
 
 @app.route('/view_games')
 def view_games():
