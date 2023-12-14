@@ -52,6 +52,44 @@ def view_clubs():
     return render_template('view_clubs.html', clubs=clubs, page=page, total_pages=total_pages,
                            start_page=start_page, end_page=end_page)
 
+@app.route('/sort_filter_clubs')
+def sort_filter_clubs():
+    # Get sorting and filtering parameters from the query string
+    sort_by = request.args.get('sort_by')
+    name = request.args.get('name')
+    stadium_name = request.args.get('stadium_name')
+    domestic_competition_id = request.args.get('domestic_competition_id')
+
+    # Construct the base query
+    base_query = "SELECT * FROM clubs"
+    where_clauses = []
+    query_params = []
+
+    # Add filtering conditions
+    if name:
+        where_clauses.append("name LIKE %s")
+        query_params.append(f"%{name}%")
+    if stadium_name:
+        where_clauses.append("stadium_name LIKE %s")
+        query_params.append(f"%{stadium_name}%")
+    if domestic_competition_id:
+        where_clauses.append("domestic_competition_id = %s")
+        query_params.append(domestic_competition_id)
+
+    # Add the WHERE clause if there are any conditions
+    if where_clauses:
+        base_query += " WHERE " + " AND ".join(where_clauses)
+
+    # Add sorting condition
+    if sort_by in ['stadium_seats', 'average_age', 'national_team_players', 'foreigners_percentage']:
+        base_query += f" ORDER BY {sort_by} DESC"
+
+    # Execute the query
+    cursor.execute(base_query, tuple(query_params))
+    clubs = cursor.fetchall()
+
+    return render_template('sort_filter_clubs.html', clubs=clubs)
+
 @app.route('/view_games')
 def view_games():
     page = request.args.get('page', 1, type=int)
