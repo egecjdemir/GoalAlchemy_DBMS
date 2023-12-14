@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="UTF-8">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Sort and Filter Clubs</title>
+</head>
+<body>
+    <h1>Sort and Filter Clubs</h1>
+
+    <!-- Form for sorting and filtering -->
+    <form method="GET" action="{{ url_for('sort_filter_clubs') }}">
+        <label for="name">Club Name:</label>
+        <input type="text" id="name" name="name">
+        
+        <label for="stadium_name">Stadium Name:</label>
+        <input type="text" id="stadium_name" name="stadium_name">
+
+        <label for="domestic_competition_id">Domestic Competition ID:</label>
+        <input type="text" id="domestic_competition_id" name="domestic_competition_id">
+
+        <label for="sort_by">Sort By:</label>
+        <select id="sort_by" name="sort_by">
+            <option value="stadium_seats">Stadium Seats</option>
+            <option value="average_age">Average Age</option>
+            <option value="national_team_players">National Team Players</option>
+            <option value="foreigners_percentage">Foreigners Percentage</option>
+        </select>
+
+        <button type="submit">Apply</button>
+    </form>
+
+    <table border="1">
+        <tr>
+            <th>Club ID</th>
+            <th>Club Code</th>
+            <th>Club Name</th>
+            <th>Domestic Competition ID</th>
+            <th>Total Market Value</th>
+            <th>Squad Size</th>
+            <th>Average Age</th>
+            <th>Foreigners Number</th>
+            <th>Foreigners Percentage</th>
+            <th>National Team Players</th>
+            <th>Stadium Name</th>
+            <th>Stadium Seats</th>
+            <th>Net Transfer Record</th>
+            <th>Coach Name</th>
+            <th>Last Season</th>
+        </tr>
+        {% for club in clubs %}
+        <tr>
+            <td>{{ club[0] }}</td>
+            <td>{{ club[1] }}</td>
+            <td>{{ club[2] }}</td>
+            <td>{{ club[3] }}</td>
+            <td>{{ club[4] }}</td>
+            <td>{{ club[5] }}</td>
+            <td>{{ club[6] }}</td>
+            <td>{{ club[7] }}</td>
+            <td>{{ club[8] }}</td>
+            <td>{{ club[9] }}</td>
+            <td>{{ club[10] }}</td>
+            <td>{{ club[11] }}</td>
+            <td>{{ club[12] }}</td>
+            <td>{{ club[13] }}</td>
+            <td>{{ club[14] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <a href="{{ url_for('index') }}" class="back-button">Back to Main Page</a>
+</body>
+</html>
