@@ -8,32 +8,345 @@
     <title>View Players</title>
 </head>
 <body>
+    <form method="post" action="{{ url_for('view_players') }}" class="search-form">
+        <input type="text" name="search_query" placeholder="Search by name or player ID..." value="{{ search_query }}">
+        <button type="submit">Search</button>
+    </form>
+
+    <a href="{{ url_for('sort_filter_players') }}" class="sort-filter-button">Sort and Filter Players</a>
+
+    {% if search_query %}
+        <a href="{{ url_for('view_players') }}" class="go-back-button">Go Back to Players</a>
+        <!--<p class="search-">{{ players|length }} players found{% if search_query %} for "{{ search_query }}"{% endif %}</p>-->
+    {% endif %}
+
     <h1>Players</h1>
     <table border="1">
         <tr>
-            <th>Player ID</th>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>Name</th>
-            <th>Last Season</th>
-            <th>Current Club ID</th>
+            <th>
+                <form method="get" action="{{ url_for('view_players') }}">
+                    <input type="hidden" name="column" value="player_id">
+                    <input type="hidden" name="search_query" value="{{ search_query }}">
+                    {% if column == 'player_id' %}
+                        {% set new_order = 'asc' if order == 'desc' else 'desc' %}
+                    {% else %}
+                        {% set new_order = 'asc' %}
+                    {% endif %}
+
+                    <input type="hidden" name="order" value="{{ new_order }}">
+
+                
+                    <div class="sort-dropdown">
+                        Player ID
+                        <button type="submit">
+                            {% if order == 'asc' %}
+                                <span>&#9650;</span>  {# Up arrow icon #}
+                            {% else %}
+                                <span>&#9660;</span>  {# Down arrow icon #}
+                            {% endif %}
+                        </button>
+                    </div>
+                </form>
+            </th>
+            <th>
+                <form method="get" action="{{ url_for('view_players') }}">
+                    <input type="hidden" name="column" value="first_name">
+                    <input type="hidden" name="search_query" value="{{ search_query }}">
+                    {% if column == 'first_name' %}
+                        {% set new_order = 'asc' if order == 'desc' else 'desc' %}
+                    {% else %}
+                        {% set new_order = 'asc' %}
+                    {% endif %}
+
+                    <input type="hidden" name="order" value="{{ new_order }}">
+
+                    <div class="sort-dropdown">
+                        First Name
+                        <button type="submit">
+                            {% if order == 'asc' %}
+                                <span>&#9650;</span>  {# Up arrow icon #}
+                            {% else %}
+                                <span>&#9660;</span>  {# Down arrow icon #}
+                            {% endif %}
+                        </button>
+                    </div>
+                </form>
+            </th>
+            <th>
+                <form method="get" action="{{ url_for('view_players') }}">
+                    <input type="hidden" name="column" value="last_name">
+                    <input type="hidden" name="search_query" value="{{ search_query }}">
+                    {% if column == 'last_name' %}
+                        {% set new_order = 'asc' if order == 'desc' else 'desc' %}
+                    {% else %}
+                        {% set new_order = 'asc' %}
+                    {% endif %}
+
+                    <input type="hidden" name="order" value="{{ new_order }}">
+
+                    <div class="sort-dropdown">
+                        Last Name
+                        <button type="submit">
+                            {% if order == 'asc' %}
+                                <span>&#9650;</span>  {# Up arrow icon #}
+                            {% else %}
+                                <span>&#9660;</span>  {# Down arrow icon #}
+                            {% endif %}
+                        </button>
+                    </div>
+                </form>
+            </th>
+            <th> 
+                <form method="get" action="{{ url_for('view_players') }}">
+                    <input type="hidden" name="column" value="name">
+                    <input type="hidden" name="search_query" value="{{ search_query }}">
+                    {% if column == 'name' %}
+                        {% set new_order = 'asc' if order == 'desc' else 'desc' %}
+                    {% else %}
+                        {% set new_order = 'asc' %}
+                    {% endif %}
+
+                    <input type="hidden" name="order" value="{{ new_order }}">
+
+                    <div class="sort-dropdown">
+                        name
+                        <button type="submit">
+                            {% if order == 'asc' %}
+                                <span>&#9650;</span>  {# Up arrow icon #}
+                            {% else %}
+                                <span>&#9660;</span>  {# Down arrow icon #}
+                            {% endif %}
+                        </button>
+                    </div>
+                </form>
+            </th>
+            <th>
+                <form method="get" action="{{ url_for('view_players') }}">
+                    <input type="hidden" name="column" value="last_season">
+                    <input type="hidden" name="search_query" value="{{ search_query }}">
+                    {% if column == 'last_season' %}
+                        {% set new_order = 'asc' if order == 'desc' else 'desc' %}
+                    {% else %}
+                        {% set new_order = 'asc' %}
+                    {% endif %}
+
+                    <input type="hidden" name="order" value="{{ new_order }}">
+
+                    <div class="sort-dropdown">
+                        Last Season
+                        <button type="submit">
+                            {% if order == 'asc' %}
+                                <span>&#9650;</span>  {# Up arrow icon #}
+                            {% else %}
+                                <span>&#9660;</span>  {# Down arrow icon #}
+                            {% endif %}
+                        </button>
+                    </div>
+                </form>
+            </th>
+            <th>
+                <form method="get" action="{{ url_for('view_players') }}">
+                    <input type="hidden" name="column" value="current_club_id">
+                    <input type="hidden" name="search_query" value="{{ search_query }}">
+                    {% if column == 'current_club_id' %}
+                        {% set new_order = 'asc' if order == 'desc' else 'desc' %}
+                    {% else %}
+                        {% set new_order = 'asc' %}
+                    {% endif %}
+
+                    <input type="hidden" name="order" value="{{ new_order }}">
+
+                    <div class="sort-dropdown">
+                        Current Club ID
+                        <button type="submit">
+                            {% if order == 'asc' %}
+                                <span>&#9650;</span>  {# Up arrow icon #}
+                            {% else %}
+                                <span>&#9660;</span>  {# Down arrow icon #}
+                            {% endif %}
+                        </button>
+                    </div>
+                </form>
+            </th>
             <th>Player Code</th>
-            <th>Country of Birth</th>
-            <th>City of Birth</th>
-            <th>Country of Citizenship</th>
-            <th>Date of Birth</th>
+            <th>
+                <form method="get" action="{{ url_for('view_players') }}">
+                    <input type="hidden" name="column" value="country_of_birth">
+                    <input type="hidden" name="search_query" value="{{ search_query }}">
+                    {% if column == 'country_of_birth' %}
+                        {% set new_order = 'asc' if order == 'desc' else 'desc' %}
+                    {% else %}
+                        {% set new_order = 'asc' %}
+                    {% endif %}
+
+                    <input type="hidden" name="order" value="{{ new_order }}">
+
+                    <div class="sort-dropdown">
+                        Country of Birth
+                        <button type="submit">
+                            {% if order == 'asc' %}
+                                <span>&#9650;</span>  {# Up arrow icon #}
+                            {% else %}
+                                <span>&#9660;</span>  {# Down arrow icon #}
+                            {% endif %}
+                        </button>
+                    </div>
+                </form>
+            </th>
+            <th>
+                <form method="get" action="{{ url_for('view_players') }}">
+                    <input type="hidden" name="column" value="city_of_birth">
+                    <input type="hidden" name="search_query" value="{{ search_query }}">
+                    {% if column == 'city_of_birth' %}
+                        {% set new_order = 'asc' if order == 'desc' else 'desc' %}
+                    {% else %}
+                        {% set new_order = 'asc' %}
+                    {% endif %}
+
+                    <input type="hidden" name="order" value="{{ new_order }}">
+
+                    <div class="sort-dropdown">
+                        City of Birth
+                        <button type="submit">
+                            {% if order == 'asc' %}
+                                <span>&#9650;</span>  {# Up arrow icon #}
+                            {% else %}
+                                <span>&#9660;</span>  {# Down arrow icon #}
+                            {% endif %}
+                        </button>
+                    </div>   
+                </form>
+            </th>
+            <th>
+                <form method="get" action="{{ url_for('view_players') }}">
+                    <input type="hidden" name="column" value="country_of_citizenship">
+                    <input type="hidden" name="search_query" value="{{ search_query }}">
+                    {% if column == 'country_of_citizenship' %}
+                        {% set new_order = 'asc' if order == 'desc' else 'desc' %}
+                    {% else %}
+                        {% set new_order = 'asc' %}
+                    {% endif %}
+
+                    <input type="hidden" name="order" value="{{ new_order }}">
+
+                    <div class="sort-dropdown">
+                        Country of Citizenship
+                        <button type="submit">
+                            {% if order == 'asc' %}
+                                <span>&#9650;</span>  {# Up arrow icon #}
+                            {% else %}
+                                <span>&#9660;</span>  {# Down arrow icon #}
+                            {% endif %}
+                        </button>
+                    </div>
+                </form>
+            </th>
+            <th>
+                <form method="get" action="{{ url_for('view_players') }}">
+                    <input type="hidden" name="column" value="date_of_birth">
+                    <input type="hidden" name="search_query" value="{{ search_query }}">
+                    {% if column == 'date_of_birth' %}
+                        {% set new_order = 'asc' if order == 'desc' else 'desc' %}
+                    {% else %}
+                        {% set new_order = 'asc' %}
+                    {% endif %}
+
+                    <input type="hidden" name="order" value="{{ new_order }}">
+
+                    <div class="sort-dropdown">
+                        Date of Birth
+                        <button type="submit">
+                            {% if order == 'asc' %}
+                                <span>&#9650;</span>  {# Up arrow icon #}
+                            {% else %}
+                                <span>&#9660;</span>  {# Down arrow icon #}
+                            {% endif %}
+                        </button>
+                    </div>
+                </form>
+            </th>
             <th>Sub Position</th>
             <th>Position</th>
             <th>Foot</th>
-            <th>Height in cm</th>
-            <th>Market Value in EUR</th>
-            <th>Highest Market Value in EUR</th>
+            <th>
+                <form method="get" action="{{ url_for('view_players') }}">
+                    <input type="hidden" name="column" value="height_in_cm">
+                    <input type="hidden" name="search_query" value="{{ search_query }}">
+                    {% if column == 'height_in_cm' %}
+                        {% set new_order = 'asc' if order == 'desc' else 'desc' %}
+                    {% else %}
+                        {% set new_order = 'asc' %} 
+                    {% endif %}
+
+                    <input type="hidden" name="order" value="{{ new_order }}">
+
+                    <div class="sort-dropdown">
+                        Height in cm
+                        <button type="submit">
+                            {% if order == 'asc' %}
+                                <span>&#9650;</span>  {# Up arrow icon #}
+                            {% else %}
+                                <span>&#9660;</span>  {# Down arrow icon #}
+                            {% endif %}
+                        </button>
+                    </div>
+                </form>
+            </th>
+            <th>
+                <form method="get" action="{{ url_for('view_players') }}">
+                    <input type="hidden" name="column" value="market_value_in_eur">
+                    <input type="hidden" name="search_query" value="{{ search_query }}">
+                    {% if column == 'market_value_in_eur' %}
+                        {% set new_order = 'asc' if order == 'desc' else 'desc' %}
+                    {% else %}
+                        {% set new_order = 'asc' %} 
+                    {% endif %}
+
+                    <input type="hidden" name="order" value="{{ new_order }}">
+
+                    <div class="sort-dropdown">
+                        Market Value in EUR
+                        <button type="submit">
+                            {% if order == 'asc' %}
+                                <span>&#9650;</span>  {# Up arrow icon #}
+                            {% else %}
+                                <span>&#9660;</span>  {# Down arrow icon #}
+                            {% endif %}
+                        </button>
+                    </div>
+                </form>
+            </th>
+            <th>
+                <form method="get" action="{{ url_for('view_players') }}">
+                    <input type="hidden" name="column" value="highest_market_value_in_eur">
+                    <input type="hidden" name="search_query" value="{{ search_query }}">
+                    {% if column == 'highest_market_value_in_eur' %}
+                        {% set new_order = 'asc' if order == 'desc' else 'desc' %}
+                    {% else %}
+                        {% set new_order = 'asc' %} 
+                    {% endif %}
+
+                    <input type="hidden" name="order" value="{{ new_order }}">
+
+                    <div class="sort-dropdown">
+                        Highest Market Value in EUR
+                        <button type="submit">
+                            {% if order == 'asc' %}
+                                <span>&#9650;</span>  {# Up arrow icon #}
+                            {% else %}
+                                <span>&#9660;</span>  {# Down arrow icon #}
+                            {% endif %}
+                        </button>
+                    </div>
+                </form>
+            </th>
+            <th>Delete</th>
         </tr>
         {% for player in players %}
         <tr>
-            <td>{{ player[0] }}</td>  <!-- this each row indicates a column in table-->
+            <td><a href="{{ url_for('player_page', player_id=player[0]) }}">{{ player[0] }}</a></td>
             <td>{{ player[1] }}</td>
-            <td>{{ player[2] }}</td>
+            <td>{{ player[2] }}</td>   <!-- this each row indicates a column in table-->
             <td>{{ player[3] }}</td>
             <td>{{ player[4] }}</td>
             <td>{{ player[5] }}</td>
@@ -48,27 +361,38 @@
             <td>{{ player[14] }}</td>
             <td>{{ player[15] }}</td>
             <td>{{ player[16] }}</td>
+            <td>
+                <div class="delete-box" onclick="confirmDelete('{{ player[0] }}')">X</div>
+            </td>
         </tr>
         {% endfor %}
     </table>
     <!-- Pagination links with sliding window -->
     <div class="pagination">
         {% if page > 1 %}
-            <a href="{{ url_for('view_players', page=page-1) }}">Previous</a>
+            <a href="{{ url_for('view_players', page=page-1, search_query=search_query) }}">Previous</a>
         {% endif %}
-
+    
         {% for num in range(start_page, end_page+1) %}
             {% if num == page %}
                 <strong>{{ num }}</strong>
             {% else %}
-                <a href="{{ url_for('view_players', page=num) }}">{{ num }}</a>
+                <a href="{{ url_for('view_players', page=num, search_query=search_query) }}">{{ num }}</a>
             {% endif %}
         {% endfor %}
-
+    
         {% if page < total_pages %}
-            <a href="{{ url_for('view_players', page=page+1) }}">Next</a>
+            <a href="{{ url_for('view_players', page=page+1, search_query=search_query) }}">Next</a>
         {% endif %}
     </div>
     <a href="{{ url_for('index') }}" class="back-button">Back to Main Page</a>
+    <a href="{{ url_for('add_player') }}" class="add-player-button">Add Player</a>
 </body>
+<script>
+    function confirmDelete(playerId) {
+        if (confirm("Are you sure you want to delete this player?")) {
+            window.location.href = "/delete_player/" + playerId;  // Replace with the correct route
+        }
+    }
+</script>
 </html>
