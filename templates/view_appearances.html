@@ -29,7 +29,7 @@
         <tr>
             <td>{{ appearance[0] }}</td>  <!-- this each row indicates a column in table-->
             <td>{{ appearance[1] }}</td>
-            <td>{{ appearance[2] }}</td>
+            <td><a href="{{ url_for('player_page', player_id=appearance[2]) }}">{{ appearance[2] }}</a></td>
             <td>{{ appearance[3] }}</td>
             <td>{{ appearance[4] }}</td>
             <td>{{ appearance[5] }}</td>
