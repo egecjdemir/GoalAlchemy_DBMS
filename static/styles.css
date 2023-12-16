@@ -74,3 +74,321 @@ tr:hover {
 .back-button:hover {
     background-color: #286090;
 }
+
+.add-player-button {
+    position: absolute;
+    top: 80px;
+    left: 875px;
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #3498db;
+    color: #ffffff;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.add-player-button:hover {
+    background-color: #2980b9;
+}
+
+/* Style for the Add Player container */
+.add-player-container {
+    max-width: 400px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(52, 14, 192, 0.2);
+}
+
+/* Style for the Add Player form */
+.add-player-form {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Style for form groups */
+.form-group {
+    margin-bottom: 10px;
+}
+
+/* Style for form labels */
+.add-player-form label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #000276;
+}
+
+/* Style for form input fields */
+.add-player-form input {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+/* Style for the Add Player button */
+.add-player-submit-button {
+    padding: 12px;
+    background-color: #3498db;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.add-player-submit-button:hover {
+    background-color: #2980b9;
+}
+
+/* Style for the Back to View Players link */
+.add-player-back-link {
+    display: inline-block;
+    color: #3498db;
+    text-decoration: none;
+    font-size: 20px;
+}
+
+.add-player-back-link:hover {
+    text-decoration: underline;
+}
+
+.add-player-title {
+    text-align: center;
+    color: #000276;
+    margin-top: 50px;
+}
+
+.delete-box {
+    width: 20px;
+    height: 20px;
+    background-color: red;
+    color: white;
+    text-align: center;
+    line-height: 20px;
+    cursor: pointer;
+}
+
+/* styles.css */
+
+/* Styles for the delete-player-container */
+.delete-player-container {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    text-align: center; /* Center the content within the container */
+}
+
+/* Style for the delete-player-title */
+.delete-player-title {
+    font-size: 24px;
+    color: #333;
+}
+
+/* Style for the delete-player-form */
+.delete-player-form {
+    margin-top: 20px;
+}
+
+/* Style for the delete-player-submit-button */
+.delete-player-submit-button {
+    background-color: #e74c3c;
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+/* Style for the delete-player-submit-button on hover */
+.delete-player-submit-button:hover {
+    background-color: #c0392b;
+}
+
+/* Style for the delete-player-back-link */
+.delete-player-back-link {
+    display: block;
+    margin-top: 10px;
+    background-color: #3498db;
+    color: #fff;
+    text-decoration: none;
+}
+
+/* Style for the delete-player-back-link on hover */
+.delete-player-back-link:hover {
+    background-color: #2980b9;
+}
+
+.sort-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.sort-button {
+    padding: 8px;
+    cursor: pointer;
+}
+
+.sort-arrow {
+    margin-left: 4px;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+    z-index: 1;
+}
+
+.dropdown-content button {
+    display: block;
+    width: 100%;
+    padding: 8px;
+    text-align: left;
+    border: none;
+    background: none;
+    cursor: pointer;
+}
+
+.dropdown-content button:hover {
+    background-color: #ddd;
+}
+
+.sort-dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.search-form {
+    display: flex;
+    margin-bottom: 20px;
+}
+
+.search-form input {
+    flex: 1;
+    padding: 8px;
+}
+
+.search-form button {
+    background-color: #4CAF50; /* Green background color */
+    color: white; /* White text color */
+    padding: 8px 15px; /* Padding inside the button */
+    border: none; /* No borders */
+    cursor: pointer; /* Change cursor on hover */
+}
+
+.search-form button:hover {
+    background-color: #45a049; /* Darker green on hover */
+}
+
+
+/* Go Back Button */
+.go-back-button {
+    position: absolute;
+    top: 80px;
+    left: 475px;
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #3498db;
+    color: #ffffff;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+/* Additional styles for better visibility */
+.go-back-button:hover {
+    background-color: #286090;
+}
+
+.required {
+    color: red; /* or any color you prefer */
+    margin-left: 5px; /* Adjust the spacing as needed */
+}
+
+.sort-filter-button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #3498db;
+    color: #ffffff;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.sort-filter-button:hover {
+    background-color: #2980b9;
+}
+
+.filter-apply-button {
+    display: inline-block;
+    background-color: #4CAF50;
+    color: #ffffff;
+    text-decoration: none;
+    border-radius: 5px;
+    padding: 5px 5px;
+}
+
+.filter-apply-button:hover {
+    background-color: #45a049;
+}
+
+.form-content {
+    display:inline-block;
+    flex-direction:row;
+    margin: 3px;  
+    box-shadow: 0 0 10px rgba(52, 14, 192, 0.2);
+    padding: 3px;
+    font-weight: bold;
+    
+}
+
+.form-sort {
+    display:inline-block;
+    flex-direction:row;
+    margin: 3px;
+    font-weight: bold;
+    box-shadow: 0 0 10px rgba(52, 14, 192, 0.2);
+}
+
+.form-back-to-player-button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #3498db;
+    color: #ffffff;
+    text-decoration: none;
+    border-radius: 5px;
+    margin-top: 20px;
+    margin-left: 20px;
+}
+
+.back-from-player-page {
+    display:inline-table;
+    padding: 10px 20px;
+    background-color: #3498db;
+    color: #ffffff;
+    text-decoration: none;
+    border-radius: 5px;
+    margin-top: 30px;
+    margin-left: 20px;
+}
+
+.player-content {
+    text-align: center;
+    box-shadow: 0 0 10px rgba(52, 14, 192, 0.2);
+    padding: 10px;
+    margin: 10px;
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    font-family: "Arial", Gadget, sans-serif;
+    
+}
+
+p {
+    font-size: 16px;
+    
+}

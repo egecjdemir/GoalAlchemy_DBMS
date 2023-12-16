@@ -1,0 +1,27 @@
+<!-- delete_player.html -->
+
+<!DOCTYPE html>
+<html lang="UTF-8">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete Player</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="delete-player-container">
+        <form method="post" action="{{ url_for('delete_player', player_id=player[0]) }}" class="delete-player-form">
+            <p>Are you sure you want to delete the player with ID {{ player[0] }}?</p>
+
+            <!-- Display more details about the player if needed -->
+            <p>Name: {{ player[1] }} {{ player[2] }}</p>
+
+            <button type="submit" class="delete-player-submit-button">Delete Player</button>
+        </form>
+
+        <br>
+        <a href="{{ url_for('view_players') }}" class="delete-player-back-link">Back to Players</a>
+    </div>
+</body>
+</html>

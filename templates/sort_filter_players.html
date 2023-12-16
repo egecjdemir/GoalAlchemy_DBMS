@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="UTF-8">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Sort and Filter Players</title>
+</head>
+<body>
+    <a href="{{ url_for('view_players') }}" class="form-back-to-player-button">Back to Players</a>
+    <h1  class="add-player-title">Sort and Filter Players</h1>
+
+    <!-- Form for sorting and filtering -->
+    <form method="GET" action="{{ url_for('sort_filter_players') }}">
+        <div class="form-content">
+            <label for="name">Player Name:</label>
+            <input type="text" id="name" name="name">
+        </div>
+        <div class="form-content">
+            <label for="country_of_birth">Country of Birth:</label>
+            <input type="text" id="country_of_birth" name="country_of_birth">
+        </div>
+        <div class="form-content">
+            <label for="country_of_citizenship">Country of Citizenship:</label>
+            <input type="text" id="country_of_citizenship" name="country_of_citizenship">
+        </div>
+        <div class="form-content">
+            <label for="current_club_name">Current Club Name:</label>
+            <input type="text" id="current_club_name" name="current_club_name">
+        </div>
+        <br>
+        <div class="form-content">
+            <label for="last_season">Last Season:</label>
+            <input type="text" id="last_season" name="last_season">
+        </div>
+        <div class="form-content">
+            <label for="sub_position">Subposition:</label>
+            <input type="text" id="sub_position" name="sub_position">
+        </div>
+        <div class="form-content">
+            <label for="position">Position:</label>
+            <input type="text" id="position" name="position">
+        </div>
+        <div class="form-content">
+            <label for="foot">Foot:</label>
+            <input type="text" id="foot" name="foot">
+        </div>
+        <div class="form-sort">
+            <label for="sort_by">Sort By:</label>
+            <select id="sort_by" name="sort_by">
+                <option value="name">Name</option>
+                <option value="last_season">Last Season</option>
+                <option value="country_of_citizenship">Country of Citizenship</option>
+                <option value="date_of_birth">Date of Birth</option>
+                <option value="height_in_cm">Height in cm</option>
+                <option value="market_value_in_eur">Market Value in EUR</option>
+                <option value="highest_market_value_in_eur">Highest Market Value in EUR</option>
+            </select>
+        </div>
+        <button class= "filter-apply-button" type="submit">Apply</button>
+    </form>
+
+    <table border="1">
+        <tr>
+            <th>Player ID</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Player Code</th>
+            <th>Country of Birth</th>
+            <th>City of Birth</th>
+            <th>Country of Citizenship</th>
+            <th>Date of Birth</th>
+            <th>Height in cm</th>
+            <th>Foot</th>
+            <th>Current Club Name</th>
+            <th>Subposition</th>
+            <th>Position</th>
+            <th>Market Value in EUR</th>
+            <th>Highest Market Value in EUR</th>
+        </tr>
+        {% for player in players %}
+        <tr>
+            <td>{{ player[0] }}</td>
+            <td>{{ player[1] }}</td>
+            <td>{{ player[2] }}</td>
+            <td>{{ player[6] }}</td>
+            <td>{{ player[7] }}</td>
+            <td>{{ player[8] }}</td>
+            <td>{{ player[9] }}</td>
+            <td>{{ player[10] }}</td>
+            <td>{{ player[14] }}</td>
+            <td>{{ player[13] }}</td>
+            <td>{{ player[22] }}</td>
+            <td>{{ player[11] }}</td>
+            <td>{{ player[12] }}</td>
+            <td>{{ player[15] }}</td>
+            <td>{{ player[16] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <!-- Pagination links with sliding window -->
+    <div class="pagination">
+        {% if page > 1 %}
+            <a href="{{ url_for('sort_filter_players', page=page-1, name=name, country_of_birth=country_of_birth, country_of_citizenship=country_of_citizenship, current_club_name=current_club_name, last_season=last_season, sub_position=sub_position, position=position, foot=foot, sort_by=sort_by) }}">Previous</a>
+        {% endif %}
+
+        {% for num in range(start_page, end_page+1) %}
+            {% if num == page %}
+                <strong>{{ num }}</strong>
+            {% else %}
+                <a href="{{ url_for('sort_filter_players', page=num, name=name, country_of_birth=country_of_birth, country_of_citizenship=country_of_citizenship, current_club_name=current_club_name, last_season=last_season, sub_position=sub_position, position=position, foot=foot, sort_by=sort_by) }}">{{ num }}</a>
+            {% endif %}
+        {% endfor %}
+
+        {% if page < total_pages %}
+            <a href="{{ url_for('sort_filter_players', page=page+1, name=name, country_of_birth=country_of_birth, country_of_citizenship=country_of_citizenship, current_club_name=current_club_name, last_season=last_season, sub_position=sub_position, position=position, foot=foot, sort_by=sort_by) }}">Next</a>
+        {% endif %}
+    </div>
+    <a href="{{ url_for('index') }}" class="back-button">Back to Main Page</a>
+</body>
+</html>

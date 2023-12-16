@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Player Details</title>
+</head>
+<body>
+    <h1>Player Details</h1>
+    <div class="player-content">
+        <img src="{{ player_details[19] }}" alt="Player Image">
+        <p>Player ID: {{ player_details[0] }}</p>
+        <p>First Name: {{ player_details[1] }}</p>
+        <p>Last Name: {{ player_details[2] }}</p>
+        <p>Last Season: {{ player_details[4] }}</p>
+        <p>Current Club Name: {{ player_details[22] }}</p>
+        <p>Player Code: {{ player_details[6] }}</p>
+        <p>Country of Birth: {{ player_details[7] }}</p>
+    </div>
+
+    <a href="{{ url_for('view_players') }}" class="back-from-player-page">Go Back to Players</a>
+</body>
+</html>

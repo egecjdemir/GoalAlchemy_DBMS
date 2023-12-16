@@ -1,7 +1,8 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, redirect, url_for
 import mysql.connector
 import config
 from flask_mysqldb import MySQL
+from datetime import datetime
 
 app = Flask(__name__, template_folder='templates')
 
@@ -229,17 +230,41 @@ def view_appearances():
     return render_template('view_appearances.html', appearances=appearances, page=page, total_pages=total_pages,
                            start_page=start_page, end_page=end_page)
 
-@app.route('/view_players', methods=['GET','POST'])
+@app.route('/view_players', methods=['GET', 'POST'])
 def view_players():
+    if request.method == 'POST':
+        # If the form is submitted, retrieve the search query from the form data
+        search_query = request.form.get('search_query', '')
+    else:
+        # If it's a GET request, retrieve the search query from the URL parameters
+        search_query = request.args.get('search_query', '')
+        
     page = request.args.get('page', 1, type=int)
     offset = (page - 1) * PER_PAGE
+    
+    column = request.args.get('column', 'player_id')
+    order = request.args.get('order', 'asc')
+    
+    allowed_columns = ['player_id', 'first_name', 'last_name', 'name', 'last_season', 'current_club_id', 'country_of_birth', 'city_of_birth', 'country_of_citizenship', 'date_of_birth', 'foot', 'height_in_cm', 'market_value_in_eur', 'highest_market_value_in_eur']
+    allowed_orders = ['asc', 'desc']
+
+    if column not in allowed_columns:
+        column = 'player_id'  # Set a default value or handle the error as needed
+
+    if order not in allowed_orders:
+        order = 'asc'  # Set a default value or handle the error as needed
+
+    # Define the secondary sort column to resolve ties
+    secondary_sort = 'player_id' if column != 'player_id' else 'first_name'
+
     # Fetch players for the current page
-    query = "SELECT * FROM players LIMIT %s OFFSET %s"
-    cursor.execute(query, (PER_PAGE, offset))
+    query = f"SELECT * FROM players WHERE player_id = %s OR name = %s OR first_name LIKE %s OR last_name LIKE %s ORDER BY {column} {order}, {secondary_sort} {order} LIMIT %s OFFSET %s"
+    cursor.execute(query, (search_query, search_query, f'%{search_query}%', f'%{search_query}%', PER_PAGE, offset))
     players = cursor.fetchall()
 
-    # Fetch total number of players for pagination
-    cursor.execute("SELECT COUNT(*) FROM players")
+    # Fetch total number of players for pagination with search filtering
+    total_query = "SELECT COUNT(*) FROM players WHERE first_name LIKE %s OR last_name LIKE %s"
+    cursor.execute(total_query, (f'%{search_query}%', f'%{search_query}%'))
     total_players = cursor.fetchone()[0]
 
     # Calculate total pages based on the number of players and per-page limit
@@ -250,17 +275,148 @@ def view_players():
     half_window = visible_pages // 2
     start_page = max(1, page - half_window)
     end_page = min(total_pages, start_page + visible_pages - 1)
-    
-    (playerId, firstName, lastName, playerHeight, playerWeight) = (request.form['playerId'], request.form['firstName'], request.form['lastName'], request.form['playerHeight'], request.form['playerWeight'])
-    cursor.execute('INSERT INTO Master (playerId, firstName, lastName, height, weight) VALUES (?, ?, ?, ?, ?)', (playerId, firstName, lastName, playerHeight, playerWeight))
-    print(cursor.rowcount)
 
-    myRow = cursor.execute('SELECT * FROM Master WHERE playerId = ?', (playerId,)).fetchone()
-
-    print(myRow)
-    
     return render_template('view_players.html', players=players, page=page, total_pages=total_pages,
-                           start_page=start_page, end_page=end_page)
+                           start_page=start_page, end_page=end_page, column=column, order=order, search_query=search_query)
+    
+    
+@app.route('/view_players/add_player', methods=['GET', 'POST'])
+def add_player():
+    if request.method == 'POST':
+        # Assuming you have a form with appropriate input fields
+        player_id = int(request.form.get('player_id'))
+        first_name = request.form.get('first_name')
+        last_name = request.form.get('last_name')
+        
+        last_season_input = request.form.get('last_season')
+        last_season = int(last_season_input) if last_season_input else None
+        
+        current_club_id_input = request.form.get('current_club_id')
+        current_club_id = int(current_club_id_input) if current_club_id_input else None
+        
+        player_code = request.form.get('player_code')
+        country_of_birth = request.form.get('country_of_birth')
+        city_of_birth = request.form.get('city_of_birth')
+        country_of_citizenship = request.form.get('country_of_citizenship')
+        date_of_birth_input = request.form.get('date_of_birth')
+        date_of_birth = None
+        if date_of_birth_input:
+            try:
+                # Assuming the date format is '%Y-%m-%d', adjust it based on your actual format
+                date_of_birth = datetime.strptime(date_of_birth_input, '%Y-%m-%d').date()
+            except ValueError:
+                # Handle invalid date format as needed
+                pass
+
+        # Perform input validation here if needed
+
+        # Insert the new player into the 'players' table
+        query = """
+            INSERT INTO players 
+            (player_id, first_name, last_name, last_season, current_club_id,
+            player_code, country_of_birth, city_of_birth, country_of_citizenship, date_of_birth)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        """
+        cursor.execute(query, (player_id, first_name, last_name, last_season, current_club_id,
+                               player_code, country_of_birth, city_of_birth, country_of_citizenship, date_of_birth))
+        db.commit()
+
+        # Redirect to the view_players page after adding the player
+        return redirect(url_for('view_players'))
+    # If it's a GET request, simply render the form to add a player
+    return render_template('add_player.html')
+
+@app.route('/sort_filter_players')
+def sort_filter_players():
+    # Pagination parameters
+    page = request.args.get('page', 1, type=int)
+    offset = (page - 1) * PER_PAGE
+
+    # Get sorting and filtering parameters from the query string
+    filters = {
+        'name': request.args.get('name'),
+        'country_of_birth': request.args.get('country_of_birth'),
+        'country_of_citizenship': request.args.get('country_of_citizenship'),
+        'current_club_name': request.args.get('current_club_name'),
+        'last_season': request.args.get('last_season'),
+        'sub_position': request.args.get('sub_position'),
+        'position': request.args.get('position'),
+        'foot': request.args.get('foot'),
+        'sort_by': request.args.get('sort_by'),
+    }
+
+    # Construct the base query
+    base_query = "FROM players"
+    where_clauses = []
+    query_params = []
+
+    # Add filtering conditions
+    for key, value in filters.items():
+        if key != 'sort_by' and value:
+            where_clauses.append(f"{key} LIKE %s")
+            query_params.append(f"%{value}%")
+
+    # Complete SQL query for fetching data
+    data_query = f"SELECT * {base_query}"
+    if where_clauses:
+        data_query += " WHERE " + " AND ".join(where_clauses)
+
+    # Add sorting condition
+    if filters['sort_by'] in ['name', 'last_season', 'country_of_citizenship', 'date_of_birth', 'height_in_cm', 'market_value_in_eur', 'highest_market_value_in_eur']:
+        data_query += f" ORDER BY {filters['sort_by']} ASC"
+    data_query += " LIMIT %s OFFSET %s"
+
+    # Execute the query for fetching data
+    cursor.execute(data_query, tuple(query_params + [PER_PAGE, offset]))
+    players = cursor.fetchall()
+
+    # Complete SQL query for counting total games
+    count_query = f"SELECT COUNT(*) {base_query}"
+    if where_clauses:
+        count_query += " WHERE " + " AND ".join(where_clauses)
+
+    # Execute the query for counting total games
+    cursor.execute(count_query, tuple(query_params))
+    total_players = cursor.fetchone()[0]
+
+    # Calculate total pages and pagination window
+    total_pages = (total_players + PER_PAGE - 1) // PER_PAGE
+    visible_pages = 5
+    half_window = visible_pages // 2
+    start_page = max(1, page - half_window)
+    end_page = min(total_pages, start_page + visible_pages - 1)
+
+    return render_template('sort_filter_players.html', players=players, page=page, total_pages=total_pages,
+                           start_page=start_page, end_page=end_page, **filters)
+
+@app.route('/delete_player/<int:player_id>', methods=['GET', 'POST'])
+def delete_player(player_id):
+    if request.method == 'POST':
+        # Delete the player from the 'players' table
+        query = "DELETE FROM players WHERE player_id = %s"
+        cursor.execute(query, (player_id,))
+        db.commit()
+
+        # Redirect to the view_players page after deleting the player
+        return redirect(url_for('view_players'))
+
+    # If it's a GET request, fetch player details and render the delete_player.html template
+    query = "SELECT * FROM players WHERE player_id = %s"
+    cursor.execute(query, (player_id,))
+    player = cursor.fetchone()
+
+    if not player:
+        # Handle the case where the player with the given ID is not found
+        return render_template('player_not_found.html')
+
+    return render_template('delete_player.html', player=player)
+
+@app.route('/player/<int:player_id>')
+def player_page(player_id):
+    query = "SELECT * FROM players WHERE player_id = %s"
+    cursor.execute(query, (player_id,))
+    player_details = cursor.fetchone()
+    return render_template('player_page.html', player_id=player_id, player_details=player_details)
 
 @app.route('/view_club_games', methods=['GET'])
 def view_club_games():
