@@ -16,7 +16,7 @@ try:
     )
 
     cursor = connection.cursor()
-    cursor.execute('use itudb2320;')
+    cursor.execute('use football;')
 
     create_table_queries = '''        
         
@@ -50,7 +50,7 @@ try:
             coach_name VARCHAR(50), 
             last_season INT,
             url VARCHAR(255),
-            FOREIGN KEY (domestic_competition_id) REFERENCES competitions(competition_id)
+            FOREIGN KEY (domestic_competition_id) REFERENCES competitions(competition_id) ON DELETE CASCADE ON UPDATE CASCADE
         );
         
         CREATE TABLE games (
@@ -75,9 +75,9 @@ try:
             away_club_name VARCHAR(50), 
             aggregate VARCHAR(50), 
             competition_type VARCHAR(50),
-            FOREIGN KEY (competition_id) REFERENCES competitions(competition_id),
-            FOREIGN KEY (home_club_id) REFERENCES clubs(club_id),
-            FOREIGN KEY (away_club_id) REFERENCES clubs(club_id)
+            FOREIGN KEY (competition_id) REFERENCES competitions(competition_id) ON DELETE CASCADE ON UPDATE CASCADE,
+            FOREIGN KEY (home_club_id) REFERENCES clubs(club_id) ON DELETE CASCADE ON UPDATE CASCADE,
+            FOREIGN KEY (away_club_id) REFERENCES clubs(club_id) ON DELETE CASCADE ON UPDATE CASCADE
         );
         
         CREATE TABLE players (
@@ -104,7 +104,7 @@ try:
             url VARCHAR(255),
             current_club_domestic_competition_id  VARCHAR(50),
             current_club_name VARCHAR(50),
-            FOREIGN KEY (current_club_id) REFERENCES clubs(club_id)
+            FOREIGN KEY (current_club_id) REFERENCES clubs(club_id) ON DELETE CASCADE ON UPDATE CASCADE
         );
         
         
@@ -122,9 +122,10 @@ try:
             goals INT,
             assists INT,
             minutes_played INT,  
-            FOREIGN KEY (player_id) REFERENCES players(player_id),
-            FOREIGN KEY (game_id) REFERENCES games(game_id)
+            FOREIGN KEY (player_id) REFERENCES players(player_id) ON DELETE CASCADE ON UPDATE CASCADE,
+            FOREIGN KEY (game_id) REFERENCES games(game_id) ON DELETE CASCADE ON UPDATE CASCADE
         );
+        
         
         
         CREATE TABLE club_games (
@@ -140,9 +141,9 @@ try:
             hosting VARCHAR(50),
             is_win BOOLEAN,
             PRIMARY KEY (club_id, game_id),
-            FOREIGN KEY (game_id) REFERENCES games(game_id),
-            FOREIGN KEY (club_id) REFERENCES clubs(club_id),
-            FOREIGN KEY (opponent_id) REFERENCES clubs(club_id)
+            FOREIGN KEY (game_id) REFERENCES games(game_id) ON DELETE CASCADE ON UPDATE CASCADE,
+            FOREIGN KEY (club_id) REFERENCES clubs(club_id) ON DELETE CASCADE ON UPDATE CASCADE,
+            FOREIGN KEY (opponent_id) REFERENCES clubs(club_id) ON DELETE CASCADE ON UPDATE CASCADE
         );
 
 
