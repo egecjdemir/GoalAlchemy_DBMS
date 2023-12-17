@@ -542,17 +542,39 @@ def view_club_games():
     return render_template('view_club_games.html', club_games=club_games, page=page, total_pages=total_pages,
                            start_page=start_page, end_page=end_page)
 
-@app.route('/view_competitions')
+@app.route('/view_competitions', methods=['GET', 'POST'])
 def view_competitions():
+    
+    if request.method == 'POST':
+        search_query = request.form.get('search_query', '')
+    else:
+        search_query = request.args.get(('search_query', ''))
+        
     page = request.args.get('page', 1, type=int)
     offset = (page - 1) * PER_PAGE
+    
+    column = request.args.get('column', 'competition_id')
+    order = request.args.get('order', 'asc')
+    
+    allowed_columns = ['competition_id', 'competition_code', 'name', 'sub_type', 'type', 'country_id', 'country_name', 'domestic_league_code', 'confederation']
+    allowed_orders = ['asc', 'desc']
+    
+    if column not in allowed_columns: 
+        column = 'player_id'
+    
+    if order not in allowed_orders:
+        order = 'asc'
+        
+    secondary_sort = 'player_id' if column != 'player_id' else 'first_name'
+    
     # Fetch competitions for the current page
-    query = "SELECT * FROM competitions LIMIT %s OFFSET %s"
-    cursor.execute(query, (PER_PAGE, offset))
+    query = f"SELECT * FROM competitions WHERE competition_id = %s OR competition_code LIKE %s OR name LIKE %s ORDER BY {column} {order}, {secondary_sort} {order} LIMIT %s OFFSET %s"
+    cursor.execute(query, (search_query, f'%{search_query}%', f'%{search_query}%', PER_PAGE, offset))
     competitions = cursor.fetchall()
 
     # Fetch total number of competitions for pagination
-    cursor.execute("SELECT COUNT(*) FROM competitions")
+    total_query = "SELECT COUNT(*) FROM competitions WHERE competition_code LIKE %s OR name LIKE %s" 
+    cursor.execute(total_query, (f'%{search_query}%', f'%{search_query}%'))
     total_competitions = cursor.fetchone()[0]
 
     # Calculate total pages based on the number of competitions and per-page limit
@@ -565,20 +587,105 @@ def view_competitions():
     end_page = min(total_pages, start_page + visible_pages - 1)
 
     return render_template('view_competitions.html', competitions=competitions, page=page, total_pages=total_pages,
-                           start_page=start_page, end_page=end_page)
-@app.route('/add_competition')
-def add_competition():
-    return render_template('add_competition.html')
+                           start_page=start_page, end_page=end_page, column=column, order=order, search_query=search_query)
 
-@app.route('/add_competition', methods=['POST'])
-def insert_competition():
-    (competition_id, competition_code, name, sub_type, type, country_id, country_name, domestic_league_code, confederation, url) = (request.form['competition_id'], request.form['competition_code'], request.form['name'], request.form['sub_type'], request.form['type'], request.form['country_id'], request.form['country_name'], request.form['domestic_league_code'], request.form['confederation'], request.form['url'])
-    cursor.execute('INSERT INTO Competitions (competition_id, competition_code, name, sub_type, type, country_id, country_name, domestic_league_code, confederation, url) VALUES (?,?,?,?,?,?,?,?,?,?)', (competition_id, competition_code, name, sub_type, type, country_id, country_name, domestic_league_code, confederation, url))
-    print(cursor.rowcount)
-  
-    new_row = cursor.execute('SELECT * FROM Competitions WHERE competition_id = ?', (competition_id)).fetchone()
-    print(new_row)
-    return render_template('add_competition.html')
+@app.route('/view_competitions/add_competition', methods=['GET', 'POST'])
+def add_competition():
+    if request.method == 'POST':
+        competition_id = request.form.get('competition_id')
+        competition_code = request.form.get('competition_code')
+        name = request.form.get('name')
+        sub_type = request.form.get('sub_type')
+        type = request.form.get('type')
+        country_id = int(request.form.get('country_id'))
+        country_name = request.form.get('country_name')
+        domestic_league_code = request.form.get('domestic_league_code')
+        confederation = request.form.get('confederation')
+        
+        query = """
+            INSERT INTO competitions 
+            (competition_id, competition_code, name, sub_type, type,
+            country_id, country_name, domestic_league_code, confederation)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        """
+        cursor.execute(query, (competition_id, competition_code, name, sub_type, type, country_id, country_name, domestic_league_code, confederation))
+        db.commit()
+        return redirect(url_for('view_competitions'))
+    return render_template('add_player.html')
+
+@app.route('/sort_filter_competitions')
+def sort_filter_competitions():
+    page = request.args.get('page', 1, type=int)
+    offset = (page - 1) * PER_PAGE
+    filters = {
+        'competition_code': request.args.get('competition_code'),
+        'name': request.args.get('name'),
+        'sub_type': request.args.get('sub_type'),
+        'type': request.args.get('type'),
+        'country_name': request.args.get('country_name'),
+        'confederation': request.args.get('confederation'),
+        'sort_by': request.args.get('sort_by'),
+    }
+    
+    base_query = "FROM competitions"
+    where_clauses = []
+    query_params = []
+
+    for key, value in filters.items():
+        if key != 'sort_by' and value:
+            where_clauses.append(f"{key} LIKE %s")
+            query_params.append(f"%{value}%")
+
+    data_query = f"SELECT * {base_query}"
+    if where_clauses:
+        data_query += " WHERE " + " AND ".join(where_clauses)
+
+    if filters['sort_by'] in ['competition_code', 'name', 'sub_type', 'type', 'country_name', 'confederation']:
+        data_query += f" ORDER BY {filters['sort_by']} ASC"
+    data_query += " LIMIT %s OFFSET %s"
+
+    cursor.execute(data_query, tuple(query_params + [PER_PAGE, offset]))
+    competitions = cursor.fetchall()
+
+    count_query = f"SELECT COUNT(*) {base_query}"
+    if where_clauses:
+        count_query += " WHERE " + " AND ".join(where_clauses)
+
+    cursor.execute(count_query, tuple(query_params))
+    total_players = cursor.fetchone()[0]
+
+    total_pages = (total_players + PER_PAGE - 1) // PER_PAGE
+    visible_pages = 5
+    half_window = visible_pages // 2
+    start_page = max(1, page - half_window)
+    end_page = min(total_pages, start_page + visible_pages - 1)
+
+    return render_template('sort_filter_competitions.html', competitions=competitions, page=page, total_pages=total_pages,
+                           start_page=start_page, end_page=end_page, **filters)
+    
+@app.route('/delete_competition/<int:competition_id>', methods=['GET', 'POST'])
+def delete_competition(competition_id):
+    if request.method == 'POST':
+        query = "DELETE FROM competitions WHERE competition_id = %s"
+        cursor.execute(query, (competition_id,))
+        db.commit()
+
+        return redirect(url_for('view_competitions'))
+
+    query = "SELECT * FROM competitions WHERE competition_id = %s"
+    cursor.execute(query, (competition_id,))
+    competition = cursor.fetchone()
+
+    if not competition:
+        return render_template('competition_not_found.html')
+    return render_template('delete_competition.html', competition=competition)
+
+@app.route('/competition/<int:competition_id>')
+def competition_page(competition_id):
+    query = "SELECT * FROM competitions WHERE competition_id = %s"
+    cursor.execute(query, (competition_id,))
+    competition_details = cursor.fetchone()
+    return render_template('competition_page.html', competition_id=competition_id, competition_details=competition_details)
 
 @app.route('/add_club_game')
 def add_club_game():
