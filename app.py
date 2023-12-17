@@ -283,46 +283,73 @@ def view_players():
 @app.route('/view_players/add_player', methods=['GET', 'POST'])
 def add_player():
     if request.method == 'POST':
-        # Assuming you have a form with appropriate input fields
-        player_id = int(request.form.get('player_id'))
-        first_name = request.form.get('first_name')
-        last_name = request.form.get('last_name')
-        
-        last_season_input = request.form.get('last_season')
-        last_season = int(last_season_input) if last_season_input else None
-        
-        current_club_id_input = request.form.get('current_club_id')
-        current_club_id = int(current_club_id_input) if current_club_id_input else None
-        
-        player_code = request.form.get('player_code')
-        country_of_birth = request.form.get('country_of_birth')
-        city_of_birth = request.form.get('city_of_birth')
-        country_of_citizenship = request.form.get('country_of_citizenship')
-        date_of_birth_input = request.form.get('date_of_birth')
-        date_of_birth = None
-        if date_of_birth_input:
-            try:
-                # Assuming the date format is '%Y-%m-%d', adjust it based on your actual format
-                date_of_birth = datetime.strptime(date_of_birth_input, '%Y-%m-%d').date()
-            except ValueError:
-                # Handle invalid date format as needed
-                pass
+        try:
+            player_id = int(request.form.get('player_id'))
 
-        # Perform input validation here if needed
+            # Check if the player ID already exists
+            check_player_query = "SELECT player_id FROM players WHERE player_id = %s"
+            cursor.execute(check_player_query, (player_id,))
+            existing_player = cursor.fetchone()
 
-        # Insert the new player into the 'players' table
-        query = """
-            INSERT INTO players 
-            (player_id, first_name, last_name, last_season, current_club_id,
-            player_code, country_of_birth, city_of_birth, country_of_citizenship, date_of_birth)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-        """
-        cursor.execute(query, (player_id, first_name, last_name, last_season, current_club_id,
-                               player_code, country_of_birth, city_of_birth, country_of_citizenship, date_of_birth))
-        db.commit()
+            if existing_player:
+                # Player ID already exists, show an error message
+                error_message = "Player ID already taken. Please choose a different ID."
+                return render_template('add_player.html', error_message=error_message)
 
-        # Redirect to the view_players page after adding the player
-        return redirect(url_for('view_players'))
+            first_name = request.form.get('first_name')
+            last_name = request.form.get('last_name')
+            
+            last_season_input = request.form.get('last_season')
+            last_season = int(last_season_input) if last_season_input else None
+            
+            current_club_id_input = request.form.get('current_club_id')
+            current_club_id = int(current_club_id_input) if current_club_id_input else None
+            
+            existing_club = None
+            if current_club_id is not None:
+                # Check if the club with the given current_club_id exists
+                check_club_query = "SELECT club_id FROM clubs WHERE club_id = %s"
+                cursor.execute(check_club_query, (current_club_id,))
+                existing_club = cursor.fetchone()
+            
+            player_code = request.form.get('player_code')
+            country_of_birth = request.form.get('country_of_birth')
+            city_of_birth = request.form.get('city_of_birth')
+            country_of_citizenship = request.form.get('country_of_citizenship')
+            date_of_birth_input = request.form.get('date_of_birth')
+            date_of_birth = None
+            if date_of_birth_input:
+                try:
+                    # Assuming the date format is '%Y-%m-%d', adjust it based on your actual format
+                    date_of_birth = datetime.strptime(date_of_birth_input, '%Y-%m-%d').date()
+                except ValueError:
+                    # Handle invalid date format as needed
+                    pass
+
+            # Insert the new player into the 'players' table
+            if existing_club or current_club_id is None:
+                query = """
+                    INSERT INTO players 
+                    (player_id, first_name, last_name, last_season, current_club_id,
+                    player_code, country_of_birth, city_of_birth, country_of_citizenship, date_of_birth)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                """
+                cursor.execute(query, (player_id, first_name, last_name, last_season, current_club_id,
+                                    player_code, country_of_birth, city_of_birth, country_of_citizenship, date_of_birth))
+                db.commit()
+
+                # Redirect to the view_players page after adding the player
+                return redirect(url_for('view_players'))
+
+            else:
+                # Club does not exist, so we cannot add the player
+                error_message = "Selected club does not exist. Please choose an existing club or add a new club."
+                return render_template('add_player.html', error_message=error_message)
+        except ValueError as e:
+            # Handle invalid input values as needed
+            error_message = "Invalid input values. Please try again."
+            return render_template('add_player.html', error_message=error_message)
+
     # If it's a GET request, simply render the form to add a player
     return render_template('add_player.html')
 
@@ -405,10 +432,6 @@ def delete_player(player_id):
     cursor.execute(query, (player_id,))
     player = cursor.fetchone()
 
-    if not player:
-        # Handle the case where the player with the given ID is not found
-        return render_template('player_not_found.html')
-
     return render_template('delete_player.html', player=player)
 
 @app.route('/player/<int:player_id>')
@@ -417,6 +440,82 @@ def player_page(player_id):
     cursor.execute(query, (player_id,))
     player_details = cursor.fetchone()
     return render_template('player_page.html', player_id=player_id, player_details=player_details)
+
+@app.route('/update_player/<int:player_id>', methods=['GET', 'POST'])
+def update_player(player_id):
+    get_player_query = "SELECT * FROM players WHERE player_id = %s"
+    cursor.execute(get_player_query, (player_id,))
+    player_details = cursor.fetchone()
+    
+    if request.method == 'POST':
+        try:
+            # Get updated player details from the form
+            updated_first_name = request.form.get('first_name')
+            updated_last_name = request.form.get('last_name')
+            
+            last_season_input = request.form.get('last_season')
+            updated_last_season = int(last_season_input) if last_season_input else None
+
+            current_club_id_input = request.form.get('current_club_id')
+            updated_current_club_id = int(current_club_id_input) if current_club_id_input else None
+            
+            existing_club = None
+            if updated_current_club_id is not None:
+                # Check if the club with the given current_club_id exists
+                check_club_query = "SELECT club_id FROM clubs WHERE club_id = %s"
+                cursor.execute(check_club_query, (updated_current_club_id,))
+                existing_club = cursor.fetchone()
+                
+            updated_player_code = request.form.get('player_code')
+            updated_country_of_birth = request.form.get('country_of_birth')
+            updated_city_of_birth = request.form.get('city_of_birth')
+            updated_country_of_citizenship = request.form.get('country_of_citizenship')
+            
+            date_of_birth_input = request.form.get('date_of_birth')
+            updated_date_of_birth = None
+            if date_of_birth_input:
+                try:
+                    # Assuming the date format is '%Y-%m-%d', adjust it based on your actual format
+                    updated_date_of_birth = datetime.strptime(date_of_birth_input, '%Y-%m-%d').date()
+                except ValueError:
+                    # Handle invalid date format as needed
+                    pass
+                
+            if existing_club or updated_current_club_id is None:
+                update_query = """
+                    UPDATE players 
+                    SET first_name = %s, last_name = %s, last_season = %s, 
+                        current_club_id = %s, player_code = %s, 
+                        country_of_birth = %s, city_of_birth = %s, 
+                        country_of_citizenship = %s, date_of_birth = %s
+                    WHERE player_id = %s
+                """
+                cursor.execute(update_query, (updated_first_name, updated_last_name,
+                                                updated_last_season, updated_current_club_id,
+                                                updated_player_code, updated_country_of_birth,
+                                                updated_city_of_birth, updated_country_of_citizenship,
+                                                updated_date_of_birth, player_id))
+                db.commit()
+
+            # Redirect to the view_players page after updating the player
+                return redirect(url_for('view_players'))
+
+            else:
+                error_message = "Selected club does not exist. Please choose an existing club or add a new club."
+                return render_template('update_player.html', error_message=error_message, player_details=player_details)
+            
+        except ValueError as e:
+            # Handle invalid input values as needed
+            error_message = "Invalid input values. Please try again."
+            return render_template('update_player.html', error_message=error_message, player_details=player_details)
+
+    # If it's a GET request or there's an error, retrieve the player details and render the update form
+    if player_details:
+        # Player found, render the update form
+        return render_template('update_player.html', player_details=player_details)
+
+    # Player not found, redirect to the view_players page
+    return redirect(url_for('view_players'))
 
 @app.route('/view_club_games', methods=['GET'])
 def view_club_games():

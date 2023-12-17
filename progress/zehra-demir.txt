@@ -9,5 +9,6 @@ Week 10
 I added the necessary html files for routes and added two css files. I also updated the flask_app.py with different routes. I changed the database name in config.py.
 Week 11
 I updated my player table functionality with add, delete, sort_filter and player page htmls. I added some style to css file.
+I added update player page with some css. I fixed some bugs. I did error handling for both add player and update player input types, same club id or player ids etc. I also changed the table queries because they did not have any foreign key contraints, so I added on update cascade and on delete cascade for every foreign key.
 
 

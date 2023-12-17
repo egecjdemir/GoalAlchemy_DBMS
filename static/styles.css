@@ -288,7 +288,7 @@ tr:hover {
 
 /* Go Back Button */
 .go-back-button {
-    position: absolute;
+    position: relative;
     top: 80px;
     left: 475px;
     display: inline-block;
@@ -391,4 +391,88 @@ tr:hover {
 p {
     font-size: 16px;
     
+}
+
+.alert-error {
+    background-color: #f44336;
+    color: white;
+    padding: 10px;
+    margin-bottom: 15px;
+}
+
+.update-box {
+    width: 20px;
+    height: 20px;
+    background-color: blueviolet;
+    color: white;
+    text-align: center;
+    line-height: 20px;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.update-player-submit-button {
+    padding: 12px;
+    background-color: #3498db;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 20px;
+}
+
+.update-player-submit-button:hover {
+    background-color: #2980b9;
+}
+
+.update-player-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.update-player-container {
+    max-width: 400px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(52, 14, 192, 0.2);
+}
+
+
+/* Style for form labels */
+.update-player-form label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #000276;
+}
+
+/* Style for form input fields */
+.update-player-form input {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.update-go-back {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #3498db;
+    color: #ffffff;
+    text-decoration: none;
+    border-radius: 5px;
+    margin-top: 20px;
+    margin-left: 90px;
+}
+
+.update-go-back:hover {
+    background-color: #2980b9;
+}
+
+.update-title {
+    text-align: center;
+    color: #000276;
+    margin-top: 50px;
 }
