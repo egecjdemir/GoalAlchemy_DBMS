@@ -2,53 +2,74 @@
 <html lang="UTF-8">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-</head>
     <title>Add New Club Game</title>
 </head>
 <body>
-    <div class="container">
-        <form action="/add_club_game" method="POST" class="mx-1 mx-md-4">
-            <h1>Add Club Game: </h1>
-            <label for="game_id">Game ID:</label>
-            <input type="number" name="game_id" placeholder="Ex: " />
-    
-            <label for="club_id">Club ID:</label>
-            <input type="number" name="club_id" placeholder="Ex: " />
-    
-            <label for="own_goals">Own Goals:</label>
-            <input type="number" name="own_goals" placeholder="Ex: " />
-    
-            <label for="own_position">Own Position:</label>
-            <input type="number" name="own_position" placeholder="Ex: " />
-
-            <label for="own_manager_name">Own Manager Name:</label>
-            <input type="text" name="own_manager_name" placeholder="Ex: " />
-
-            <label for="opponent_id">Opponent ID:</label>
-            <input type="number" name="opponent_id" placeholder="Ex: " />
-    
-            <label for="opponent_goals">Opponent Goals:</label>
-            <input type="number" name="opponent_goals" placeholder="Ex: " />
-
-            <label for="opponent_position">Opponent Position:</label>
-            <input type="number" name="opponent_position" placeholder="Ex: " />
-    
-            <label for="opponent_manager_name">Opponent Manager Name:</label>
-            <input type="text" name="opponent_manager_name" placeholder="Ex: "/>
-            
-            <label for="hosting">Hosting:</label>
-            <input type="text" name="hosting" placeholder="Ex: " />
-
-            <label for="is_win">Is Win:</label>
-            <input type="number" name="is_win" placeholder="Ex: " />
-    
-            <input type="submit" value="Add">
-    
+    <div class="add-club_game-container">
+    <h2 class="add-club_game-title">Add Club Game</h2>
+        <form method="post" action="{{ url_for('add_club_game') }}",  class="add-club_game-form">
+            <div class="form-group">
+                <label for="game_id">Game ID:<span class="required">*</span></label>
+                <input type="number" name="game_id" placeholder="e.g. 3058532" required>
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="club_id">Club ID:<span class="required">*</span></label>
+                <input type="number" name="club_id" placeholder="e.g. 4" required>
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="own_goals">Own Goals:</label>
+                <input type="number" name="own_goals" placeholder="e.g. 2" >
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="own_position">Own Position:</label>
+                <input type="number" name="own_position" placeholder="e.g. 10" >
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="own_manager_name">Own Manager Name:</label>
+                <input type="text" name="own_manager_name" placeholder="e.g. Michael Köllner" >
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="opponent_id">Opponent ID:<span class="required">*</span></label>
+                <input type="number" name="opponent_id" placeholder="e.g. 533" required>
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="opponent_goals">Opponent Goals:</label>
+                <input type="number" name="opponent_goals" placeholder="e.g. 1" >
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="opponent_position">Opponent Position:</label>
+                <input type="number" name="opponent_position" placeholder="e.g. 9" >
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="opponent_manager_name">Opponent Manager Name:</label>
+                <input type="text" name="opponent_manager_name" placeholder="e.g. Ralf Rangnick">
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="hosting">Hosting:</label>
+                <input type="text" name="hosting" placeholder="e.g. Home" >
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="is_win">Is Win:<span class="required">*</span></label>
+                <input type="number" name="is_win" placeholder="e.g. 1" required>
+            </div>
+            <br> 
+            <button type="submit" class="add-club_game-submit-button">Add Club Game</button>
           </form>
-    
-        </div>
-    <a href="{{ url_for('index') }}" class="back-button">Back to Main Page</a>
+    <br>
+    <a href="{{ url_for('view_club_games') }}" class="add-club_game-back-link">Back to Club Games</a>
+</div>
 </body>
 </html>

@@ -2,50 +2,66 @@
 <html lang="UTF-8">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-</head>
     <title>Add New Competitions</title>
 </head>
 <body>
-    <div class="container">
-        <form action="/add_competition" method="POST" class="mx-1 mx-md-4">
-            <h1>Add Competition: </h1>
-            <label for="competition_id">Competition ID:</label>
-            <input type="text" name="competition_id" placeholder="Player ID" />
+    <div class="add-competition-container">
+    <h2 class="add-competition-title">Add Competition</h2>
     
-            <label for="competition_code">Competition Code:</label>
-            <input type="text" name="competition_code" placeholder="Competition Code" />
-    
-            <label for="name">Name:</label>
-            <input type="text" name="name" placeholder="Name" />
-    
-            <label for="sub_type">Subtype:</label>
-            <input type="text" name="sub_type" placeholder="Ex: uefa_champions_league" />
-
-            <label for="type">Type:</label>
-            <input type="text" name="type" placeholder="Ex: international_cup" />
-
-            <label for="country_id">Country ID:</label>
-            <input type="number" name="country_id" placeholder="Player ID" />
-    
-            <label for="country_name">Country Name:</label>
-            <input type="text" name="country_name" placeholder="Country Name" />
-
-            <label for="domestic_league_code">Domestic League Code:</label>
-            <input type="text" name="domestic_league_code" placeholder="Domestic League Code" />
-    
-            <label for="confederation">Confederation:</label>
-            <input type="text" name="confederation" placeholder="Confederation" />
-            
-            <label for="url">url:</label>
-            <input type="text" name="url" placeholder="url" />
-    
-            <input type="submit" value="Add">
-    
-          </form>
-    
+    <form method="post" action="{{ url_for('add_competition') }}",  class="add-competition-form"> 
+        <div class="form-group">
+            <label for="competition_id">Competition ID:<span class="required">*</span></label>
+            <input type="text" name="competition_id" placeholder="e.g. DFB" required>
         </div>
-    <a href="{{ url_for('index') }}" class="back-button">Back to Main Page</a>
+        <br>
+        <div class="form-group">
+            <label for="competition_code">Competition Code:<span class="required">*</span></label>
+            <input type="text" name="competition_code" placeholder="e.g. sydbank-pokalen" required>
+        </div>
+        <br>
+        <div class="form-group">
+            <label for="name">Name:<span class="required">*</span></label>
+            <input type="text" name="name" placeholder="e.g. laliga" required>
+        </div>
+        <br>
+        <div class="form-group">
+            <label for="sub_type">Subtype:</label>
+            <input type="text" name="sub_type" placeholder="e.g. uefa_champions_league" >
+        </div>
+        <br>
+        <div class="form-group">
+            <label for="type">Type:</label>
+            <input type="text" name="type" placeholder="e.g. international_cup" >
+        </div>
+        <br>
+        <div class="form-group">
+            <label for="country_id">Country ID:</label>
+            <input type="number" name="country_id" placeholder="e.g. 141" >
+        </div>
+        <br>
+         <div class="form-group">
+            <label for="country_name">Country Name:</label>
+            <input type="text" name="country_name" placeholder="e.g. Scotland" >
+        </div>
+        <br>
+        <div class="form-group">
+            <label for="domestic_league_code">Domestic League Code:</label>
+            <input type="text" name="domestic_league_code" placeholder="e.g. NL1" >
+        </div>
+        <br>
+        <div class="form-group">
+            <label for="confederation">Confederation:</label>
+            <input type="text" name="confederation" placeholder="e.g. europa" >
+        </div>
+        <br>
+        <button type="submit" class="add-competititon-submit-button">Add Competition</button>
+    </form>
+    
+    <br> 
+    <a href="{{ url_for('view_competitions') }}" class="ad-competition-back-link">Back to Competitions</a>
+</div>
 </body>
 </html>
