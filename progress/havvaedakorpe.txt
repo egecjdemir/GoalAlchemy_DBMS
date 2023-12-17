@@ -8,3 +8,6 @@ Created HTML files ("main.html", "clubs.html", "games.html", "club_games.html", 
 WEEK 10:
 New files are created for "INSERT" operation for "competitions" and "club_games" tables.
 "app.py" and "VIEW" html files are updated.
+WEEK 11:
+Added deletion, sorting, and filtering to app.py for Competitions table
+Updated add_club_game and add_competition files
