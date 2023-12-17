@@ -340,6 +340,7 @@
                     </div>
                 </form>
             </th>
+            <th>Update</th>
             <th>Delete</th>
         </tr>
         {% for player in players %}
@@ -361,6 +362,7 @@
             <td>{{ player[14] }}</td>
             <td>{{ player[15] }}</td>
             <td>{{ player[16] }}</td>
+            <td><a class="update-box" href="{{ url_for('update_player', player_id=player[0]) }}">✎</a></td>
             <td>
                 <div class="delete-box" onclick="confirmDelete('{{ player[0] }}')">X</div>
             </td>

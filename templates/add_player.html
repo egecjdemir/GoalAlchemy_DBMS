@@ -9,68 +9,72 @@
 </head>
 <body>
     <div class="add-player-container">
-    <h2 class="add-player-title">Add Player</h2>
-    
-    
-    <form method="post" action="{{ url_for('add_player') }}",  class="add-player-form"> 
-        <div class="form-group">
-            <label for="player_id">Player ID:<span class="required">*</span></label> 
-            <input type="text" id="player_id" name="player_id" placeholder="e.g. 1234" required>
-        </div>
-        <br>
-        <div class="form-group">
-            <label for="first_name">First Name:<span class="required">*</span></label>
-            <input type="text" id="first_name" name="first_name" placeholder="e.g. John" required>
-        </div>
-        <br>
-        <div class="form-group">
-            <label for="last_name">Last Name:<span class="required">*</span></label>
-            <input type="text" id="last_name" name="last_name" placeholder="e.g. Smith" required>
-        </div>
-        <br>
-        <div class="form-group">
-            <label for="last_season">Last Season:</label>
-            <input type="text" id="last_season" name="last_season" placeholder="e.g. 2017">
-        </div>
-        <br>
-        <div class="form-group">
-            <label for="current_club_id">Current Club ID:</label>
-            <input type="text" id="current_club_id" name="current_club_id" placeholder="e.g. 2345">
-        </div>
-        <br>
-        <div class="form-group">
-            <label for="player_code">Player Code:</label>
-            <input type="text" id="player_code" name="player_code" placeholder="e.g. john-smith">
-        </div>
-        <br>
-        <div class="form-group">
-            <label for="country_of_birth">Country of Birth:</label>
-            <input type="text" id="country_of_birth" name="country_of_birth" placeholder="e.g. England">
-        </div>
-        <br>
-        <div class="form-group">
-            <label for="city_of_birth">City of Birth:</label>
-            <input type="text" id="city_of_birth" name="city_of_birth" placeholder="e.g. London">
-        </div>
-        <br>
-        <div class="form-group">
-            <label for="country_of_citizenship">Country of Citizenship:</label>
-            <input type="text" id="country_of_citizenship" name="country_of_citizenship" placeholder="e.g. England">
-        </div>
-        <br>
-        <div class="form-group">
-            <label for="date_of_birth">Date of Birth:</label>
-            <input type="date" id="date_of_birth" name="date_of_birth">
-        </div>
-        <br>
-    
-        <!-- Add more fields as needed -->
+        <h2 class="add-player-title">Add Player</h2>
+        {% if error_message %}
+            <div class="alert-error">
+                {{ error_message }}
+            </div>
+        {% endif %}
+        
+        <form method="post" action="{{ url_for('add_player') }}",  class="add-player-form"> 
+            <div class="form-group">
+                <label for="player_id">Player ID:<span class="required">*</span></label> 
+                <input type="text" id="player_id" name="player_id" placeholder="e.g. 1234" required>
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="first_name">First Name:<span class="required">*</span></label>
+                <input type="text" id="first_name" name="first_name" placeholder="e.g. John" required>
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="last_name">Last Name:<span class="required">*</span></label>
+                <input type="text" id="last_name" name="last_name" placeholder="e.g. Smith" required>
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="last_season">Last Season:</label>
+                <input type="text" id="last_season" name="last_season" placeholder="e.g. 2017">
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="current_club_id">Current Club ID:</label>
+                <input type="text" id="current_club_id" name="current_club_id" placeholder="e.g. 2345">
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="player_code">Player Code:</label>
+                <input type="text" id="player_code" name="player_code" placeholder="e.g. john-smith">
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="country_of_birth">Country of Birth:</label>
+                <input type="text" id="country_of_birth" name="country_of_birth" placeholder="e.g. England">
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="city_of_birth">City of Birth:</label>
+                <input type="text" id="city_of_birth" name="city_of_birth" placeholder="e.g. London">
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="country_of_citizenship">Country of Citizenship:</label>
+                <input type="text" id="country_of_citizenship" name="country_of_citizenship" placeholder="e.g. England">
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="date_of_birth">Date of Birth:</label>
+                <input type="date" id="date_of_birth" name="date_of_birth">
+            </div>
+            <br>
+        
+            <!-- Add more fields as needed -->
 
-        <button type="submit" class="add-player-submit-button">Add Player</button>
-    </form>
+            <button type="submit" class="add-player-submit-button">Add Player</button>
+        </form>
 
-    <br>
-    <a href="{{ url_for('view_players') }}" class="add-player-back-link">Back to Players</a>
-</div>
+        <br>
+        <a href="{{ url_for('view_players') }}" class="add-player-back-link">Back to Players</a>
+    </div>
 </body>
 </html>
