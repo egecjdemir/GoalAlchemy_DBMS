@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Show Game Details</title>
+</head>
+<body>
+    <h1>Game Details</h1>
+
+    <table border="1">
+        <tr>
+            <th>Appearance ID</th>
+            <th>Player ID</th>
+            <th>Player Club</th>
+            <th>Player Current Club</th>
+            <th>Date</th>
+            <th>Competition ID</th>
+            <th>Yellow Cards</th>
+            <th>Red Cards</th>
+            <th>Goals</th>
+            <th>Assists</th>
+            <th>Minutes Played</th>
+        </tr>
+        {% for appearance in appearances %}
+        <tr>
+            <td>{{ appearance[0] }}</td>
+            <td>{{ appearance[2] }}</td>
+            <td>{{ appearance[7] }}</td>
+            <td>{{ appearance[8] }}</td>
+            <td>{{ appearance[5] }}</td>
+            <td>{{ appearance[6] }}</td>
+            <td>{{ appearance[9] }}</td>
+            <td>{{ appearance[10] }}</td>
+            <td>{{ appearance[11] }}</td>
+            <td>{{ appearance[12] }}</td>
+            <td>{{ appearance[13] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <!-- Pagination links with sliding window -->
+    <div class="pagination">
+        {% if page > 1 %}
+            <a href="{{ url_for('show_game', game_id=game_id, page=page-1) }}">Previous</a>
+        {% endif %}
+
+        {% for num in range(start_page, end_page+1) %}
+            {% if num == page %}
+                <strong>{{ num }}</strong>
+            {% else %}
+                <a href="{{ url_for('show_game', game_id=game_id, page=num) }}">{{ num }}</a>
+            {% endif %}
+        {% endfor %}
+
+        {% if page < total_pages %}
+            <a href="{{ url_for('show_game', game_id=game_id, page=page+1) }}">Next</a>
+        {% endif %}
+    </div>
+
+    <a href="{{ url_for('index') }}" class="back-button">Back to Main Page</a>
+</body>
+</html>
