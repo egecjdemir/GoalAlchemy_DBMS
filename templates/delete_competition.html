@@ -1,0 +1,27 @@
+<!-- delete_competition.html -->
+
+<!DOCTYPE html>
+<html lang="UTF-8">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete Competition</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="delete-competition-container">
+        <form method="post" action="{{ url_for('delete_competition', competition_id=competition[0]) }}" class="delete-competition-form">
+            <p>Are you sure you want to delete the competition with ID {{ competition[0] }}?</p>
+
+            <!-- Display more details about the competition if needed -->
+            <p>Name: {{ competition[2] }} </p>
+
+            <button type="submit" class="delete-competition-submit-button">Delete Competition</button>
+        </form>
+
+        <br>
+        <a href="{{ url_for('view_competitions') }}" class="delete-competition-back-link">Back to Competitions</a>
+    </div>
+</body>
+</html>
