@@ -1,0 +1,25 @@
+<!-- delete_club_game.html -->
+
+<!DOCTYPE html>
+<html lang="UTF-8">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete Club Game</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="delete-club_game-container">
+        <form method="post" action="{{ url_for('delete_club_game', game_id=club_games[0]) }}" class="delete-club_game-form">
+            <p>Are you sure you want to delete the club game with game ID {{ club_games[0] }}?</p>
+            <p>Club ID: {{ player[1] }} </p>
+
+            <button type="submit" class="delete-club_game-submit-button">Delete Club Game</button>
+        </form>
+
+        <br>
+        <a href="{{ url_for('view_club_games') }}" class="delete-club_game-back-link">Back to Club Games</a>
+    </div>
+</body>
+</html>

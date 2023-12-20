@@ -4,11 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-</head>
     <title>View Competitions</title>
 </head>
 <body>
-    <a href="{{ url_for('add_competition') }}" class="button">New Competition</a>
+    <form method="post" action="{{ url_for('view_competitions') }}" class="search-form">
+        <input type="text" name="search_query" placeholder="Search by name, competition code, or competition ID..." value="{{ search_query }}">
+        <button type="submit">Search</button>
+    </form>
+    
+    <a href="{{ url_for('sort_filter_competitions') }}" class="sort-filter-button">Sort and Filter Competitions</a>
+
+    {% if search_query %}
+        <a href="{{ url_for('view_competitions') }}" class="go-back-button">Go Back to Competitions</a>
+    {% endif %}
+
     <h1>Competitions</h1>
     <table border="1">
         <tr>
@@ -21,6 +30,8 @@
             <th>Country Name</th>
             <th>Domestic League Code</th>
             <th>Confederation</th>
+            <th>Update</th>
+            <th>Delete</th>
         </tr>
         {% for competition in competitions %}
         <tr>
@@ -32,7 +43,11 @@
             <td>{{ competition[5] }}</td>
             <td>{{ competition[6] }}</td>
             <td>{{ competition[7] }}</td>
-            <td>{{ competition[8] }}</td>   
+            <td>{{ competition[8] }}</td>
+            <td><a class="update-box" href="{{ url_for('update_competition', competition_id=competition[0]) }}">✎</a></td>
+            <td>
+                <div class="delete-box" onclick="confirmDelete('{{ competition[0] }}')">X</div>
+            </td>  
         </tr>
         {% endfor %}
     </table>
@@ -55,5 +70,13 @@
         {% endif %}
     </div>
     <a href="{{ url_for('index') }}" class="back-button">Back to Main Page</a>
+    <a href="{{ url_for('add_competition') }}" class="add-competition-button">Add Competition</a>
 </body>
+<script>
+    function confirmDelete(competitionId) {
+        if (confirm("Are you sure you want to delete this competition?")) {
+            window.location.href = "/delete_competition/" + competitionId;  // Replace with the correct route
+        }
+    }
+</script>
 </html>

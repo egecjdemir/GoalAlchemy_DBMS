@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="UTF-8">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Update Competition</title>
+</head>
+<body>
+    <div class="update-competition-container">
+        <h1 class="update-title">Update Competition</h1>
+        
+        {% if error_message %}
+            <div class="alert-error">
+                {{ error_message }}
+            </div>
+        {% endif %}
+
+        <form method="POST" action="{{ url_for('update_competition', competition_id=competition_details[0]) }}", class="update-competition-form">
+            <div class="form-group">
+                <label for="competition_code">Competition Code:</label>
+                <input type="text" id="competition_code" name="competition_code" value="{{ competition_details[1] }}">
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" value="{{ competition_details[2] }}">
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="sub_type">Subtype:</label>
+                <input type="text" id="sub_type" name="sub_type" value="{{ competition_details[3] }}">
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="type">Type:</label>
+                <input type="text" id="type" name="type" value="{{ competition_details[4] }}">
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="country_id">Country ID:</label>
+                <input type="text" id="country_id" name="country_id" value="{{ competition_details[5] }}">
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="country_name">Country Name:</label>
+                <input type="text" id="country_name" name="country_name" value="{{ competition_details[6] }}">
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="domestic_league_code">Domestic League Code:</label>
+                <input type="text" id="domestic_league_code" name="domestic_league_code" value="{{ competition_details[7] }}">
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="confederation">Confederation:</label>
+                <input type="text" id="confederation" name="confederation" value="{{ competition_details[8] }}">
+            </div>
+            <br>
+
+            <button class="update-competition-submit-button"type="submit">Update Competition</button>
+            <a href="{{ url_for('view_competitions') }}" class="update-go-back">Go Back to Competitions</a>
+        </form>
+    </div>
+</body>
+</html>

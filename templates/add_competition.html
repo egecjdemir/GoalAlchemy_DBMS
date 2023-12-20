@@ -5,12 +5,16 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    <title>Add New Competitions</title>
+    <title>Add Competition</title>
 </head>
 <body>
     <div class="add-competition-container">
-    <h2 class="add-competition-title">Add Competition</h2>
-    
+        <h2 class="add-competition-title">Add Competition</h2>
+        {% if error_message %}
+            <div class="alert-error">
+                {{ error_message }}
+            </div>
+        {% endif %}
     <form method="post" action="{{ url_for('add_competition') }}",  class="add-competition-form"> 
         <div class="form-group">
             <label for="competition_id">Competition ID:<span class="required">*</span></label>

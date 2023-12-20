@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="UTF-8">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Sort and Filter Competitions</title>
+</head>
+<body>
+    <a href="{{ url_for('view_competitions') }}" class="form-back-to-competition-button">Back to Competitions</a>
+    <h1  class="add-competition-title">Sort and Filter Competitions</h1>
+
+    <!-- Form for sorting and filtering -->
+    <form method="GET" action="{{ url_for('sort_filter_competitions') }}">
+        <div class="form-content">
+            <label for="competition_code">Competition Code:</label>
+            <input type="text" id="competition_code" name="competition_code">
+        </div>
+        <div class="form-content">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name">
+        </div>
+        <div class="form-content">
+            <label for="sub_type">Subtype:</label>
+            <input type="text" id="sub_type" name="sub_type">
+        </div>
+        <div class="form-content">
+            <label for="type">Type:</label>
+            <input type="text" id="type" name="type">
+        </div>
+        <br>
+        <div class="form-content">
+            <label for="country_name">Country Name:</label>
+            <input type="text" id="country_name" name="country_name">
+        </div>
+        <div class="form-content">
+            <label for="confederation">Confederation:</label>
+            <input type="text" id="confederation" name="confederation">
+        </div>
+        <div class="form-sort">
+            <label for="sort_by">Sort By:</label>
+            <select id="sort_by" name="sort_by">
+                <option value="competition_code">Competition Code</option>
+                <option value="name">Name</option>
+                <option value="sub_type">Subtype</option>
+                <option value="type">Type</option>
+                <option value="country_name">Country Name</option>
+                <option value="confederation">Confederation</option>
+            </select>
+        </div>
+        <button class= "filter-apply-button" type="submit">Apply</button>
+    </form>
+
+    <table border="1">
+        <tr>
+            <th>Competition ID</th>
+            <th>Competition Code</th>
+            <th>Name</th>
+            <th>Subtype</th>
+            <th>Type</th>
+            <th>Country ID</th>
+            <th>Country Name</th>
+            <th>Domestic League Code</th>
+            <th>Confederation</th>
+        </tr>
+        {% for competition in competitions %}
+        <tr>
+            <td>{{ competition[0] }}</td>
+            <td>{{ competition[1] }}</td>
+            <td>{{ competition[2] }}</td>
+            <td>{{ competition[3] }}</td>
+            <td>{{ competition[4] }}</td>
+            <td>{{ competition[5] }}</td>
+            <td>{{ competition[6] }}</td>
+            <td>{{ competition[7] }}</td>
+            <td>{{ competition[8] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <!-- Pagination links with sliding window -->
+    <div class="pagination">
+        {% if page > 1 %}
+            <a href="{{ url_for('sort_filter_competitions', page=page-1, competition_code=competition_code, name=name, sub_type=sub_type, type=type, country_name=country_name, confederation=confederation, sort_by=sort_by) }}">Previous</a>
+        {% endif %}
+
+        {% for num in range(start_page, end_page+1) %}
+            {% if num == page %}
+                <strong>{{ num }}</strong>
+            {% else %}
+                <a href="{{ url_for('sort_filter_competitions', page=num, competition_code=competition_code, name=name, sub_type=sub_type, type=type, country_name=country_name, confederation=confederation, sort_by=sort_by) }}">{{ num }}</a>
+            {% endif %}
+        {% endfor %}
+
+        {% if page < total_pages %}
+            <a href="{{ url_for('sort_filter_competitions', page=page+1, competition_code=competition_code, name=name, sub_type=sub_type, type=type, country_name=country_name, confederation=confederation, sort_by=sort_by) }}">Next</a>
+        {% endif %}
+    </div>
+    <a href="{{ url_for('index') }}" class="back-button">Back to Main Page</a>
+</body>
+</html>
