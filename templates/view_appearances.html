@@ -9,7 +9,7 @@
 </head>
 <body>
     <form method="post" action="{{ url_for('view_appearances') }}" class="search-form">
-        <input type="text" name="search_query" placeholder="Search by name, player ID, competition ID..." value="{{ search_query }}">
+        <input type="text" name="search_query" placeholder="Search by name or player ID or competition ID..." value="{{ search_query }}">
         <button type="submit">Search</button>
     </form>
     <a href="{{ url_for('sort_filter_appearances') }}" class="sort-filter-button">Sort and Filter Appearances</a>
@@ -19,26 +19,25 @@
         <th>Appearance ID</th>
         <th>Game ID</th>
         <th>Player ID</th>
-        <th>Player Club ID</th>
-        <th>Player Current Club ID</th>
-        <th>Date</th>
-        <th>Player Name</th>
         <th>Player Club Name</th>
         <th>Player Current Club Name</th>
+        <th>Date</th>
+        <th>Player Name</th>
         <th>Competition ID</th>
         <th>Yellow Cards</th>
         <th>Red Cards</th>
         <th>Goals</th>
         <th>Assists</th>
         <th>Minutes Played</th>
+        <th>Delete</th>
     </tr>
     {% for appearance in appearances %}
     <tr>
         <td>{{ appearance[0] }}</td>
         <td>{{ appearance[1] }}</td>
         <td>{{ appearance[2] }}</td>
-        <td>{{ appearance[3] }}</td>
-        <td>{{ appearance[4] }}</td>
+        <td>{{ appearance[13] }}</td>
+        <td>{{ appearance[14] }}</td>
         <td>{{ appearance[5] }}</td>
         <td>{{ appearance[6] }}</td>
         <td>{{ appearance[7] }}</td>
@@ -47,30 +46,37 @@
         <td>{{ appearance[10] }}</td>
         <td>{{ appearance[11] }}</td>
         <td>{{ appearance[12] }}</td>
-        <td>{{ appearance[13] }}</td>
-        <td>{{ appearance[14] }}</td>
-        <td>{{ appearance[15] }}</td>
+        <td>
+            <div class="delete-box" onclick="confirmDelete('{{ appearance[0] }}')">X</div>
+        </td>
     </tr>
     {% endfor %}
 </table>
     <!-- Pagination links with sliding window -->
     <div class="pagination">
         {% if page > 1 %}
-            <a href="{{ url_for('view_appearances', page=page-1) }}">Previous</a>
+            <a href="{{ url_for('view_appearances', page=page-1, search_query=search_query) }}">Previous</a>
         {% endif %}
 
         {% for num in range(start_page, end_page+1) %}
             {% if num == page %}
                 <strong>{{ num }}</strong>
             {% else %}
-                <a href="{{ url_for('view_appearances', page=num) }}">{{ num }}</a>
+                <a href="{{ url_for('view_appearances', page=num, search_query=search_query) }}">{{ num }}</a>
             {% endif %}
         {% endfor %}
 
         {% if page < total_pages %}
-            <a href="{{ url_for('view_appearances', page=page+1) }}">Next</a>
+            <a href="{{ url_for('view_appearances', page=page+1, search_query=search_query) }}">Next</a>
         {% endif %}
     </div>
     <a href="{{ url_for('index') }}" class="back-button">Back to Main Page</a>
 </body>
+<script>
+    function confirmDelete(appearanceID) {
+        if (confirm("Are you sure you want to delete this appearance?")) {
+            window.location.href = "/delete_appearance/" + appearanceID;  // Replace with the correct route
+        }
+    }
+</script>
 </html>

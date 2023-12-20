@@ -207,6 +207,9 @@ def sort_filter_games():
 
 @app.route('/view_appearances', methods=['GET', 'POST'])
 def view_appearances():
+    page = request.args.get('page', 1, type=int)
+    offset = (page - 1) * PER_PAGE
+    
     if request.method == 'POST':
         # If the form is submitted, retrieve the search query from the form data
         search_query = request.form.get('search_query', '')
@@ -214,46 +217,85 @@ def view_appearances():
         # If it's a GET request, retrieve the search query from the URL parameters
         search_query = request.args.get('search_query', '')
         
-    page = request.args.get('page', 1, type=int)
-    offset = (page - 1) * PER_PAGE
-    
     # Fetch appearances for the current page
-    query = """SELECT a.appearance_id, a.game_id, a.player_id, a.player_club_id, a.player_current_club_id,
-            a.date, a.player_name, a.competition_id, a.yellow_cards, a.red_cards, a.goals, a.assists, a.minutes_played, 
-            c.name as player_club_name, c2.name as player_current_club_name
-            FROM appearances a
-            LEFT JOIN clubs c ON a.player_club_id = c.club_id 
-            LEFT JOIN clubs c2 ON a.player_current_club_id = c2.club_id
-            WHERE a.player_id = %s OR a.game_id = %s OR a.player_club_id = %s OR a.player_current_club_id = %s
-            ORDER BY a.appearance_id DESC
-            LIMIT %s OFFSET %s
+    query = """SELECT a.appearance_id, a.game_id, a.player_id, a.player_club_id, a.player_current_club_id, a.date, 
+                a.player_name, a.competition_id, a.yellow_cards, a.red_cards, a.goals, a.assists, a.minutes_played, 
+                c1.name as player_club_name, c2.name as player_current_club_name
+                FROM  appearances a
+                LEFT JOIN 
+                    clubs c1 ON a.player_club_id = c1.club_id
+                LEFT JOIN 
+                    clubs c2 ON a.player_current_club_id = c2.club_id
+                WHERE a.player_id = %s OR a.player_name LIKE %s OR a.competition_id = %s
+                ORDER BY 
+                    a.appearance_id DESC
+                LIMIT %s OFFSET %s;
             """
-    cursor.execute(query, (search_query, search_query, search_query, search_query, PER_PAGE, offset))
+    
+
+    cursor.execute(query, (search_query, f'%{search_query}%', search_query, PER_PAGE, offset))
     appearances = cursor.fetchall()
     
     # Fetch total number of appearances for pagination with search filtering
-    total_query = """SELECT COUNT(*) FROM appearances a
-                     LEFT JOIN clubs c ON a.player_club_id = c.club_id
-                     LEFT JOIN clubs c2 ON a.player_current_club_id = c2.club_id
-                     WHERE a.player_id = %s OR a.game_id = %s OR a.player_club_id = %s OR a.player_current_club_id = %s
-                  """
-    cursor.execute(total_query, (search_query, search_query, search_query, search_query))
+    count_query = "SELECT COUNT(*) FROM appearances WHERE player_id = %s OR player_name LIKE %s OR competition_id = %s"
+    cursor.execute(count_query, (search_query, f'%{search_query}%', search_query))
     total_appearances = cursor.fetchone()[0]
-
+    
     # Calculate total pages based on the number of appearances and per-page limit
     total_pages = (total_appearances + PER_PAGE - 1) // PER_PAGE
-
+    
     # Define the sliding window for pagination links
-    visible_pages = 5  
+    visible_pages = 5
     half_window = visible_pages // 2
     start_page = max(1, page - half_window)
     end_page = min(total_pages, start_page + visible_pages - 1)
-
+    
     return render_template('view_appearances.html', appearances=appearances, page=page, total_pages=total_pages,
-                           start_page=start_page, end_page=end_page, search_query=search_query)
+                           start_page=start_page, end_page=end_page)
+    
+@app.route('/view_appearances/add_appearance', methods=['GET', 'POST'])
+def add_appearance():
+    if request.method == 'POST':
+        appearance_id = request.form.get('appearance_id')
+        game_id = request.form.get('game_id')
+        player_id = request.form.get('player_id')
+        player_club_id = request.form.get('player_club_id')
+        player_current_club_id = request.form.get('player_current_club_id')
+        date = request.form.get('date')
+        player_name = request.form.get('player_name')
+        competition_id = request.form.get('competition_id')
+        yellow_cards = request.form.get('yellow_cards')
+        red_cards = request.form.get('red_cards')
+        goals = request.form.get('goals')
+        assists = request.form.get('assists')
+        minutes_played = request.form.get('minutes_played')
+        
+        query = """
+            INSERT INTO appearances 
+            (appearance_id, game_id, player_id, player_club_id, player_current_club_id, date, player_name, competition_id, yellow_cards, red_cards, goals, assists, minutes_played)"""
+        cursor.execute(query, (appearance_id, game_id, player_id, player_club_id, player_current_club_id, date, player_name, competition_id, yellow_cards, red_cards, goals, assists, minutes_played))
+        db.commit()
+        
+        return redirect(url_for('view_appearances'))
+    
+    return render_template('add_appearance.html')
 
-    
-    
+@app.route('/delete_appearance/<appearance_id>', methods=['GET', 'POST'])
+def delete_appearance(appearance_id):
+    if request.method == 'POST':
+        query = "DELETE FROM appearances WHERE appearance_id = %s"
+        cursor.execute(query, (appearance_id,))
+        db.commit()
+
+        return redirect(url_for('view_appearances'))
+
+    # If it's a GET request, fetch player details and render the delete_player.html template
+    query = "SELECT * FROM appearances WHERE appearance_id = %s"
+    cursor.execute(query, (appearance_id,))
+    appearance = cursor.fetchone()
+
+    return render_template('delete_appearance.html', appearance=appearance)
+
 @app.route('/sort_filter_appearances')
 def sort_filter_appearances():
     # Pagination parameters
@@ -318,7 +360,6 @@ def sort_filter_appearances():
     return render_template('sort_filter_appearances.html', appearances=appearances, page=page, total_pages=total_pages,
                            start_page=start_page, end_page=end_page, **filters)
     
-
 
 @app.route('/view_players', methods=['GET', 'POST'])
 def view_players():
