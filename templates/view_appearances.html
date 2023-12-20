@@ -8,41 +8,51 @@
     <title>View Appearances</title>
 </head>
 <body>
+    <form method="post" action="{{ url_for('view_appearances') }}" class="search-form">
+        <input type="text" name="search_query" placeholder="Search by name, player ID, competition ID..." value="{{ search_query }}">
+        <button type="submit">Search</button>
+    </form>
+    <a href="{{ url_for('sort_filter_appearances') }}" class="sort-filter-button">Sort and Filter Appearances</a>
     <h1>Appearances</h1>
     <table border="1">
-        <tr>
-            <th>Appearance ID</th>
-            <th>Game ID</th>
-            <th>Player ID</th>
-            <th>Player Club ID</th>
-            <th>Player Current Club ID</th>
-            <th>Date</th>
-            <th>Player Name</th>
-            <th>Competition ID</th>
-            <th>Yellow Cards</th>
-            <th>Red Cards</th>
-            <th>Goals</th>
-            <th>Assists</th>
-            <th>Minutes Played</th>
-        </tr>
-        {% for appearance in appearances %}
-        <tr>
-            <td>{{ appearance[0] }}</td>  <!-- this each row indicates a column in table-->
-            <td>{{ appearance[1] }}</td>
-            <td><a href="{{ url_for('player_page', player_id=appearance[2]) }}">{{ appearance[2] }}</a></td>
-            <td>{{ appearance[3] }}</td>
-            <td>{{ appearance[4] }}</td>
-            <td>{{ appearance[5] }}</td>
-            <td>{{ appearance[6] }}</td>
-            <td>{{ appearance[7] }}</td>
-            <td>{{ appearance[8] }}</td>
-            <td>{{ appearance[9] }}</td>
-            <td>{{ appearance[10] }}</td>
-            <td>{{ appearance[11] }}</td>
-            <td>{{ appearance[12] }}</td>
-        </tr>
-        {% endfor %}
-    </table>
+    <tr>
+        <th>Appearance ID</th>
+        <th>Game ID</th>
+        <th>Player ID</th>
+        <th>Player Club ID</th>
+        <th>Player Current Club ID</th>
+        <th>Date</th>
+        <th>Player Name</th>
+        <th>Player Club Name</th>
+        <th>Player Current Club Name</th>
+        <th>Competition ID</th>
+        <th>Yellow Cards</th>
+        <th>Red Cards</th>
+        <th>Goals</th>
+        <th>Assists</th>
+        <th>Minutes Played</th>
+    </tr>
+    {% for appearance in appearances %}
+    <tr>
+        <td>{{ appearance[0] }}</td>
+        <td>{{ appearance[1] }}</td>
+        <td>{{ appearance[2] }}</td>
+        <td>{{ appearance[3] }}</td>
+        <td>{{ appearance[4] }}</td>
+        <td>{{ appearance[5] }}</td>
+        <td>{{ appearance[6] }}</td>
+        <td>{{ appearance[7] }}</td>
+        <td>{{ appearance[8] }}</td>
+        <td>{{ appearance[9] }}</td>
+        <td>{{ appearance[10] }}</td>
+        <td>{{ appearance[11] }}</td>
+        <td>{{ appearance[12] }}</td>
+        <td>{{ appearance[13] }}</td>
+        <td>{{ appearance[14] }}</td>
+        <td>{{ appearance[15] }}</td>
+    </tr>
+    {% endfor %}
+</table>
     <!-- Pagination links with sliding window -->
     <div class="pagination">
         {% if page > 1 %}

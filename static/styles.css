@@ -288,7 +288,7 @@ tr:hover {
 
 /* Go Back Button */
 .go-back-button {
-    position: relative;
+    position: absolute;
     top: 80px;
     left: 475px;
     display: inline-block;

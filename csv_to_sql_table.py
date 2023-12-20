@@ -45,7 +45,7 @@ try:
     csv_to_sql_table('data/clubs.csv', 'clubs')
     csv_to_sql_table('data/players.csv', 'players')
     csv_to_sql_table('data/games_cleaned.csv', 'games')
-    csv_to_sql_table('data/appearances_cleaned.csv', 'appearances') 
+    csv_to_sql_table('data/appearances_cleaned_sample.csv', 'appearances') 
     csv_to_sql_table('data/club_games_cleaned.csv', 'club_games')
     
 except Error as e:

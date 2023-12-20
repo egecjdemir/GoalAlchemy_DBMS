@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="UTF-8">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Sort and Filter Appearances</title>
+</head>
+<body>
+    <a href="{{ url_for('view_appearances') }}" class="form-back-to-player-button">Back to Appearances</a>
+    <h1  class="add-player-title">Sort and Filter Appearances</h1>
+
+    <!-- Form for sorting and filtering -->
+    <form method="GET" action="{{ url_for('sort_filter_appearances') }}">
+        <div class="form-content">
+            <label for="player_name">Player Name:</label>
+            <input type="text" id="player_name" name="player_name">
+        </div>
+        <div class="form-content">
+            <label for="player_id">Player ID:</label>
+            <input type="text" id="player_id" name="player_id">
+        </div>
+        <div class="form-content">
+            <label for="date">Date:</label>
+            <input type="date" id="date" name="date">
+        </div>
+        <div class="form-content">
+            <label for="competition_id">Competition ID:</label>
+            <input type="text" id="competition_id" name="competition_id">
+        </div>
+        <div class="form-sort">
+            <label for="sort_by">Sort By:</label> 
+            <select id="sort_by" name="sort_by">
+                <option value="player_name">Player Name</option>
+                <option value="player_id">Player ID</option>
+                <option value="date">Date</option>
+                <option value="yellow_cards">Yellow Cards</option>
+                <option value="red_cards">Red Cards</option>
+                <option value="goals">Goals</option>
+                <option value="assists">Assists</option>
+                <option value="minutes_played">Minutes Played</option>
+            </select>
+        </div>
+        <button class= "filter-apply-button" type="submit">Apply</button>
+    </form>
+
+    <table border="1">
+        <tr>
+            <th>Appearance ID</th>
+            <th>Game ID</th>
+            <th>Player ID</th>
+            <th>Player Club ID</th>
+            <th>Player Current Club ID</th>
+            <th>Date</th>
+            <th>Player Name</th>
+            <th>Competition ID</th>
+            <th>Yellow Cards</th>
+            <th>Red Cards</th>
+            <th>Goals</th>
+            <th>Assists</th>
+            <th>Minutes Played</th>
+        </tr>
+        {% for appearance in appearances %}
+        <tr>
+            <td>{{ appearance[0] }}</td>  <!-- this each row indicates a column in table-->
+            <td>{{ appearance[1] }}</td>
+            <td>{{appearance[2] }}</td>
+            <td>{{ appearance[3] }}</td>
+            <td>{{ appearance[4] }}</td>
+            <td>{{ appearance[5] }}</td>
+            <td>{{ appearance[6] }}</td>
+            <td>{{ appearance[7] }}</td>
+            <td>{{ appearance[8] }}</td>
+            <td>{{ appearance[9] }}</td>
+            <td>{{ appearance[10] }}</td>
+            <td>{{ appearance[11] }}</td>
+            <td>{{ appearance[12] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <!-- Pagination links with sliding window -->
+    <div class="pagination">
+        {% if page > 1 %}
+            <a href="{{ url_for('sort_filter_appearances', page=page-1, player_name=player_name, player_id=player_id, date=date, competition_id=competition_id, sort_by=sort_by, yellow_cards=yellow_cards, red_cards=red_cards, assists=assists, goals=goals, minutes_played=minutes_played) }}">Previous</a>
+        {% endif %}
+
+        {% for num in range(start_page, end_page+1) %}
+            {% if num == page %}
+                <strong>{{ num }}</strong>
+            {% else %}
+                <a href="{{ url_for('sort_filter_appearances', page=num, player_name=player_name, player_id=player_id, date=date, competition_id=competition_id, sort_by=sort_by, yellow_cards=yellow_cards, red_cards=red_cards, assists=assists, goals=goals, minutes_played=minutes_played)}}">{{ num }}</a>
+            {% endif %}
+        {% endfor %}
+
+        {% if page < total_pages %}
+            <a href="{{ url_for('sort_filter_appearances', page=page+1, player_name=player_name, player_id=player_id, date=date, competition_id=competition_id, sort_by=sort_by, yellow_cards=yellow_cards, red_cards=red_cards, assists=assists, goals=goals, minutes_played=minutes_played)}}">Next</a>
+        {% endif %}
+    </div>
+    <a href="{{ url_for('index') }}" class="back-button">Back to Main Page</a>
+</body>
+</html>

@@ -205,17 +205,39 @@ def sort_filter_games():
     return render_template('sort_filter_games.html', games=games, page=page, total_pages=total_pages,
                            start_page=start_page, end_page=end_page)
 
-@app.route('/view_appearances')
+@app.route('/view_appearances', methods=['GET', 'POST'])
 def view_appearances():
+    if request.method == 'POST':
+        # If the form is submitted, retrieve the search query from the form data
+        search_query = request.form.get('search_query', '')
+    else:
+        # If it's a GET request, retrieve the search query from the URL parameters
+        search_query = request.args.get('search_query', '')
+        
     page = request.args.get('page', 1, type=int)
     offset = (page - 1) * PER_PAGE
+    
     # Fetch appearances for the current page
-    query = "SELECT * FROM appearances LIMIT %s OFFSET %s"
-    cursor.execute(query, (PER_PAGE, offset))
+    query = """SELECT a.appearance_id, a.game_id, a.player_id, a.player_club_id, a.player_current_club_id,
+            a.date, a.player_name, a.competition_id, a.yellow_cards, a.red_cards, a.goals, a.assists, a.minutes_played, 
+            c.name as player_club_name, c2.name as player_current_club_name
+            FROM appearances a
+            LEFT JOIN clubs c ON a.player_club_id = c.club_id 
+            LEFT JOIN clubs c2 ON a.player_current_club_id = c2.club_id
+            WHERE a.player_id = %s OR a.game_id = %s OR a.player_club_id = %s OR a.player_current_club_id = %s
+            ORDER BY a.appearance_id DESC
+            LIMIT %s OFFSET %s
+            """
+    cursor.execute(query, (search_query, search_query, search_query, search_query, PER_PAGE, offset))
     appearances = cursor.fetchall()
-
-    # Fetch total number of appearances for pagination
-    cursor.execute("SELECT COUNT(*) FROM appearances")
+    
+    # Fetch total number of appearances for pagination with search filtering
+    total_query = """SELECT COUNT(*) FROM appearances a
+                     LEFT JOIN clubs c ON a.player_club_id = c.club_id
+                     LEFT JOIN clubs c2 ON a.player_current_club_id = c2.club_id
+                     WHERE a.player_id = %s OR a.game_id = %s OR a.player_club_id = %s OR a.player_current_club_id = %s
+                  """
+    cursor.execute(total_query, (search_query, search_query, search_query, search_query))
     total_appearances = cursor.fetchone()[0]
 
     # Calculate total pages based on the number of appearances and per-page limit
@@ -228,7 +250,75 @@ def view_appearances():
     end_page = min(total_pages, start_page + visible_pages - 1)
 
     return render_template('view_appearances.html', appearances=appearances, page=page, total_pages=total_pages,
-                           start_page=start_page, end_page=end_page)
+                           start_page=start_page, end_page=end_page, search_query=search_query)
+
+    
+    
+@app.route('/sort_filter_appearances')
+def sort_filter_appearances():
+    # Pagination parameters
+    page = request.args.get('page', 1, type=int)
+    offset = (page - 1) * PER_PAGE
+
+    # Get sorting and filtering parameters from the query string
+    filters = {
+        'player_name': request.args.get('player_name'),
+        'player_id': request.args.get('player_id'),
+        'date': request.args.get('date'),
+        'competition_id': request.args.get('competition_id'),
+        'sort_by': request.args.get('sort_by'),
+        'yellow_cards': request.args.get('yellow_cards'),
+        'red_cards': request.args.get('red_cards'),
+        'assists': request.args.get('assists'),
+        'goals': request.args.get('goals'),
+        'minutes_played': request.args.get('minutes_played')
+    }
+
+    # Construct the base query
+    base_query = "FROM appearances"
+    where_clauses = []
+    query_params = []
+
+    # Add filtering conditions
+    for key, value in filters.items():
+        if key != 'sort_by' and value:
+            where_clauses.append(f"{key} LIKE %s")
+            query_params.append(f"%{value}%")
+
+    # Complete SQL query for fetching data
+    data_query = f"SELECT * {base_query}"
+    if where_clauses:
+        data_query += " WHERE " + " AND ".join(where_clauses)
+
+    # Add sorting condition
+    if filters['sort_by'] in ['yellow_cards', 'red_cards', 'goals', 'assists', 'minutes_played']:
+        data_query += f" ORDER BY {filters['sort_by']} ASC"
+    data_query += " LIMIT %s OFFSET %s"
+
+    # Execute the query for fetching data
+    cursor.execute(data_query, tuple(query_params + [PER_PAGE, offset]))
+    appearances = cursor.fetchall()
+
+    # Complete SQL query for counting total games
+    count_query = f"SELECT COUNT(*) {base_query}"
+    if where_clauses:
+        count_query += " WHERE " + " AND ".join(where_clauses)
+
+    # Execute the query for counting total games
+    cursor.execute(count_query, tuple(query_params))
+    total_appearances = cursor.fetchone()[0]
+
+    # Calculate total pages and pagination window
+    total_pages = (total_appearances + PER_PAGE - 1) // PER_PAGE
+    visible_pages = 5
+    half_window = visible_pages // 2
+    start_page = max(1, page - half_window)
+    end_page = min(total_pages, start_page + visible_pages - 1)
+
+    return render_template('sort_filter_appearances.html', appearances=appearances, page=page, total_pages=total_pages,
+                           start_page=start_page, end_page=end_page, **filters)
+    
+
 
 @app.route('/view_players', methods=['GET', 'POST'])
 def view_players():
@@ -241,24 +331,9 @@ def view_players():
         
     page = request.args.get('page', 1, type=int)
     offset = (page - 1) * PER_PAGE
-    
-    column = request.args.get('column', 'player_id')
-    order = request.args.get('order', 'asc')
-    
-    allowed_columns = ['player_id', 'first_name', 'last_name', 'name', 'last_season', 'current_club_id', 'country_of_birth', 'city_of_birth', 'country_of_citizenship', 'date_of_birth', 'foot', 'height_in_cm', 'market_value_in_eur', 'highest_market_value_in_eur']
-    allowed_orders = ['asc', 'desc']
-
-    if column not in allowed_columns:
-        column = 'player_id'  # Set a default value or handle the error as needed
-
-    if order not in allowed_orders:
-        order = 'asc'  # Set a default value or handle the error as needed
-
-    # Define the secondary sort column to resolve ties
-    secondary_sort = 'player_id' if column != 'player_id' else 'first_name'
 
     # Fetch players for the current page
-    query = f"SELECT * FROM players WHERE player_id = %s OR name = %s OR first_name LIKE %s OR last_name LIKE %s ORDER BY {column} {order}, {secondary_sort} {order} LIMIT %s OFFSET %s"
+    query = f"SELECT * FROM players WHERE player_id = %s OR name = %s OR first_name LIKE %s OR last_name LIKE %s LIMIT %s OFFSET %s"
     cursor.execute(query, (search_query, search_query, f'%{search_query}%', f'%{search_query}%', PER_PAGE, offset))
     players = cursor.fetchall()
 
@@ -277,7 +352,7 @@ def view_players():
     end_page = min(total_pages, start_page + visible_pages - 1)
 
     return render_template('view_players.html', players=players, page=page, total_pages=total_pages,
-                           start_page=start_page, end_page=end_page, column=column, order=order, search_query=search_query)
+                           start_page=start_page, end_page=end_page, search_query=search_query)
     
     
 @app.route('/view_players/add_player', methods=['GET', 'POST'])
