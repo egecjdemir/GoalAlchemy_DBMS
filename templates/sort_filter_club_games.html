@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="UTF-8">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Sort and Filter Club Games</title>
+</head>
+<body>
+    <a href="{{ url_for('view_club_games') }}" class="form-back-to-club_game-button">Back to Club Games</a>
+    <h1  class="add-player-title">Sort and Filter Club Games</h1>
+
+    <!-- Form for sorting and filtering -->
+    <form method="GET" action="{{ url_for('sort_filter_club_games') }}">
+        <div class="form-content">
+            <label for="club_id">Club ID:</label>
+            <input type="number" id="club_id" name="club_id">
+        </div>
+        <div class="form-content">
+            <label for="opponent_id">Opponent ID:</label>
+            <input type="number" id="opponent_id" name="opponent_id">
+        </div>
+        <div class="form-content">
+            <label for="own_manager_name">Own Manager Name:</label>
+            <input type="text" id="own_manager_name" name="own_manager_name">
+        </div>
+        <div class="form-content">
+            <label for="opponent_manager_name">Opponent Manager Name:</label>
+            <input type="text" id="opponent_manager_name" name="opponent_manager_name">
+        </div>
+        <br>
+        <div class="form-content">
+            <label for="hosting">Hosting:</label>
+            <input type="text" id="hosting" name="hosting">
+        </div>
+        <div class="form-content">
+            <label for="is_win">Is Win:</label>
+            <input type="number" id="is_win" name="is_win">
+        </div>
+        <div class="form-sort">
+            <label for="sort_by">Sort By:</label>
+            <select id="sort_by" name="sort_by">
+                <option value="club_id">Club ID</option>
+                <option value="opponent_id">Opponent ID</option>
+                <option value="own_goals">Own Goals</option>
+                <option value="own_position">Own Position</option>
+                <option value="opponent_goals">Opponent Goals</option>
+                <option value="opponent_position">Opponent Position</option>
+            </select>
+        </div>
+        <button class= "filter-apply-button" type="submit">Apply</button>
+    </form>
+
+    <table border="1">
+        <tr>
+            <th>Game ID</th>
+            <th>Club ID</th>
+            <th>Own Goals</th>
+            <th>Own Position</th>
+            <th>Own Manager Name</th>
+            <th>City of Birth</th>
+            <th>Opponent ID</th>
+            <th>Opponent Goals</th>
+            <th>Opponent Position</th>
+            <th>Opponent Manager Name</th>
+            <th>Hosting</th>
+            <th>Is Win</th>
+        </tr>
+        {% for club_game in club_games %}
+        <tr>
+            <td>{{ club_game[0] }}</td>
+            <td>{{ club_game[1] }}</td>
+            <td>{{ club_game[2] }}</td>
+            <td>{{ club_game[3] }}</td>
+            <td>{{ club_game[4] }}</td>
+            <td>{{ club_game[5] }}</td>
+            <td>{{ club_game[6] }}</td>
+            <td>{{ club_game[7] }}</td>
+            <td>{{ club_game[8] }}</td>
+            <td>{{ club_game[9] }}</td>
+            <td>{{ club_game[10] }}</td>
+            <td>{{ club_game[11] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <!-- Pagination links with sliding window -->
+    <div class="pagination">
+        {% if page > 1 %}
+            <a href="{{ url_for('sort_filter_club_games', page=page-1, club_id=club_id, opponent_id=opponent_id, own_manager_name=own_manager_name, opponent_manager_name=opponent_manager_name, hosting=hosting, is_win=is_win, sort_by=sort_by) }}">Previous</a>
+        {% endif %}
+
+        {% for num in range(start_page, end_page+1) %}
+            {% if num == page %}
+                <strong>{{ num }}</strong>
+            {% else %}
+                <a href="{{ url_for('sort_filter_club_games', page=num, club_id=club_id, opponent_id=opponent_id, own_manager_name=own_manager_name, opponent_manager_name=opponent_manager_name, hosting=hosting, is_win=is_win, sort_by=sort_by) }}">{{ num }}</a>
+            {% endif %}
+        {% endfor %}
+
+        {% if page < total_pages %}
+            <a href="{{ url_for('sort_filter_club_games', page=page+1, club_id=club_id, opponent_id=opponent_id, own_manager_name=own_manager_name, opponent_manager_name=opponent_manager_name, hosting=hosting, is_win=is_win, sort_by=sort_by) }}">Next</a>
+        {% endif %}
+    </div>
+    <a href="{{ url_for('index') }}" class="back-button">Back to Main Page</a>
+</body>
+</html>

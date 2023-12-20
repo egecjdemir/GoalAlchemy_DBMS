@@ -754,7 +754,7 @@ def sort_filter_competitions():
     return render_template('sort_filter_competitions.html', competitions=competitions, page=page, total_pages=total_pages,
                            start_page=start_page, end_page=end_page, **filters)
     
-@app.route('/delete_competition/<int:competition_id>', methods=['GET', 'POST'])
+@app.route('/delete_competition/<string:competition_id>', methods=['GET', 'POST'])
 def delete_competition(competition_id):
     if request.method == 'POST':
         query = "DELETE FROM competitions WHERE competition_id = %s"
@@ -906,12 +906,13 @@ def sort_filter_club_games():
     offset = (page - 1) * PER_PAGE 
     
     filters = { 
-        'club_id': int(request.args.get('club_id')),
-        'opponent_id': int(request.args.get('opponent_id')), 
+        'club_id': request.args.get('club_id'),
+        'opponent_id': request.args.get('opponent_id'), 
         'own_manager_name': request.args.get('own_manager_name'), 
         'opponent_manager_name': request.args.get('opponent_manager_name'),  
         'hosting': request.args.get('hosting'), 
-        'is_win': int(request.args.get('is_win')) 
+        'is_win': request.args.get('is_win'),
+        'sort_by': request.args.get('sort_by'),
     }
     
     base_query = "FROM club_games"
@@ -957,7 +958,6 @@ def delete_club_game(game_id, club_id):
         query = "DELETE FROM club_games WHERE game_id = %s AND club_id = %s"
         cursor.execute(query, (game_id,club_id,))
         db.commit()
-        
         return redirect(url_for('view_club_games')) 
     
     query = "SELECT * FROM club_games WHERE game_id = %s AND club_id = %s" 
@@ -968,56 +968,34 @@ def delete_club_game(game_id, club_id):
 @app.route('/update_club_game/<int:game_id>/<int:club_id>', methods=['GET', 'POST'])
 def update_club_game(game_id, club_id):
     get_club_game_query = "SELECT * FROM club_games WHERE game_id = %s AND club_id = %s"
-    cursor.execute(get_club_game_query, (game_id, club_id))
+    cursor.execute(get_club_game_query, (game_id, club_id,))
     club_game_details = cursor.fetchone()
     
     if request.method == 'POST':
-        try:   
-            club_id_input = request.form.get('club_id')
-            updated_club_id = int(club_id_input) if club_id_input else None
-            existing_club = None 
-            if updated_club_id is not None:
-                check_club_query = "SELECT club_id FROM clubs WHERE club_id = %s"  
-                cursor.execute(check_club_query, (updated_club_id,)) 
-                existing_club = cursor.fetchone()
-            
-            game_id_input = request.form.get('game_id')
-            updated_game_id = int(game_id_input) if game_id_input else None
-            existing_game = None
-            if updated_game_id is not None: 
-                check_game_query = "SELECT game_id FROM games WHERE game_id = %s" 
-                cursor.execute(check_game_query, (updated_game_id,)) 
-                existing_game = cursor.fetchone()  
-                
+        try:       
             updated_own_goals = int(request.form.get('own_goals'))
             updated_own_position = int(request.form.get('own_position'))
             updated_own_manager_name = request.form.get('own_manager_name') 
-            updated_opponent_id = int(request.form.get('opponent_id'))
             updated_opponent_goals = int(request.form.get('opponent_goals'))
             updated_opponent_position = int(request.form.get('opponent_position'))
             updated_opponent_manager_name = request.form.get('opponent_manager_name') 
             updated_hosting = request.form.get('hosting')
             updated_is_win = int(request.form.get('is_win'))
             
-            if existing_club and existing_game: 
-                update_query = """ 
-                    UPDATE club_games  
-                    SET own_goals = %s, own_position = %s, own_manager_name = %s,  
-                    opponent_id = %s, opponent_goals = %s,  
-                    opponent_position = %s, opponent_manager_name = %s,  
-                    hosting = %s, is_win = %s 
-                    WHERE game_id = %s AND club_id = %s 
-                """  
-                cursor.execute(update_query, (updated_own_goals, updated_own_position, 
-                                updated_own_manager_name, updated_opponent_id,
-                                updated_opponent_goals, updated_opponent_position, 
-                                updated_opponent_manager_name, updated_hosting,  
-                                updated_is_win, game_id, club_id)) 
-                db.commit() 
-                return redirect(url_for('view_club_games'))
-            else: 
-                error_message = "Selected club or game does not exist. Please choose an existing club and game." 
-                return render_template('update_club_game.html', error_message=error_message, club_game_details=club_game_details)
+            update_query = """ 
+                UPDATE club_games  
+                SET own_goals = %s, own_position = %s, own_manager_name = %s, opponent_goals = %s,  
+                opponent_position = %s, opponent_manager_name = %s,  
+                hosting = %s, is_win = %s 
+                WHERE game_id = %s AND club_id = %s 
+            """  
+            cursor.execute(update_query, (updated_own_goals, updated_own_position, 
+                            updated_own_manager_name,
+                            updated_opponent_goals, updated_opponent_position, 
+                            updated_opponent_manager_name, updated_hosting,  
+                            updated_is_win, game_id, club_id)) 
+            db.commit() 
+            return redirect(url_for('view_club_games'))
         except ValueError as e:
             error_message = "Invalid input values. Please try again."
             return render_template('update_club_game.html', error_message=error_message, club_game_details=club_game_details)

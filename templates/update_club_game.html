@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="UTF-8">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Update Club Game</title>
+</head>
+<body>
+    <div class="update-club_game-container">
+        <h1 class="update-title">Update Club Game</h1>
+        
+        {% if error_message %}
+            <div class="alert-error">
+                {{ error_message }}
+            </div>
+        {% endif %}
+        <form method="POST" action="{{ url_for('update_club_game', game_id=club_game_details[0], club_id=club_game_details[1]) }}", class="update-club_game-form">
+            <div class="form-group">
+                <label for="own_goals">Own Goals:</label>
+                <input type="number" id="own_goals" name="own_goals" value="{{ club_game_details[2] }}">
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="own_position">Own Position:</label>
+                <input type="number" id="own_position" name="own_position" value="{{ club_game_details[3] }}">
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="own_manager_name">Own Manager Name:</label>
+                <input type="text" id="own_manager_name" name="own_manager_name" value="{{ club_game_details[4] }}">
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="opponent_goals">Opponent Goals:</label>
+                <input type="number" id="opponent_goals" name="opponent_goals" value="{{ club_game_details[6] }}">
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="opponent_position">Opponent Position:</label>
+                <input type="number" id="opponent_position" name="opponent_position" value="{{ club_game_details[7] }}">
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="opponent_manager_name">Opponent Manager Name:</label>
+                <input type="text" id="opponent_manager_name" name="opponent_manager_name" value="{{ club_game_details[8] }}">
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="hosting">Hosting:</label>
+                <input type="text" id="hosting" name="hosting" value="{{ club_game_details[9] }}">
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="is_win">Is Win:</label>
+                <input type="number" id="is_win" name="is_win" value="{{ club_game_details[10] }}">
+            </div>
+            <br>
+
+            <button class="update-club_game-submit-button"type="submit">Update Club Game</button>
+            <a href="{{ url_for('view_club_games') }}" class="update-go-back">Go Back to Club Games</a>
+        </form>
+    </div>
+</body>
+</html>

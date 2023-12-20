@@ -4,11 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-</head>
     <title>View Club Games</title>
 </head>
 <body>
-    <a href="{{ url_for('add_club_game') }}" class="button">New Club Game</a>
+    <form method="post" action="{{ url_for('view_club_games') }}" class="search-form">
+        <input type="text" name="search_query" placeholder="Search by ID or manager name..." value="{{ search_query }}">
+        <button type="submit">Search</button>
+    </form>
+
+    <a href="{{ url_for('sort_filter_club_games') }}" class="sort-filter-button">Sort and Filter Club Games</a>
+
+    {% if search_query %}
+        <a href="{{ url_for('view_club_games') }}" class="go-back-button">Go Back to Club Games</a>
+        <!--<p class="search-">{{ players|length }} players found{% if search_query %} for "{{ search_query }}"{% endif %}</p>-->
+    {% endif %}
     <h1>Club Games</h1>
     <table border="1">
         <tr>
@@ -23,6 +32,8 @@
             <th>Opponent Manager Name</th>
             <th>Hosting</th>
             <th>Is Win</th>
+            <th>Update</th>
+            <th>Delete</th>
         </tr>
         {% for club_game in club_games %}
         <tr>
@@ -37,6 +48,10 @@
             <td>{{ club_game[8] }}</td>
             <td>{{ club_game[9] }}</td>
             <td>{{ club_game[10] }}</td>
+            <td><a class="update-box" href="{{ url_for('update_club_game', game_id=club_game[0], club_id=club_game[1]) }}">✎</a></td>
+            <td>
+                <div class="delete-box" onclick="confirmDelete('{{ club_game[0] }}')">X</div>
+            </td>
         </tr>
         {% endfor %}
     </table>
@@ -59,5 +74,13 @@
         {% endif %}
     </div>
     <a href="{{ url_for('index') }}" class="back-button">Back to Main Page</a>
+    <a href="{{ url_for('add_club_game') }}" class="add-club_game-button">Add Club Game</a>
 </body>
+<script>
+    function confirmDelete(gameID) {
+        if (confirm("Are you sure you want to delete this club game?")) {
+            window.location.href = "/delete_club_game/" + gameID;  // Replace with the correct route
+        }
+    }
+</script>
 </html>

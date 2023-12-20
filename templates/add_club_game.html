@@ -9,7 +9,12 @@
 </head>
 <body>
     <div class="add-club_game-container">
-    <h2 class="add-club_game-title">Add Club Game</h2>
+        <h2 class="add-club_game-title">Add Club Game</h2>
+        {% if error_message %}
+            <div class="alert-error">
+                {{ error_message }}
+            </div>
+        {% endif %}
         <form method="post" action="{{ url_for('add_club_game') }}",  class="add-club_game-form">
             <div class="form-group">
                 <label for="game_id">Game ID:<span class="required">*</span></label>
