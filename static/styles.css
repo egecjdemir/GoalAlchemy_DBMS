@@ -456,7 +456,129 @@ p {
     font-size: 16px;
 }
 
-.update-go-back {
+.add-competition-button {
+    position: absolute;
+    top: 80px;
+    left: 875px;
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #3498db;
+    color: #ffffff;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.add-competition-button:hover {
+    background-color: #2980b9;
+}
+
+.add-competition-container {
+    max-width: 400px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(52, 14, 192, 0.2);
+}
+
+.add-competition-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.add-competition-form label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #000276;
+}
+
+.add-competition-form input {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.add-competition-submit-button {
+    padding: 12px;
+    background-color: #3498db;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.add-competition-submit-button:hover {
+    background-color: #2980b9;
+}
+
+.add-competition-back-link {
+    display: inline-block;
+    color: #3498db;
+    text-decoration: none;
+    font-size: 20px;
+}
+
+.add-competition-back-link:hover {
+    text-decoration: underline;
+}
+
+.add-competition-title {
+    text-align: center;
+    color: #000276;
+    margin-top: 50px;
+}
+
+.delete-competition-container {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    text-align: center; /* Center the content within the container */
+}
+
+.delete-competition-title {
+    font-size: 24px;
+    color: #333;
+}
+
+
+.delete-competition-form {
+    margin-top: 20px;
+}
+
+.delete-competition-submit-button {
+    background-color: #e74c3c;
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.delete-competition-submit-button:hover {
+    background-color: #c0392b;
+}
+
+
+.delete-competition-back-link {
+    display: block;
+    margin-top: 10px;
+    background-color: #3498db;
+    color: #fff;
+    text-decoration: none;
+}
+
+
+.delete-competition-back-link:hover {
+    background-color: #2980b9;
+}
+
+
+.form-back-to-competition-button {
     display: inline-block;
     padding: 10px 20px;
     background-color: #3498db;
@@ -464,15 +586,265 @@ p {
     text-decoration: none;
     border-radius: 5px;
     margin-top: 20px;
-    margin-left: 90px;
+    margin-left: 20px;
 }
 
-.update-go-back:hover {
+.back-from-competition-page {
+    display:inline-table;
+    padding: 10px 20px;
+    background-color: #3498db;
+    color: #ffffff;
+    text-decoration: none;
+    border-radius: 5px;
+    margin-top: 30px;
+    margin-left: 20px;
+}
+
+.competition-content {
+    text-align: center;
+    box-shadow: 0 0 10px rgba(52, 14, 192, 0.2);
+    padding: 10px;
+    margin: 10px;
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    font-family: "Arial", Gadget, sans-serif;
+    
+}
+
+.update-competition-submit-button {
+    padding: 12px;
+    background-color: #3498db;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 20px;
+}
+
+.update-competition-submit-button:hover {
     background-color: #2980b9;
 }
 
-.update-title {
-    text-align: center;
-    color: #000276;
-    margin-top: 50px;
+.update-competition-form {  
+display: flex; 
+flex-direction: column;  
+} 
+
+.update-competition-container {
+max-width: 400px;  
+margin: 50px auto; 
+padding: 20px; 
+background-color: #f9f9f9; 
+border-radius: 10px;  
+box-shadow: 0 0 10px rgba(52, 14, 192, 0.2);  
+}
+
+.update-competition-form label {
+font-weight: bold; 
+margin-bottom: 5px; 
+color: #000276; 
+}
+
+.update-competition-form input { 
+padding: 10px;
+border: 1px solid #ddd; 
+border-radius: 5px; 
+font-size: 16px; 
+}
+
+.add-club_game-button {
+position: absolute;
+top: 80px;
+left: 875px;
+display: inline-block; 
+padding: 10px 20px; 
+background-color: #3498db; 
+color: #ffffff; 
+text-decoration: none; 
+border-radius: 5px; 
+}
+
+.add-club_game-button:hover { 
+background-color: #2980b9; 
+}
+
+.add-club_game-container { 
+max-width: 400px; 
+margin: 50px auto; 
+padding: 20px;  
+background-color: #f9f9f9; 
+border-radius: 10px; 
+box-shadow: 0 0 10px rgba(52, 14, 192, 0.2); 
+} 
+
+.add-club_game-form { 
+display: flex;
+flex-direction: column; 
+} 
+
+.add-club_game-form label { 
+font-weight: bold; 
+margin-bottom: 5px; 
+color: #000276;  
+}
+
+.add-club_game-form input { 
+padding: 10px;
+border: 1px solid #ddd;
+border-radius: 5px; 
+font-size: 16px;  
+}
+
+.add-club_game-submit-button { 
+padding: 12px;
+background-color: #3498db; 
+color: #ffffff; 
+border: none; 
+border-radius: 5px;  
+cursor: pointer; 
+font-size: 16px; 
+} 
+
+.add-club_game-submit-button:hover { 
+background-color: #2980b9; 
+}
+
+.add-club_game-back-link {  
+display: inline-block; 
+color: #3498db; 
+text-decoration: none;  
+font-size: 20px; 
+} 
+
+.add-club_game-back-link:hover {
+text-decoration: underline;
+}
+
+.add-club_game-title { 
+text-align: center;  
+color: #000276;  
+margin-top: 50px;  
+}  
+
+.delete-club_game-container {  
+max-width: 600px;  
+margin: 20px auto;  
+padding: 20px; 
+border: 1px solid #ccc; 
+border-radius: 5px; 
+background-color: #f9f9f9; 
+text-align: center; /* Center the content within the container */ 
+}
+
+.delete-club_game-title { 
+font-size: 24px; 
+color: #333; 
+}
+
+.delete-club_game-form { 
+margin-top: 20px; 
+} 
+
+.delete-club_game-submit-button { 
+background-color: #e74c3c;  
+color: #fff; 
+border: none; 
+padding: 10px 15px;
+border-radius: 3px; 
+cursor: pointer; 
+} 
+
+.delete-club_game-submit-button:hover { 
+background-color: #c0392b; 
+} 
+
+.delete-club_game-back-link {
+display: block; 
+margin-top: 10px; 
+background-color: #3498db; 
+color: #fff; 
+text-decoration: none;
+}
+
+.delete-club_game-back-link:hover { 
+background-color: #2980b9; 
+} 
+
+.form-back-to-club_game-button { 
+display: inline-block;
+padding: 10px 20px;  
+background-color: #3498db;
+color: #ffffff;
+text-decoration: none; 
+border-radius: 5px;  
+margin-top: 20px; 
+margin-left: 20px; 
+} 
+
+.back-from-club_game-page { 
+display:inline-table;
+padding: 10px 20px; 
+background-color: #3498db;
+color: #ffffff; 
+text-decoration: none; 
+border-radius: 5px;  
+margin-top: 30px; 
+margin-left: 20px; 
+} 
+
+.club_game-content { 
+text-align: center;
+box-shadow: 0 0 10px rgba(52, 14, 192, 0.2); 
+padding: 10px;
+margin: 10px; 
+margin-left: 20px;  
+margin-right: 20px; 
+margin-top: 20px; 
+margin-bottom: 20px;  
+font-family: "Arial", Gadget, sans-serif; 
+}  
+
+.update-club_game-submit-button {  
+padding: 12px;  
+background-color: #3498db;  
+color: #ffffff; 
+border: none;
+border-radius: 5px; 
+cursor: pointer; 
+font-size: 16px; 
+margin-top: 20px;
+} 
+
+.update-club_game-submit-button:hover { 
+background-color: #2980b9; 
+} 
+
+.update-club_game-form { 
+display: flex; 
+flex-direction: column;
+} 
+
+.update-club_game-container { 
+max-width: 400px;  
+margin: 50px auto; 
+padding: 20px; 
+background-color: #f9f9f9;
+border-radius: 10px;
+box-shadow: 0 0 10px rgba(52, 14, 192, 0.2); 
+} 
+
+.update-club_game-form label { 
+font-weight: bold;  
+margin-bottom: 5px; 
+color: #000276; 
+}  
+
+.update-club_game-form input { 
+padding: 10px; 
+border: 1px solid #ddd;  
+border-radius: 5px; 
+font-size: 16px; 
 }

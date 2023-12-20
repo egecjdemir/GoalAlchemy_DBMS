@@ -592,30 +592,6 @@ def update_player(player_id):
     # Player not found, redirect to the view_players page
     return redirect(url_for('view_players'))
 
-@app.route('/view_club_games', methods=['GET'])
-def view_club_games():
-    page = request.args.get('page', 1, type=int)
-    offset = (page - 1) * PER_PAGE
-    # Fetch club_games for the current page
-    query = "SELECT * FROM club_games LIMIT %s OFFSET %s"
-    cursor.execute(query, (PER_PAGE, offset))
-    club_games = cursor.fetchall()
-
-    # Fetch total number of club_games for pagination
-    cursor.execute("SELECT COUNT(*) FROM club_games")
-    total_club_games = cursor.fetchone()[0]
-
-    # Calculate total pages based on the number of club_games and per-page limit
-    total_pages = (total_club_games + PER_PAGE - 1) // PER_PAGE
-
-    # Define the sliding window for pagination links
-    visible_pages = 5  
-    half_window = visible_pages // 2
-    start_page = max(1, page - half_window)
-    end_page = min(total_pages, start_page + visible_pages - 1)
-
-    return render_template('view_club_games.html', club_games=club_games, page=page, total_pages=total_pages,
-                           start_page=start_page, end_page=end_page)
 
 @app.route('/view_competitions', methods=['GET', 'POST'])
 def view_competitions():
@@ -623,27 +599,13 @@ def view_competitions():
     if request.method == 'POST':
         search_query = request.form.get('search_query', '')
     else:
-        search_query = request.args.get(('search_query', ''))
+        search_query = request.args.get('search_query', '')
         
     page = request.args.get('page', 1, type=int)
     offset = (page - 1) * PER_PAGE
-    
-    column = request.args.get('column', 'competition_id')
-    order = request.args.get('order', 'asc')
-    
-    allowed_columns = ['competition_id', 'competition_code', 'name', 'sub_type', 'type', 'country_id', 'country_name', 'domestic_league_code', 'confederation']
-    allowed_orders = ['asc', 'desc']
-    
-    if column not in allowed_columns: 
-        column = 'player_id'
-    
-    if order not in allowed_orders:
-        order = 'asc'
         
-    secondary_sort = 'player_id' if column != 'player_id' else 'first_name'
-    
     # Fetch competitions for the current page
-    query = f"SELECT * FROM competitions WHERE competition_id = %s OR competition_code LIKE %s OR name LIKE %s ORDER BY {column} {order}, {secondary_sort} {order} LIMIT %s OFFSET %s"
+    query = f"SELECT * FROM competitions WHERE competition_id = %s OR competition_code LIKE %s OR name LIKE %s LIMIT %s OFFSET %s"
     cursor.execute(query, (search_query, f'%{search_query}%', f'%{search_query}%', PER_PAGE, offset))
     competitions = cursor.fetchall()
 
@@ -662,31 +624,44 @@ def view_competitions():
     end_page = min(total_pages, start_page + visible_pages - 1)
 
     return render_template('view_competitions.html', competitions=competitions, page=page, total_pages=total_pages,
-                           start_page=start_page, end_page=end_page, column=column, order=order, search_query=search_query)
+                           start_page=start_page, end_page=end_page, search_query=search_query)
 
 @app.route('/view_competitions/add_competition', methods=['GET', 'POST'])
 def add_competition():
     if request.method == 'POST':
-        competition_id = request.form.get('competition_id')
-        competition_code = request.form.get('competition_code')
-        name = request.form.get('name')
-        sub_type = request.form.get('sub_type')
-        type = request.form.get('type')
-        country_id = int(request.form.get('country_id'))
-        country_name = request.form.get('country_name')
-        domestic_league_code = request.form.get('domestic_league_code')
-        confederation = request.form.get('confederation')
-        
-        query = """
-            INSERT INTO competitions 
-            (competition_id, competition_code, name, sub_type, type,
-            country_id, country_name, domestic_league_code, confederation)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-        """
-        cursor.execute(query, (competition_id, competition_code, name, sub_type, type, country_id, country_name, domestic_league_code, confederation))
-        db.commit()
-        return redirect(url_for('view_competitions'))
-    return render_template('add_player.html')
+        try: 
+            competition_id = request.form.get('competition_id')
+            
+            check_competition_query = "SELECT competition_id FROM competitions WHERE competition_id = %s"
+            cursor.execute(check_competition_query, (competition_id,))
+            existing_competition = cursor.fetchone()
+
+            if existing_competition:
+                error_message = "Competition ID already taken. Please choose a different ID."
+                return render_template('add_competition.html', error_message=error_message)
+            
+            competition_code = request.form.get('competition_code')
+            name = request.form.get('name')
+            sub_type = request.form.get('sub_type')
+            type = request.form.get('type')
+            country_id = int(request.form.get('country_id'))
+            country_name = request.form.get('country_name')
+            domestic_league_code = request.form.get('domestic_league_code')
+            confederation = request.form.get('confederation')
+            
+            query = """
+                INSERT INTO competitions 
+                (competition_id, competition_code, name, sub_type, type,
+                country_id, country_name, domestic_league_code, confederation)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+            """
+            cursor.execute(query, (competition_id, competition_code, name, sub_type, type, country_id, country_name, domestic_league_code, confederation))
+            db.commit()
+            return redirect(url_for('view_competitions'))
+        except ValueError as e:
+            error_message = "Invalid input values. Please try again."
+            return render_template('add_competition.html', error_message=error_message)
+    return render_template('add_competition.html')
 
 @app.route('/sort_filter_competitions')
 def sort_filter_competitions():
@@ -727,9 +702,9 @@ def sort_filter_competitions():
         count_query += " WHERE " + " AND ".join(where_clauses)
 
     cursor.execute(count_query, tuple(query_params))
-    total_players = cursor.fetchone()[0]
+    total_competitions = cursor.fetchone()[0]
 
-    total_pages = (total_players + PER_PAGE - 1) // PER_PAGE
+    total_pages = (total_competitions + PER_PAGE - 1) // PER_PAGE
     visible_pages = 5
     half_window = visible_pages // 2
     start_page = max(1, page - half_window)
@@ -751,30 +726,265 @@ def delete_competition(competition_id):
     cursor.execute(query, (competition_id,))
     competition = cursor.fetchone()
 
-    if not competition:
-        return render_template('competition_not_found.html')
     return render_template('delete_competition.html', competition=competition)
 
-@app.route('/competition/<int:competition_id>')
-def competition_page(competition_id):
-    query = "SELECT * FROM competitions WHERE competition_id = %s"
-    cursor.execute(query, (competition_id,))
+@app.route('/update_competitions/<string:competition_id>', methods=['GET', 'POST'])
+def update_competition(competition_id):
+    get_competition_query = "SELECT * FROM competitions WHERE competition_id = %s"
+    cursor.execute(get_competition_query, (competition_id,))
     competition_details = cursor.fetchone()
-    return render_template('competition_page.html', competition_id=competition_id, competition_details=competition_details)
+    
+    if request.method == 'POST':
+        try: 
+            updated_competition_code = request.form.get('competition_code')
+            updated_name = request.form.get('name')
+            updated_sub_type = request.form.get('sub_type')
+            updated_type = request.form.get('type')
+            updated_country_id = int(request.form.get('country_id'))
+            updated_country_name = request.form.get('country_name')
+            updated_domestic_league_code = request.form.get('domestic_league_code')
+            updated_confederation = request.form.get('confederation')
+            
+            update_query = """
+                UPDATE competitions 
+                SET competition_code = %s, name = %s, sub_type = %s, 
+                    type = %s, country_id = %s, 
+                    country_name = %s, domestic_league_code = %s, 
+                    confederation = %s WHERE competition_id = %s
+                    """
+            
+            cursor.execute(update_query, (updated_competition_code, updated_name,
+                                            updated_sub_type, updated_type,
+                                            updated_country_id, updated_country_name,
+                                            updated_domestic_league_code, updated_confederation,
+                                            competition_id))
+            db.commit()
+            return redirect(url_for('view_competitions'))
+            
+        except ValueError as e:
+            error_message = "Invalid input values. Please try again."
+            return render_template('update_competition.html', error_message=error_message, competition_details=competition_details)
+            
+    if competition_details:
+        return render_template('update_competition.html', competition_details=competition_details)
 
-@app.route('/add_club_game')
+    return redirect(url_for('view_competitions'))
+
+@app.route('/view_club_games', methods=['GET', 'POST']) 
+def view_club_games():
+    if request.method == 'POST':
+        search_query = request.form.get('search_query', '') 
+    else:
+        search_query = request.args.get('search_query', '')
+    
+    page = request.args.get('page', 1, type=int)
+    offset = (page - 1) * PER_PAGE
+    
+    query = f"SELECT * FROM club_games WHERE game_id = %s OR club_id = %s OR opponent_id = %s OR own_manager_name LIKE %s OR opponent_manager_name LIKE %s LIMIT %s OFFSET %s"
+    cursor.execute(query, (search_query, search_query, search_query, f'%{search_query}%', f'%{search_query}%', PER_PAGE, offset))
+    club_games = cursor.fetchall()
+    
+    total_query = "SELECT COUNT(*) FROM club_games WHERE game_id = %s OR club_id = %s OR opponent_id = %s OR own_manager_name LIKE %s OR opponent_manager_name LIKE %s"
+    cursor.execute(total_query, (search_query, search_query, search_query, f'%{search_query}%', f'%{search_query}%'))  
+    total_club_games = cursor.fetchone()[0]
+
+    total_pages = (total_club_games + PER_PAGE - 1) // PER_PAGE
+    
+    visible_pages = 5 
+    half_window = visible_pages // 2     
+    start_page = max(1, page - half_window)  
+    end_page = min(total_pages, start_page + visible_pages - 1)
+
+    return render_template('view_club_games.html', club_games=club_games, page=page, total_pages=total_pages,
+                            start_page=start_page, end_page=end_page, search_query=search_query)
+
+@app.route('/view_club_games/add_club_game', methods=['GET', 'POST'])
 def add_club_game():
+    if request.method == 'POST':  
+        try: 
+            game_id_input = request.form.get('game_id')  
+            game_id = int(game_id_input) if game_id_input else None 
+            existing_game = None 
+            
+            if game_id is not None: 
+                check_game_query = "SELECT game_id FROM games WHERE game_id = %s"
+                cursor.execute(check_game_query, (game_id,)) 
+                existing_game = cursor.fetchone()
+                
+            club_id_input = request.form.get('club_id')  
+            club_id = int(club_id_input) if club_id_input else None  
+            existing_club = None  
+            
+            if club_id is not None:  
+                check_club_query = "SELECT club_id FROM clubs WHERE club_id = %s"
+                cursor.execute(check_club_query, (club_id,))  
+                existing_club = cursor.fetchone() 
+           
+            check_club_game_query = "SELECT game_id, club_id FROM club_games WHERE game_id = %s AND club_id = %s"
+            cursor.execute(check_club_game_query, (game_id,club_id,))
+            existing_club_game = cursor.fetchone()  
+            
+            if existing_club_game:  
+                error_message = "Club Game key already taken. Please choose a different key." 
+                return render_template('add_club_game.html', error_message=error_message) 
+        
+            own_goals = int(request.form.get('own_goals'))  
+            own_position = int(request.form.get('own_position'))
+            own_manager_name = request.form.get('own_manager_name')
+            opponent_id = int(request.form.get('opponent_id')) 
+            opponent_goals = int(request.form.get('opponent_goals'))
+            opponent_position = int(request.form.get('opponent_position')) 
+            opponent_manager_name = request.form.get('opponent_manager_name')
+            hosting = request.form.get('hosting')
+            is_win = int(request.form.get('is_win'))
+
+            if existing_club and existing_game: 
+                query = """  
+                    INSERT INTO club_games   
+                    (game_id, club_id, own_goals, own_position, own_manager_name, opponent_id, opponent_goals,  
+                    opponent_position, opponent_manager_name, hosting, is_win) 
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) 
+                """  
+                cursor.execute(query, (game_id, club_id, own_goals, own_position, own_manager_name, opponent_id, opponent_goals, 
+                opponent_position, opponent_manager_name, hosting, is_win))  
+                db.commit()
+                return redirect(url_for('view_club_games'))
+            else:  
+                error_message = "Selected club or game does not exist. Please choose an existing club and game."  
+                return render_template('add_club_game.html', error_message=error_message) 
+        except ValueError as e:  
+            # Handle invalid input values as needed 
+            error_message = "Invalid input values. Please try again."
+            return render_template('add_club_game.html', error_message=error_message)
     return render_template('add_club_game.html')
 
-@app.route('/add_club_game', methods=['POST'])
-def insert_club_game():
-    (game_id, club_id, own_goals, own_position, own_manager_name, opponent_id, opponent_goals, opponent_position, opponent_manager_name, hosting, is_win) = (request.form['game_id'], request.form['club_id'], request.form['own_goals'], request.form['own_position'], request.form['own_manager_name'], request.form['opponent_id'], request.form['opponent_goals'], request.form['opponent_position'], request.form['opponent_manager_name'], request.form['hosting'], request.form['is_win'])
-    cursor.execute('INSERT INTO competitions (game_id, club_id, own_goals, own_position, own_manager_name, opponent_id, opponent_goals, opponent_position, opponent_manager_name, hosting, is_win) VALUES (?,?,?,?,?,?,?,?,?,?,?)', (game_id, club_id, own_goals, own_position, own_manager_name, opponent_id, opponent_goals, opponent_position, opponent_manager_name, hosting, is_win))
-    print(cursor.rowcount)
-  
-    new_row = cursor.execute('SELECT * FROM club_games WHERE club_id = ? AND game_id = ?', (club_id,game_id)).fetchone()
-    print(new_row)
-    return render_template('add_club_game.html')
+
+@app.route('/sort_filter_club_games')
+def sort_filter_club_games():
+    page = request.args.get('page', 1, type=int)
+    offset = (page - 1) * PER_PAGE 
+    
+    filters = { 
+        'club_id': int(request.args.get('club_id')),
+        'opponent_id': int(request.args.get('opponent_id')), 
+        'own_manager_name': request.args.get('own_manager_name'), 
+        'opponent_manager_name': request.args.get('opponent_manager_name'),  
+        'hosting': request.args.get('hosting'), 
+        'is_win': int(request.args.get('is_win')) 
+    }
+    
+    base_query = "FROM club_games"
+    where_clauses = []
+    query_params = []
+    
+    for key, value in filters.items(): 
+        if key != 'sort_by' and value: 
+            where_clauses.append(f"{key} LIKE %s")  
+            query_params.append(f"%{value}%")
+            
+    data_query = f"SELECT * {base_query}" 
+    if where_clauses: 
+        data_query += " WHERE " + " AND ".join(where_clauses)
+        
+    if filters['sort_by'] in ['club_id', 'opponent_id', 'own_goals', 'own_position', 'opponent_goals', 'opponent_position']:
+        data_query += f" ORDER BY {filters['sort_by']} ASC" 
+    data_query += " LIMIT %s OFFSET %s" 
+    
+    cursor.execute(data_query, tuple(query_params + [PER_PAGE, offset]))
+    club_games = cursor.fetchall()
+    
+    count_query = f"SELECT COUNT(*) {base_query}" 
+    if where_clauses: 
+        count_query += " WHERE " + " AND ".join(where_clauses) 
+        
+    cursor.execute(count_query, tuple(query_params))
+    total_club_games = cursor.fetchone()[0]
+    
+    total_pages = (total_club_games + PER_PAGE - 1) // PER_PAGE 
+    visible_pages = 5  
+    half_window = visible_pages // 2
+    start_page = max(1, page - half_window)
+    end_page = min(total_pages, start_page + visible_pages - 1)
+    
+    return render_template('sort_filter_club_games.html', club_games=club_games, page=page, total_pages=total_pages, 
+                            start_page=start_page, end_page=end_page, **filters)
+    
+    
+@app.route('/delete_club_game/<int:game_id>/<int:club_id>', methods=['GET', 'POST']) 
+def delete_club_game(game_id, club_id): 
+    if request.method == 'POST':
+        query = "DELETE FROM club_games WHERE game_id = %s AND club_id = %s"
+        cursor.execute(query, (game_id,club_id,))
+        db.commit()
+        
+        return redirect(url_for('view_club_games')) 
+    
+    query = "SELECT * FROM club_games WHERE game_id = %s AND club_id = %s" 
+    cursor.execute(query, (game_id, club_id,)) 
+    club_game = cursor.fetchone()
+    return render_template('delete_club_game.html', club_game=club_game) 
+
+@app.route('/update_club_game/<int:game_id>/<int:club_id>', methods=['GET', 'POST'])
+def update_club_game(game_id, club_id):
+    get_club_game_query = "SELECT * FROM club_games WHERE game_id = %s AND club_id = %s"
+    cursor.execute(get_club_game_query, (game_id, club_id))
+    club_game_details = cursor.fetchone()
+    
+    if request.method == 'POST':
+        try:   
+            club_id_input = request.form.get('club_id')
+            updated_club_id = int(club_id_input) if club_id_input else None
+            existing_club = None 
+            if updated_club_id is not None:
+                check_club_query = "SELECT club_id FROM clubs WHERE club_id = %s"  
+                cursor.execute(check_club_query, (updated_club_id,)) 
+                existing_club = cursor.fetchone()
+            
+            game_id_input = request.form.get('game_id')
+            updated_game_id = int(game_id_input) if game_id_input else None
+            existing_game = None
+            if updated_game_id is not None: 
+                check_game_query = "SELECT game_id FROM games WHERE game_id = %s" 
+                cursor.execute(check_game_query, (updated_game_id,)) 
+                existing_game = cursor.fetchone()  
+                
+            updated_own_goals = int(request.form.get('own_goals'))
+            updated_own_position = int(request.form.get('own_position'))
+            updated_own_manager_name = request.form.get('own_manager_name') 
+            updated_opponent_id = int(request.form.get('opponent_id'))
+            updated_opponent_goals = int(request.form.get('opponent_goals'))
+            updated_opponent_position = int(request.form.get('opponent_position'))
+            updated_opponent_manager_name = request.form.get('opponent_manager_name') 
+            updated_hosting = request.form.get('hosting')
+            updated_is_win = int(request.form.get('is_win'))
+            
+            if existing_club and existing_game: 
+                update_query = """ 
+                    UPDATE club_games  
+                    SET own_goals = %s, own_position = %s, own_manager_name = %s,  
+                    opponent_id = %s, opponent_goals = %s,  
+                    opponent_position = %s, opponent_manager_name = %s,  
+                    hosting = %s, is_win = %s 
+                    WHERE game_id = %s AND club_id = %s 
+                """  
+                cursor.execute(update_query, (updated_own_goals, updated_own_position, 
+                                updated_own_manager_name, updated_opponent_id,
+                                updated_opponent_goals, updated_opponent_position, 
+                                updated_opponent_manager_name, updated_hosting,  
+                                updated_is_win, game_id, club_id)) 
+                db.commit() 
+                return redirect(url_for('view_club_games'))
+            else: 
+                error_message = "Selected club or game does not exist. Please choose an existing club and game." 
+                return render_template('update_club_game.html', error_message=error_message, club_game_details=club_game_details)
+        except ValueError as e:
+            error_message = "Invalid input values. Please try again."
+            return render_template('update_club_game.html', error_message=error_message, club_game_details=club_game_details)
+    if club_game_details: 
+        return render_template('update_club_game.html', club_game_details=club_game_details)
+    
+    return redirect(url_for('view_club_games'))
+
 
 if __name__ == '__main__':
     app.run(debug=True)
