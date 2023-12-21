@@ -11,3 +11,6 @@ New files are created for "INSERT" operation for "competitions" and "club_games"
 WEEK 11:
 Added deletion, sorting, and filtering to app.py for Competitions table
 Updated add_club_game and add_competition files
+WEEK 12:
+Added deletion, sorting, and filtering to app.py for Club Games table
+Some updates in view_club_games.html and sort_filter_club_game.html
