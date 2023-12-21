@@ -42,7 +42,7 @@ try:
 
         
     csv_to_sql_table('data/competitions.csv', 'competitions')
-    csv_to_sql_table('data/clubs.csv', 'clubs')
+    csv_to_sql_table('data/clubs_cleaned.csv', 'clubs')
     csv_to_sql_table('data/players.csv', 'players')
     csv_to_sql_table('data/games_cleaned.csv', 'games')
     csv_to_sql_table('data/appearances_cleaned_sample.csv', 'appearances') 
