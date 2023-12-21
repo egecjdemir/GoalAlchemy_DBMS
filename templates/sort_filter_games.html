@@ -8,39 +8,40 @@
     </head>
 <body>
     <h1>Games</h1>
-
+    <a href="{{ url_for('view_games') }}" class="form-back-to-player-button">Back to Games</a>
+<!--competition_name = competition_name, round = round, home_club_manager_name = home_club_manager_name, away_club_manager_name = away_club_manager_name, home_club_name = home_club_name,  away_club_name = away_club_name, aggregate = aggregate, competition_type = competition_type, referee = referee, sort_by = sort_by) -->
     <!-- Form for Sorting and Filtering -->
     <form action="{{ url_for('sort_filter_games') }}" method="get">
         <!-- Filtering Criteria -->
-        <div>
-            <label for="competition_id">Competition ID:</label>
-            <input type="text" id="competition_id" name="competition_id">
+        <div class="form-content">
+            <label for="competition_name">Competition Name:</label>
+            <input type="text" id="competition_name" name="competition_name">
         </div>
-        <div>
+        <div class="form-content">
             <label for="round">Round:</label>
             <input type="text" id="round" name="round">
         </div>
-        <div>
+        <div class="form-content">
             <label for="home_club_manager_name">Home Club Manager Name:</label>
             <input type="text" id="home_club_manager_name" name="home_club_manager_name">
         </div>
-        <div>
+        <div class="form-content">
             <label for="away_club_manager_name">Away Club Manager Name:</label>
             <input type="text" id="away_club_manager_name" name="away_club_manager_name">
         </div>
-        <div>
+        <div class="form-content">
             <label for="home_club_name">Home Club Name:</label>
             <input type="text" id="home_club_name" name="home_club_name">
         </div>
-        <div>
+        <div class="form-content">
             <label for="away_club_name">Away Club Name:</label>
             <input type="text" id="away_club_name" name="away_club_name">
         </div>
-        <div>
+        <div class="form-content">
             <label for="aggregate">Aggregate:</label>
             <input type="text" id="aggregate" name="aggregate">
         </div>
-        <div>
+        <div class="form-content">
             <label for="competition_type">Competition Type:</label>
             <select id="competition_type" name="competition_type">
                 <option value="">Select Type</option>
@@ -51,41 +52,42 @@
             </select>
         </div>
 
-        <div>
+        <div class="form-content">
             <label for="referee">Referee:</label>
             <input type="text" id="referee" name="referee">
         </div>
 
         <!-- Sorting Options -->
-        <div>
+        <div class="form-content">
             <label for="sort_by">Sort by:</label>
             <select id="sort_by" name="sort_by">
                 <option value="season">Season</option>
                 <option value="attendance">Attendance</option>
-                <option value="home_club_position">Home Club Position</option>
-                <option value="away_club_position">Away Club Position</option>
                 <option value="home_club_goals">Home Club Goals</option>
                 <option value="away_club_goals">Away Club Goals</option>
                 <option value="date">Date</option>
             </select>
         </div>
 
-        <button type="submit">Apply Filters</button>
+        <button class= "filter-apply-button" type="submit">Apply Filters</button>
     </form>
 
-    <table border="1">
+<table border="1">
         <tr>
             <th>Game ID</th>
-            <th>Competition ID</th>
+            <th>Competition Name</th>
+            <th>Home Club Name</th>
+            <th>Away Club Name</th>
+            <th>Score</th>
             <th>Season</th>
             <th>Round</th>
             <th>Date</th>
-            <th>Home Club ID</th>
-            <th>Away Club ID</th>
-            <th>Home Goals</th>
-            <th>Away Goals</th>
-            <th>Home Club Position</th>
-            <th>Away Club Position</th>
+        <!-- <th>Home Club ID</th> -->
+        <!-- <th>Away Club ID</th> -->
+        <!--    <th>Home Goals</th> -->
+        <!--    <th>Away Goals</th> -->
+        <!-- <th>Home Club Position</th> -->
+        <!-- <th>Away Club Position</th> -->
             <th>Home Club Manager Name</th>
             <th>Away Club Manager Name</th>
             <th>Stadium</th>
@@ -95,16 +97,19 @@
         {% for game in games %}
         <tr>
             <td>{{ game[0] }}</td>
-            <td>{{ game[1] }}</td>
+            <td>{{ game[-4]}}</td>
+            <td>{{ game[-2]}}</td>
+            <td>{{ game[-1] }}</td>
+            <td>{{ game[-3] }}</td>
             <td>{{ game[2] }}</td>
             <td>{{ game[3] }}</td>
             <td>{{ game[4] }}</td>
-            <td>{{ game[5] }}</td>
-            <td>{{ game[6] }}</td>
-            <td>{{ game[7] }}</td>
-            <td>{{ game[8] }}</td>
-            <td>{{ game[9] }}</td>
-            <td>{{ game[10] }}</td>
+        <!--<td>{{ game[5] }}</td> -->
+        <!--<td>{{ game[6] }}</td> -->
+        <!--    <td>{{ game[7] }}</td> -->
+        <!--    <td>{{ game[8] }}</td> -->
+        <!-- <td>{{ game[9] }}</td> -->
+        <!-- <td>{{ game[10] }}</td> -->
             <td>{{ game[11] }}</td>
             <td>{{ game[12] }}</td>
             <td>{{ game[13] }}</td>
@@ -117,19 +122,19 @@
     <!-- Pagination links with sliding window -->
     <div class="pagination">
         {% if page > 1 %}
-            <a href="{{ url_for('sort_filter_games', page=page-1) }}">Previous</a>
+            <a href="{{ url_for('sort_filter_games', page=page-1, competition_name = competition_name, round = round, home_club_manager_name = home_club_manager_name, away_club_manager_name = away_club_manager_name, home_club_name = home_club_name,  away_club_name = away_club_name, aggregate = aggregate, competition_type = competition_type, referee = referee, sort_by = sort_by) }}">Previous</a>
         {% endif %}
 
         {% for num in range(start_page, end_page+1) %}
             {% if num == page %}
                 <strong>{{ num }}</strong>
             {% else %}
-                <a href="{{ url_for('sort_filter_games', page=num) }}">{{ num }}</a>
+                <a href="{{ url_for('sort_filter_games', page=num, competition_name = competition_name, round = round, home_club_manager_name = home_club_manager_name, away_club_manager_name = away_club_manager_name, home_club_name = home_club_name,  away_club_name = away_club_name, aggregate = aggregate, competition_type = competition_type, referee = referee, sort_by = sort_by) }}">{{ num }}</a>
             {% endif %}
         {% endfor %}
 
         {% if page < total_pages %}
-            <a href="{{ url_for('sort_filter_games', page=page+1) }}">Next</a>
+            <a href="{{ url_for('sort_filter_games', page=page+1, competition_name = competition_name, round = round, home_club_manager_name = home_club_manager_name, away_club_manager_name = away_club_manager_name, home_club_name = home_club_name,  away_club_name = away_club_name, aggregate = aggregate, competition_type = competition_type, referee = referee, sort_by = sort_by) }}">Next</a>
         {% endif %}
     </div>
     <a href="{{ url_for('index') }}" class="back-button">Back to Main Page</a>

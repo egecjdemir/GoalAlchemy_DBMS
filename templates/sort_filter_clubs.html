@@ -7,19 +7,27 @@
     <title>Sort and Filter Clubs</title>
 </head>
 <body>
+    <a href="{{ url_for('view_clubs') }}" class="form-back-to-player-button">Back to Clubs</a>
     <h1>Sort and Filter Clubs</h1>
 
     <!-- Form for sorting and filtering -->
     <form method="GET" action="{{ url_for('sort_filter_clubs') }}">
+    <div class="form-content">
         <label for="name">Club Name:</label>
         <input type="text" id="name" name="name">
+    </div>
         
+    <div class="form-content">    
         <label for="stadium_name">Stadium Name:</label>
         <input type="text" id="stadium_name" name="stadium_name">
+    </div>
 
-        <label for="domestic_competition_id">Domestic Competition ID:</label>
-        <input type="text" id="domestic_competition_id" name="domestic_competition_id">
+    <div class="form-content">
+        <label for="domestic_competition_name">Domestic Competition Name:</label>
+        <input type="text" id="domestic_competition_name" name="domestic_competition_name">
+    </div>
 
+    <div class="form-content">
         <label for="sort_by">Sort By:</label>
         <select id="sort_by" name="sort_by">
             <option value="stadium_seats">Stadium Seats</option>
@@ -27,17 +35,17 @@
             <option value="national_team_players">National Team Players</option>
             <option value="foreigners_percentage">Foreigners Percentage</option>
         </select>
-
-        <button type="submit">Apply</button>
+    </div>  
+        <button class= "filter-apply-button" type="submit">Apply</button>
     </form>
 
     <table border="1">
         <tr>
             <th>Club ID</th>
-            <th>Club Code</th>
+        <!--    <th>Club Code</th> -->
             <th>Club Name</th>
-            <th>Domestic Competition ID</th>
-            <th>Total Market Value</th>
+            <th>Domestic Competition Name</th>
+        <!-- <th>Total Market Value</th> -->
             <th>Squad Size</th>
             <th>Average Age</th>
             <th>Foreigners Number</th>
@@ -46,16 +54,16 @@
             <th>Stadium Name</th>
             <th>Stadium Seats</th>
             <th>Net Transfer Record</th>
-            <th>Coach Name</th>
+        <!-- <th>Coach Name</th> -->
             <th>Last Season</th>
         </tr>
         {% for club in clubs %}
         <tr>
-            <td>{{ club[0] }}</td>
-            <td>{{ club[1] }}</td>
+            <td>{{ club[0] }}</td>  <!-- this each row indicates a column in table-->
+        <!-- <td>{{ club[1] }}</td> -->
             <td>{{ club[2] }}</td>
-            <td>{{ club[3] }}</td>
-            <td>{{ club[4] }}</td>
+            <td>{{ club[-1] }}</td>
+        <!-- <td>{{ club[4] }}</td> -->
             <td>{{ club[5] }}</td>
             <td>{{ club[6] }}</td>
             <td>{{ club[7] }}</td>
@@ -64,7 +72,7 @@
             <td>{{ club[10] }}</td>
             <td>{{ club[11] }}</td>
             <td>{{ club[12] }}</td>
-            <td>{{ club[13] }}</td>
+        <!-- <td>{{ club[13] }}</td> -->
             <td>{{ club[14] }}</td>
         </tr>
         {% endfor %}
@@ -72,21 +80,23 @@
     <!-- Pagination links with sliding window -->
     <div class="pagination">
         {% if page > 1 %}
-            <a href="{{ url_for('sort_filter_clubs', page=page-1) }}">Previous</a>
+            <a href="{{ url_for('sort_filter_clubs', page=page-1, sort_by=sort_by, name=name, stadium_name=stadium_name, domestic_competition_name=domestic_competition_name) }}">Previous</a>
         {% endif %}
 
         {% for num in range(start_page, end_page+1) %}
             {% if num == page %}
                 <strong>{{ num }}</strong>
             {% else %}
-                <a href="{{ url_for('sort_filter_clubs', page=num) }}">{{ num }}</a>
+                <a href="{{ url_for('sort_filter_clubs', page=num, sort_by=sort_by, name=name, stadium_name=stadium_name, domestic_competition_name=domestic_competition_name) }}">{{ num }}</a>
             {% endif %}
         {% endfor %}
 
         {% if page < total_pages %}
-            <a href="{{ url_for('sort_filter_clubs', page=page+1) }}">Next</a>
+            <a href="{{ url_for('sort_filter_clubs', page=page+1, sort_by=sort_by, name=name, stadium_name=stadium_name, domestic_competition_name=domestic_competition_name) }}">Next</a>
         {% endif %}
     </div>
+
+    
     <a href="{{ url_for('index') }}" class="back-button">Back to Main Page</a>
 </body>
 </html>

@@ -74,32 +74,40 @@ def sort_filter_clubs():
     sort_by = request.args.get('sort_by')
     name = request.args.get('name')
     stadium_name = request.args.get('stadium_name')
-    domestic_competition_id = request.args.get('domestic_competition_id')
+    domestic_competition_name = request.args.get('domestic_competition_name')
 
     # Construct the base query
-    base_query = "FROM clubs"
-    where_clauses = []
+    base_query = """
+    FROM clubs c
+    LEFT JOIN competitions comp ON c.domestic_competition_id = comp.domestic_league_code
+    """
+    where_clauses = ["comp.type LIKE 'domestic_league'"]  # Start with this condition
     query_params = []
 
     # Add filtering conditions
     if name:
-        where_clauses.append("name LIKE %s")
+        where_clauses.append("c.name LIKE %s")  # Prefix with 'c.' for the clubs table
         query_params.append(f"%{name}%")
     if stadium_name:
-        where_clauses.append("stadium_name LIKE %s")
+        where_clauses.append("c.stadium_name LIKE %s")  # Prefix with 'c.' for the clubs table
         query_params.append(f"%{stadium_name}%")
-    if domestic_competition_id:
-        where_clauses.append("domestic_competition_id = %s")
-        query_params.append(domestic_competition_id)
+    if domestic_competition_name:
+        where_clauses.append("REPLACE(comp.name, '-', ' ') LIKE %s")  # Use 'comp.name' with REPLACE function
+        query_params.append(f"%{domestic_competition_name}%")
+
 
     # Complete SQL query for fetching data
-    data_query = "SELECT * " + base_query
+    data_query = """
+    SELECT c.*, REPLACE(comp.name, '-', ' ') AS competition_name
+    """ + base_query
     if where_clauses:
         data_query += " WHERE " + " AND ".join(where_clauses)
 
     # Add sorting condition
     if sort_by in ['stadium_seats', 'average_age', 'national_team_players', 'foreigners_percentage']:
         data_query += f" ORDER BY {sort_by} DESC"
+    else:
+        data_query += f" ORDER BY c.club_id ASC"
     data_query += " LIMIT %s OFFSET %s"
 
     # Execute the query for fetching data
@@ -173,7 +181,7 @@ def sort_filter_games():
     # Sorting and filtering parameters
     sort_by = request.args.get('sort_by')
     filter_params = {
-        'competition_id': request.args.get('competition_id'),
+        'competition_name': request.args.get('competition_name'),
         'round': request.args.get('round'),
         'home_club_manager_name': request.args.get('home_club_manager_name'),
         'away_club_manager_name': request.args.get('away_club_manager_name'),
@@ -185,26 +193,42 @@ def sort_filter_games():
     }
 
     # Construct the base query
-    base_query = "FROM games"
+    base_query = """
+    FROM games g
+    LEFT JOIN competitions comp ON g.competition_id = comp.competition_id
+    LEFT JOIN clubs home_club ON g.home_club_id = home_club.club_id
+    LEFT JOIN clubs away_club ON g.away_club_id = away_club.club_id
+    """
     where_clauses = []
     query_params = []
 
     # Add filtering conditions
     for key, value in filter_params.items():
         if value:
-            if key == 'competition_type' and value in ['other', 'domestic_cup', 'international_cup', 'domestic_league']:
-                where_clauses.append(f"{key} = %s")
+            if key == 'competition_name':
+                where_clauses.append("REPLACE(comp.name, '-', ' ') LIKE %s")
+                query_params.append(f"%{value}%")
+            elif key == 'competition_type' and value in ['other', 'domestic_cup', 'international_cup', 'domestic_league']:
+                where_clauses.append(f"comp.type = %s")
                 query_params.append(value)
             else:
-                where_clauses.append(f"{key} LIKE %s")
+                where_clauses.append(f"g.{key} LIKE %s")  # Ensure to prefix with 'g.'
                 query_params.append(f"%{value}%")
 
     # Complete SQL query for fetching data
-    data_query = "SELECT * " + base_query
+    data_query = """
+    SELECT g.*,
+    REPLACE(comp.name, '-', ' ') AS competition_name,
+    CONCAT(CAST(g.home_club_goals AS CHAR), '-', CAST(g.away_club_goals AS CHAR)) AS score,
+    home_club.name AS home_club_name,
+    away_club.name AS away_club_name
+    """ + base_query
     if where_clauses:
         data_query += " WHERE " + " AND ".join(where_clauses)
     if sort_by:
-        data_query += f" ORDER BY {sort_by}"
+        data_query += f" ORDER BY g.{sort_by}" 
+    else:
+        data_query += f" ORDER BY g.game_id ASC" 
     data_query += " LIMIT %s OFFSET %s"
 
     # Execute the query for fetching data
