@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
+    <a href="{{ url_for('view_players') }}" class="go-back">Back to Players</a>
     <div class="add-player-container">
         <h2 class="add-player-title">Add Player</h2>
         {% if error_message %}
@@ -67,14 +68,33 @@
                 <input type="date" id="date_of_birth" name="date_of_birth">
             </div>
             <br>
-        
-            <!-- Add more fields as needed -->
-
+            <div class="form-group">
+                <label for="sub_position">Subposition:</label>
+                <input type="text" id="sub_position" name="sub_position" placeholder="e.g. Left-Back">
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="position">Position:</label>
+                <input type="text" id="position" name="position" placeholder="e.g. Defender">
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="foot">Foot:</label>
+                <input type="text" id="foot" name="foot" placeholder="e.g. right">
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="height_in_cm">Height in cm:</label>
+                <input type="text" id="height_in_cm" name="height_in_cm" placeholder="e.g. 180">
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="market_value_in_eur">Market Value in EUR:</label>
+                <input type="text" id="market_value_in_eur" name="market_value_in_eur" placeholder="e.g. 100000">
+            </div>
+            <br>
             <button type="submit" class="add-player-submit-button">Add Player</button>
         </form>
-
-        <br>
-        <a href="{{ url_for('view_players') }}" class="add-player-back-link">Back to Players</a>
     </div>
 </body>
 </html>

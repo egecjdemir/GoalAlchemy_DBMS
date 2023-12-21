@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Turkish Players</title>
+</head>
+<body>
+    <a href="{{ url_for('player_features') }}" class="go-back">Back to Player Features</a>
+    <h1>Turkish Players</h1>
+    <table border="1">
+        <tr>
+            <th>Player ID</th>
+            <th>Player Name</th>
+            <th>Current Club Name</th>
+            <th>Date of Birth</th>
+            <th>City of Birth</th>
+            <th>Country of Birth</th>
+            <th>Country of Citizenship</th>
+        </tr>
+        {% for result in result %}
+            <tr>
+                <td><a href="{{ url_for('player_page', player_id=result[0]) }}">{{ result[0] }}</a></td>
+                <td>{{ result[1] }}</td>
+                <td>{{ result[2] }}</td>
+                <td>{{ result[3] }}</td>
+                <td>{{ result[4] }}</td>
+                <td>{{ result[5] }}</td>
+                <td>{{ result[6] }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+        <!-- Pagination links with sliding window -->
+        <div class="pagination">
+            {% if page > 1 %}
+                <a href="{{ url_for('turkish_players', page=page-1) }}">Previous</a>
+            {% endif %}
+        
+            {% for num in range(start_page, end_page+1) %}
+                {% if num == page %}
+                    <strong>{{ num }}</strong>
+                {% else %}
+                    <a href="{{ url_for('turkish_players', page=num) }}">{{ num }}</a>
+                {% endif %}
+            {% endfor %}
+        
+            {% if page < total_pages %}
+                <a href="{{ url_for('turkish_players', page=page+1) }}">Next</a>
+            {% endif %}
+        </div>
+        
+    <a href="{{ url_for('index') }}" class="back-button">Back to Main Page</a>
+</body>
+</html>

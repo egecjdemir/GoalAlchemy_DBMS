@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Clubs with the Highest Average Goals Per Game</title>
+</head>
+<body>
+    <a href="{{ url_for('player_features') }}" class="go-back">Back to Player Features</a>
+    <h1>Clubs with the Highest Average Goals Per Game</h1>
+    <p style="margin-left: 10px;"><em>Only above average of 0.15 goals clubs are listed.</em></p>
+    <table border="1">
+        <tr>
+            <th>Club ID</th>
+            <th>Club Name</th>
+            <th>Average Goals Per Game</th>
+        </tr>
+        {% for result in result %}
+            <tr>
+                <td>{{ result[0] }}</td>
+                <td>{{ result[1] }}</td>
+                <td>{{ result[2] }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+    <!-- Pagination links with sliding window -->
+    <div class="pagination">
+        {% if page > 1 %}
+            <a href="{{ url_for('highest_goal_clubs', page=page-1) }}">Previous</a>
+        {% endif %}
+    
+        {% for num in range(start_page, end_page+1) %}
+            {% if num == page %}
+                <strong>{{ num }}</strong>
+            {% else %}
+                <a href="{{ url_for('highest_goal_clubs', page=num) }}">{{ num }}</a>
+            {% endif %}
+        {% endfor %}
+    
+        {% if page < total_pages %}
+            <a href="{{ url_for('highest_goal_clubs', page=page+1) }}">Next</a>
+        {% endif %}
+    </div>
+</body>
+</html>

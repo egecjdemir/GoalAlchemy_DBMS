@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Player Features</title>
+</head>
+<body>
+    <a href="{{ url_for('view_players') }}" class="go-back">Back to Players</a>
+    <h1>Player Features</h1>
+    <div class="player-features">
+        <a href="{{ url_for('players_total_goals') }}" class="feature-button">Players and Their Last Season Total Goals</a>
+        <a href="{{ url_for('top_earners') }}" class="feature-button">Top 10 Players with Most Market Value</a>
+        <a href="{{ url_for('turkish_players') }}" class="feature-button">Turkish Players</a>
+        <a href="{{ url_for('max_goals') }}" class="feature-button">Players with Highest Goals in a Single Game</a>
+        <a href="{{ url_for('highest_goal_clubs') }}" class="feature-button">Clubs with the Highest Average Goals Per Game</a>
+        <a href="{{ url_for('players_competitions') }}" class="feature-button">Players and Their Total Competitions</a>
+        <a href="{{ url_for('decade_players', decade=1960) }}" class="feature-button">1960s Players</a>
+        <a href="{{ url_for('decade_players', decade=1970) }}" class="feature-button">1970s Players</a>
+        <a href="{{ url_for('decade_players', decade=1980) }}" class="feature-button">1980s Players</a>
+        <a href="{{ url_for('decade_players', decade=1990) }}" class="feature-button">1990s Players</a>
+        <a href="{{ url_for('decade_players', decade=2000) }}" class="feature-button">2000s Players</a>      
+    </div>
+    <a href="{{ url_for('index') }}" class="back-button">Back to Main Page</a>
+</body>

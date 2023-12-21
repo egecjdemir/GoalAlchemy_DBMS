@@ -139,6 +139,7 @@ def view_games():
     return render_template('view_games.html', games=games, page=page, total_pages=total_pages,
                            start_page=start_page, end_page=end_page)
 
+
 @app.route('/sort_filter_games')
 def sort_filter_games():
     # Pagination parameters
@@ -231,7 +232,6 @@ def view_appearances():
                     a.appearance_id DESC
                 LIMIT %s OFFSET %s;
             """
-    
 
     cursor.execute(query, (search_query, f'%{search_query}%', search_query, PER_PAGE, offset))
     appearances = cursor.fetchall()
@@ -395,6 +395,202 @@ def view_players():
     return render_template('view_players.html', players=players, page=page, total_pages=total_pages,
                            start_page=start_page, end_page=end_page, search_query=search_query)
     
+@app.route('/player_features')
+def player_features():
+    return render_template('player_features.html')
+
+@app.route('/max_goals')
+def max_goals():
+    query = """SELECT a.player_id, p.first_name, p.last_name, a.game_id, a.goals
+                FROM appearances a
+                JOIN players p ON a.player_id = p.player_id
+                WHERE a.goals = (
+                    SELECT MAX(goals)
+                    FROM appearances)
+            """
+    cursor.execute(query)
+    result = cursor.fetchall()
+    return render_template('max_goals.html', result=result)
+
+
+@app.route('/top_earners')
+def top_earners(): 
+    query = """SELECT player_id, name, current_club_name, market_value_in_eur, highest_market_value_in_eur
+                FROM players
+                ORDER BY market_value_in_eur DESC
+                LIMIT 10"""
+    cursor.execute(query)
+    result = cursor.fetchall()
+    return render_template('top_earners.html', result=result)
+
+@app.route('/highest_goal_clubs')
+def highest_goal_clubs():
+    page = request.args.get('page', 1, type=int)
+    offset = (page - 1) * PER_PAGE
+    
+    query = """SELECT c.club_id, c.name, AVG(a.goals) AS avg_goals_per_game
+            FROM clubs c
+            JOIN appearances a ON c.club_id = a.player_club_id
+            GROUP BY c.club_id, c.name
+            HAVING AVG(a.goals) > 0.15
+            ORDER BY avg_goals_per_game DESC
+            LIMIT %s OFFSET %s
+            """
+    cursor.execute(query, (PER_PAGE, offset))
+    result = cursor.fetchall()
+    
+    total_query = """SELECT COUNT(*)
+                    FROM (
+                        SELECT c.club_id, c.name, AVG(a.goals) AS avg_goals_per_game
+                        FROM clubs c
+                        JOIN appearances a ON c.club_id = a.player_club_id
+                        GROUP BY c.club_id, c.name
+                        HAVING AVG(a.goals) > 0.15
+                    ) AS subquery"""
+                    
+    cursor.execute(total_query)
+    total_clubs = cursor.fetchone()[0]
+    
+    total_pages = (total_clubs + PER_PAGE - 1) // PER_PAGE
+    
+    visible_pages = 5
+    half_window = visible_pages // 2
+    start_page = max(1, page - half_window)
+    end_page = min(total_pages, start_page + visible_pages - 1)
+    
+    return render_template('highest_goal_clubs.html', result=result, page=page, total_pages=total_pages,
+                            start_page=start_page, end_page=end_page)
+    
+@app.route('/players_total_goals')
+def players_total_goals():
+    page = request.args.get('page', 1, type=int)
+    offset = (page - 1) * PER_PAGE
+    
+    query = """SELECT p.player_id, p.name, SUM(a.goals) AS total_goals
+            FROM players p
+            LEFT JOIN appearances a ON p.player_id = a.player_id
+            GROUP BY p.player_id, p.name
+            ORDER BY total_goals DESC
+            LIMIT %s OFFSET %s"""
+            
+    cursor.execute(query, (PER_PAGE, offset))
+    result = cursor.fetchall()  
+    
+    total_query = """SELECT COUNT(*)
+                    FROM (
+                        SELECT p.player_id, p.first_name, p.last_name, COALESCE(SUM(a.goals), 0) AS total_goals
+                        FROM players p
+                        LEFT JOIN appearances a ON p.player_id = a.player_id
+                        GROUP BY p.player_id, p.first_name, p.last_name
+                    ) AS subquery"""
+    cursor.execute(total_query)
+    total_players = cursor.fetchone()[0]
+    
+    total_pages = (total_players + PER_PAGE - 1) // PER_PAGE
+    
+    visible_pages = 5
+    half_window = visible_pages // 2
+    start_page = max(1, page - half_window)
+    end_page = min(total_pages, start_page + visible_pages - 1)
+    
+    return render_template('players_total_goals.html', result=result, page=page, total_pages=total_pages,
+                            start_page=start_page, end_page=end_page)
+    
+@app.route('/players_competitions')
+def players_competitions():
+    page = request.args.get('page', 1, type=int)
+    offset = (page - 1) * PER_PAGE
+    
+    query = """SELECT p.player_id, p.name, COUNT(DISTINCT a.competition_id) AS competitions
+            FROM players p
+            JOIN appearances a ON p.player_id = a.player_id
+            GROUP BY p.player_id, p.name
+            ORDER BY competitions DESC
+            LIMIT %s OFFSET %s"""
+    
+    cursor.execute(query, (PER_PAGE, offset))
+    result = cursor.fetchall()
+    
+    total_query = """SELECT COUNT(*)
+                    FROM (
+                        SELECT p.player_id, p.name, COUNT(DISTINCT a.competition_id) AS competitions
+                        FROM players p
+                        JOIN appearances a ON p.player_id = a.player_id
+                        GROUP BY p.player_id, p.name
+                    ) AS subquery"""
+                    
+    cursor.execute(total_query)
+    total_players = cursor.fetchone()[0]
+    
+    total_pages = (total_players + PER_PAGE - 1) // PER_PAGE
+    
+    visible_pages = 5
+    half_window = visible_pages // 2
+    start_page = max(1, page - half_window)
+    end_page = min(total_pages, start_page + visible_pages - 1)
+    
+    return render_template('players_competitions.html', result=result, page=page, total_pages=total_pages,
+                            start_page=start_page, end_page=end_page)           
+
+@app.route('/players/decade/<int:decade>', methods=['GET'])
+def decade_players(decade):
+    page = request.args.get('page', 1, type=int)
+    offset = (page - 1) * PER_PAGE
+    
+    start_date = f'{decade}-01-01'
+    end_date = f'{decade+9}-12-31'
+    
+    query = """SELECT player_id, name, current_club_name, date_of_birth
+                FROM players
+                WHERE date_of_birth BETWEEN %s AND %s
+                ORDER BY date_of_birth ASC
+                LIMIT %s OFFSET %s"""
+    cursor.execute(query, (start_date, end_date, PER_PAGE, offset))
+    players = cursor.fetchall()
+    
+    total_query = """SELECT COUNT(*)
+                    FROM players
+                    WHERE date_of_birth BETWEEN %s AND %s"""
+    cursor.execute(total_query, (start_date, end_date))
+    total_players = cursor.fetchone()[0]
+    
+    total_pages = (total_players + PER_PAGE - 1) // PER_PAGE
+    
+    visible_pages = 5
+    half_window = visible_pages // 2
+    start_page = max(1, page - half_window)
+    end_page = min(total_pages, start_page + visible_pages - 1)
+    
+    return render_template('decade_players.html', players=players, page=page, total_pages=total_pages,
+                           start_page=start_page, end_page=end_page, decade=decade)
+
+@app.route('/turkish_players')
+def turkish_players():
+    page = request.args.get('page', 1, type=int)
+    offset = (page - 1) * PER_PAGE
+    
+    query = """SELECT player_id, name, current_club_name, date_of_birth, city_of_birth, country_of_birth, country_of_citizenship
+                FROM players
+                WHERE country_of_citizenship = 'Turkey'
+                LIMIT %s OFFSET %s"""
+    cursor.execute(query, (PER_PAGE, offset))
+    result = cursor.fetchall()
+    
+    count_query = """SELECT COUNT(*)
+                        FROM players
+                        WHERE country_of_citizenship = 'Turkey'"""
+    cursor.execute(count_query)
+    total_players = cursor.fetchone()[0]
+    
+    total_pages = (total_players + PER_PAGE - 1) // PER_PAGE
+    
+    visible_pages = 5
+    half_window = visible_pages // 2
+    start_page = max(1, page - half_window)
+    end_page = min(total_pages, start_page + visible_pages - 1)
+    
+    return render_template('turkish_players.html', result=result, page=page, total_pages=total_pages,
+                           start_page=start_page, end_page=end_page)
     
 @app.route('/view_players/add_player', methods=['GET', 'POST'])
 def add_player():
@@ -415,6 +611,8 @@ def add_player():
             first_name = request.form.get('first_name')
             last_name = request.form.get('last_name')
             
+            name = first_name + ' ' + last_name
+            
             last_season_input = request.form.get('last_season')
             last_season = int(last_season_input) if last_season_input else None
             
@@ -432,26 +630,43 @@ def add_player():
             country_of_birth = request.form.get('country_of_birth')
             city_of_birth = request.form.get('city_of_birth')
             country_of_citizenship = request.form.get('country_of_citizenship')
+            sub_position = request.form.get('sub_position')
+            position = request.form.get('position')
+            foot = request.form.get('foot')
+            
+            height_in_cm_input = request.form.get('height_in_cm')
+            height_in_cm = int(height_in_cm_input) if height_in_cm_input else None
+            
+            market_value_in_eur_input = request.form.get('market_value_in_eur')
+            market_value_in_eur = int(market_value_in_eur_input) if market_value_in_eur_input else None
+            
+            if country_of_birth.isdigit() or country_of_citizenship.isdigit() or city_of_birth.isdigit() or player_code.isdigit() or sub_position.isdigit() or position.isdigit() or foot.isdigit():
+                error_message = "Invalid input values. Please try again."
+                return render_template('add_player.html', error_message=error_message)
+            
             date_of_birth_input = request.form.get('date_of_birth')
             date_of_birth = None
+            
             if date_of_birth_input:
                 try:
-                    # Assuming the date format is '%Y-%m-%d', adjust it based on your actual format
+                    # Assuming the date format is '%Y-%m-%d'
                     date_of_birth = datetime.strptime(date_of_birth_input, '%Y-%m-%d').date()
                 except ValueError:
                     # Handle invalid date format as needed
                     pass
-
+            
             # Insert the new player into the 'players' table
             if existing_club or current_club_id is None:
                 query = """
                     INSERT INTO players 
-                    (player_id, first_name, last_name, last_season, current_club_id,
-                    player_code, country_of_birth, city_of_birth, country_of_citizenship, date_of_birth)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                    (player_id, first_name, last_name, name, last_season, current_club_id, player_code, 
+                    country_of_birth, city_of_birth, country_of_citizenship, date_of_birth, sub_position, 
+                    position, foot, height_in_cm, market_value_in_eur)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                 """
-                cursor.execute(query, (player_id, first_name, last_name, last_season, current_club_id,
-                                    player_code, country_of_birth, city_of_birth, country_of_citizenship, date_of_birth))
+                cursor.execute(query, (player_id, first_name, last_name, name, last_season, current_club_id,
+                                    player_code, country_of_birth, city_of_birth, country_of_citizenship, date_of_birth, sub_position,
+                                    position, foot, height_in_cm, market_value_in_eur))
                 db.commit()
 
                 # Redirect to the view_players page after adding the player
@@ -569,6 +784,8 @@ def update_player(player_id):
             updated_first_name = request.form.get('first_name')
             updated_last_name = request.form.get('last_name')
             
+            updated_name = updated_first_name + ' ' + updated_last_name
+            
             last_season_input = request.form.get('last_season')
             updated_last_season = int(last_season_input) if last_season_input else None
 
@@ -586,12 +803,24 @@ def update_player(player_id):
             updated_country_of_birth = request.form.get('country_of_birth')
             updated_city_of_birth = request.form.get('city_of_birth')
             updated_country_of_citizenship = request.form.get('country_of_citizenship')
+            updated_sub_position = request.form.get('sub_position')
+            updated_position = request.form.get('position')
+            updated_foot = request.form.get('foot')
+            
+            updated_height_in_cm_input = request.form.get('height_in_cm')
+            updated_height_in_cm = int(updated_height_in_cm_input) if updated_height_in_cm_input else None
+            
+            updated_market_value_in_eur_input = request.form.get('market_value_in_eur')
+            updated_market_value_in_eur = int(updated_market_value_in_eur_input) if updated_market_value_in_eur_input else None
+            
+            if updated_country_of_birth.isdigit() or updated_country_of_citizenship.isdigit() or updated_city_of_birth.isdigit() or updated_player_code.isdigit() or updated_sub_position.isdigit() or updated_position.isdigit() or updated_foot.isdigit():
+                error_message = "Invalid input values. Please try again."
+                return render_template('add_player.html', error_message=error_message)
             
             date_of_birth_input = request.form.get('date_of_birth')
             updated_date_of_birth = None
             if date_of_birth_input:
                 try:
-                    # Assuming the date format is '%Y-%m-%d', adjust it based on your actual format
                     updated_date_of_birth = datetime.strptime(date_of_birth_input, '%Y-%m-%d').date()
                 except ValueError:
                     # Handle invalid date format as needed
@@ -600,17 +829,19 @@ def update_player(player_id):
             if existing_club or updated_current_club_id is None:
                 update_query = """
                     UPDATE players 
-                    SET first_name = %s, last_name = %s, last_season = %s, 
+                    SET first_name = %s, last_name = %s, name = %s, last_season = %s, 
                         current_club_id = %s, player_code = %s, 
                         country_of_birth = %s, city_of_birth = %s, 
-                        country_of_citizenship = %s, date_of_birth = %s
+                        country_of_citizenship = %s, date_of_birth = %s, sub_position = %s,
+                        position = %s, foot = %s, height_in_cm = %s, market_value_in_eur = %s
                     WHERE player_id = %s
                 """
-                cursor.execute(update_query, (updated_first_name, updated_last_name,
+                cursor.execute(update_query, (updated_first_name, updated_last_name, updated_name,
                                                 updated_last_season, updated_current_club_id,
                                                 updated_player_code, updated_country_of_birth,
                                                 updated_city_of_birth, updated_country_of_citizenship,
-                                                updated_date_of_birth, player_id))
+                                                updated_date_of_birth, updated_sub_position, updated_position, updated_foot, 
+                                                updated_height_in_cm, updated_market_value_in_eur, player_id))
                 db.commit()
 
             # Redirect to the view_players page after updating the player
