@@ -11,7 +11,7 @@
 </head>
 <body>
     <div class="delete-club_game-container">
-        <form method="post" action="{{ url_for('delete_club_game', game_id=club_game[0], club_id=club_game[1])}}" class="delete-club_game-form">
+        <form method="post" action="{{ url_for('delete_club_game', game_id=club_game[0])}}" class="delete-club_game-form">
             <p>Are you sure you want to delete the club game with game ID {{ club_game[0] }}?</p>
             <button type="submit" class="delete-club_game-submit-button">Delete Club Game</button>
         </form>

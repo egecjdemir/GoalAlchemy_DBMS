@@ -952,17 +952,17 @@ def sort_filter_club_games():
                             start_page=start_page, end_page=end_page, **filters)
     
     
-@app.route('/delete_club_game/<int:game_id>/<int:club_id>', methods=['GET', 'POST']) 
-def delete_club_game(game_id, club_id): 
+@app.route('/delete_club_game/<int:game_id>', methods=['GET', 'POST']) 
+def delete_club_game(game_id): 
     if request.method == 'POST':
-        query = "DELETE FROM club_games WHERE game_id = %s AND club_id = %s"
-        cursor.execute(query, (game_id,club_id,))
+        query = "DELETE FROM club_games WHERE game_id = %s"
+        cursor.execute(query, (game_id,))
         db.commit()
         return redirect(url_for('view_club_games')) 
     
-    query = "SELECT * FROM club_games WHERE game_id = %s AND club_id = %s" 
-    cursor.execute(query, (game_id, club_id,)) 
-    club_game = cursor.fetchone()
+    query = "SELECT * FROM club_games WHERE game_id = %s" 
+    cursor.execute(query, (game_id,)) 
+    club_game = cursor.fetchall()[0]
     return render_template('delete_club_game.html', club_game=club_game) 
 
 @app.route('/update_club_game/<int:game_id>/<int:club_id>', methods=['GET', 'POST'])
