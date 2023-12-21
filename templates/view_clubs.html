@@ -11,12 +11,13 @@
     <a href="{{ url_for('sort_filter_clubs') }}" class="button">Sort or Filter Clubs</a>
     <h1>Clubs</h1>
     <table border="1">
+            <table border="1">
         <tr>
             <th>Club ID</th>
-            <th>Club Code</th>
+        <!--    <th>Club Code</th> -->
             <th>Club Name</th>
-            <th>Domestic Competition ID</th>
-            <th>Total Market Value</th>
+            <th>Domestic Competition Name</th>
+        <!-- <th>Total Market Value</th> -->
             <th>Squad Size</th>
             <th>Average Age</th>
             <th>Foreigners Number</th>
@@ -25,16 +26,16 @@
             <th>Stadium Name</th>
             <th>Stadium Seats</th>
             <th>Net Transfer Record</th>
-            <th>Coach Name</th>
+        <!-- <th>Coach Name</th> -->
             <th>Last Season</th>
         </tr>
         {% for club in clubs %}
         <tr>
             <td>{{ club[0] }}</td>  <!-- this each row indicates a column in table-->
-            <td>{{ club[1] }}</td>
+        <!-- <td>{{ club[1] }}</td> -->
             <td>{{ club[2] }}</td>
-            <td>{{ club[3] }}</td>
-            <td>{{ club[4] }}</td>
+            <td>{{ club[-1] }}</td>
+        <!-- <td>{{ club[4] }}</td> -->
             <td>{{ club[5] }}</td>
             <td>{{ club[6] }}</td>
             <td>{{ club[7] }}</td>
@@ -43,7 +44,7 @@
             <td>{{ club[10] }}</td>
             <td>{{ club[11] }}</td>
             <td>{{ club[12] }}</td>
-            <td>{{ club[13] }}</td>
+        <!-- <td>{{ club[13] }}</td> -->
             <td>{{ club[14] }}</td>
         </tr>
         {% endfor %}
