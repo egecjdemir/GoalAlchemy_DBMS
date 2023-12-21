@@ -17,3 +17,9 @@ Updated config.py in a way that all group members can connect to the database by
 Added flask_app.py (now called app.py), that creates a flask application.
   In this file, added a route that gets all results in clubs table.
   Also, updated clubs.html so it can show all records in clubs table.
+
+Week 11:
+Added sorting and filtering functionalities for clubs and games tables to app.py
+Created HTML files for both tables to show sorted and filtered games and clubs
+Added pagination functionality to sort_filter_clubs and limit the max number of showed clubs.
+  Also updated the HTML file for this too
