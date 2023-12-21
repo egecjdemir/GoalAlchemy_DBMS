@@ -270,6 +270,23 @@ def sort_filter_games():
     return render_template('sort_filter_games.html', games=games, page=page, total_pages=total_pages,
                            start_page=start_page, end_page=end_page)
 
+
+@app.route('/delete_game/<string:game_id>', methods=['GET', 'POST'])
+def delete_game(game_id):
+    if request.method == 'POST':
+        query = "DELETE FROM games WHERE game_id = %s"
+        cursor.execute(query, (game_id,))
+        db.commit()
+
+        return redirect(url_for('view_games'))
+
+    query = "SELECT * FROM games WHERE game_id = %s"
+    cursor.execute(query, (game_id,))
+    game = cursor.fetchone()
+
+    return render_template('delete_game.html', game=game)
+
+
 @app.route('/view_appearances', methods=['GET', 'POST'])
 def view_appearances():
     page = request.args.get('page', 1, type=int)
