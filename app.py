@@ -133,6 +133,22 @@ def sort_filter_clubs():
     return render_template('sort_filter_clubs.html', clubs=clubs, page=page, total_pages=total_pages,
                            start_page=start_page, end_page=end_page)
 
+@app.route('/delete_club/<string:club_id>', methods=['GET', 'POST'])
+def delete_club(club_id):
+    if request.method == 'POST':
+        query = "DELETE FROM clubs WHERE club_id = %s"
+        cursor.execute(query, (club_id,))
+        db.commit()
+
+        return redirect(url_for('view_clubs'))
+
+    query = "SELECT * FROM clubs WHERE club_id = %s"
+    cursor.execute(query, (club_id,))
+    club = cursor.fetchone()
+
+    return render_template('delete_club.html', club=club)
+
+
 @app.route('/view_games')
 def view_games():
     page = request.args.get('page', 1, type=int)
