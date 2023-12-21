@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Top Earners</title>
+</head>
+<body>
+    <a href="{{ url_for('player_features') }}" class="go-back">Back to Player Features</a>
+    <h1>Top 10 Players with Most Market Value</h1>
+    <table border="1">
+        <tr>
+            <th>Player ID</th>
+            <th>Player Name</th>
+            <th>Current Club Name</th>
+            <th>Market Value in EUR</th>
+            <th>Highest Market Value in EUR</th>
+        </tr>
+        {% for result in result %}
+            <tr>
+                <td><a href="{{ url_for('player_page', player_id=result[0]) }}">{{ result[0] }}</a></td>
+                <td>{{ result[1] }}</td>
+                <td>{{ result[2] }}</td>
+                <td>{{ result[3] }}</td>
+                <td>{{ result[4] }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

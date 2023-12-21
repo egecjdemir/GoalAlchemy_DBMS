@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Players by Birth Year</title>
+</head>
+<body>
+    <a href="{{ url_for('player_features') }}" class="go-back">Back to Player Features</a>
+    <h1>Players by Birth Year</h1>
+
+    <table border="1">
+        <tr>
+            <th>Player ID</th>
+            <th>Name</th>
+            <th>Current Club</th>
+            <th>Date of Birth</th>
+        </tr>
+        {% for player in players %}
+            <tr>
+                <td><a href="{{ url_for('player_page', player_id=player[0]) }}">{{ player[0] }}</a></td>
+                <td>{{ player[1] }}</td>
+                <td>{{ player[2] }}</td>
+                <td>{{ player[3] }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+
+    <!-- Pagination links with sliding window -->
+    <div class="pagination">
+        {% if page > 1 %}
+            <a href="{{ url_for('decade_players', decade=decade, page=page-1) }}">Previous</a>
+        {% endif %}
+
+        {% for num in range(start_page, end_page+1) %}
+            {% if num == page %}
+                <strong>{{ num }}</strong>
+            {% else %}
+                <a href="{{ url_for('decade_players', decade=decade, page=num) }}">{{ num }}</a>
+            {% endif %}
+        {% endfor %}
+
+        {% if page < total_pages %}
+            <a href="{{ url_for('decade_players', decade=decade, page=page+1) }}">Next</a>
+        {% endif %}
+    </div>
+</body>
+</html>

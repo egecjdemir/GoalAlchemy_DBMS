@@ -8,6 +8,7 @@
     <title>Update Player</title>
 </head>
 <body>
+    <a href="{{ url_for('view_players') }}" class="go-back">Back to Players</a>
     <div class="update-player-container">
         <h1 class="update-title">Update Player</h1>
         
@@ -61,12 +62,34 @@
             <div class="form-group">
                 <label for="date_of_birth">Date of Birth:</label>
                 <input type="date" id="date_of_birth" name="date_of_birth" value="{{ player_details[8] }}">
+            </div>
             <br>
-        
-            <!-- Add other input fields for the remaining player details -->
-
+            <div class="form-group">
+                <label for="sub_position">Sub Position:</label>
+                <input type="text" id="sub_position" name="sub_position" value="{{ player_details[9] }}">
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="position">Position:</label>
+                <input type="text" id="position" name="position" value="{{ player_details[10] }}">
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="foot">Foot:</label>
+                <input type="text" id="foot" name="foot" value="{{ player_details[11] }}">
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="height_in_cm">Height in cm:</label>
+                <input type="text" id="height_in_cm" name="height_in_cm" value="{{ player_details[12] }}">
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="market_value_in_eur">Market Value in EUR:</label>
+                <input type="text" id="market_value_in_eur" name="market_value_in_eur" value="{{ player_details[13] }}">
+            </div>
+            <br>    
             <button class="update-player-submit-button"type="submit">Update Player</button>
-            <a href="{{ url_for('view_players') }}" class="update-go-back">Go Back to Players</a>
         </form>
     </div>
 </body>

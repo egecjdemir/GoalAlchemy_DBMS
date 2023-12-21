@@ -14,9 +14,11 @@
     </form>
 
     <a href="{{ url_for('sort_filter_players') }}" class="sort-filter-button">Sort and Filter Players</a>
+    <a href="{{ url_for('player_features') }}" class="sort-filter-button">Check Player Features</a>
+    <a href="{{ url_for('add_player') }}" class="sort-filter-button">Add Player</a>
 
     {% if search_query %}
-        <a href="{{ url_for('view_players') }}" class="go-back-button">Go Back to Players</a>
+        <a href="{{ url_for('view_players') }}" class="sort-filter-button">Go Back to Players</a>
         <!--<p class="search-">{{ players|length }} players found{% if search_query %} for "{{ search_query }}"{% endif %}</p>-->
     {% endif %}
 
@@ -88,7 +90,6 @@
         {% endif %}
     </div>
     <a href="{{ url_for('index') }}" class="back-button">Back to Main Page</a>
-    <a href="{{ url_for('add_player') }}" class="add-player-button">Add Player</a>
 </body>
 <script>
     function confirmDelete(playerId) {
