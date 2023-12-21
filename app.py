@@ -32,8 +32,19 @@ def index():
 def view_clubs():
     page = request.args.get('page', 1, type=int)
     offset = (page - 1) * PER_PAGE
+    
     # Fetch clubs for the current page
-    query = "SELECT * FROM clubs LIMIT %s OFFSET %s"
+    query = """SELECT c.*, 
+            REPLACE(comp.name, '-', ' ') AS competition_name
+            FROM clubs c
+            LEFT JOIN competitions comp 
+            ON c.domestic_competition_id = comp.domestic_league_code
+            WHERE comp.type LIKE 'domestic_league'
+            ORDER BY club_id ASC
+            LIMIT %s OFFSET %s"""
+    
+    #query = "SELECT * FROM clubs LIMIT %s OFFSET %s"
+
     cursor.execute(query, (PER_PAGE, offset))
     clubs = cursor.fetchall()
 
