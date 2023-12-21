@@ -129,8 +129,21 @@ def sort_filter_clubs():
 def view_games():
     page = request.args.get('page', 1, type=int)
     offset = (page - 1) * PER_PAGE
+
     # Fetch games for the current page
-    query = "SELECT * FROM games LIMIT %s OFFSET %s"
+    query = """SELECT g.*,
+            REPLACE(comp.name, '-', ' ') AS competition_name,
+            CONCAT(CAST(g.home_club_goals AS CHAR), '-', CAST(g.away_club_goals AS CHAR)) AS score,
+            home_club.name AS home_club_name,
+            away_club.name AS away_club_name
+            FROM games g
+            LEFT JOIN competitions comp ON g.competition_id = comp.competition_id
+            LEFT JOIN clubs home_club ON g.home_club_id = home_club.club_id
+            LEFT JOIN clubs away_club ON g.away_club_id = away_club.club_id
+            ORDER BY g.game_id ASC
+            LIMIT %s OFFSET %s
+            """
+    
     cursor.execute(query, (PER_PAGE, offset))
     games = cursor.fetchall()
 
