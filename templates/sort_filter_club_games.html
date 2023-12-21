@@ -13,14 +13,6 @@
     <!-- Form for sorting and filtering -->
     <form method="GET" action="{{ url_for('sort_filter_club_games') }}">
         <div class="form-content">
-            <label for="club_id">Club ID:</label>
-            <input type="number" id="club_id" name="club_id">
-        </div>
-        <div class="form-content">
-            <label for="opponent_id">Opponent ID:</label>
-            <input type="number" id="opponent_id" name="opponent_id">
-        </div>
-        <div class="form-content">
             <label for="own_manager_name">Own Manager Name:</label>
             <input type="text" id="own_manager_name" name="own_manager_name">
         </div>
@@ -40,8 +32,6 @@
         <div class="form-sort">
             <label for="sort_by">Sort By:</label>
             <select id="sort_by" name="sort_by">
-                <option value="club_id">Club ID</option>
-                <option value="opponent_id">Opponent ID</option>
                 <option value="own_goals">Own Goals</option>
                 <option value="own_position">Own Position</option>
                 <option value="opponent_goals">Opponent Goals</option>
@@ -58,7 +48,6 @@
             <th>Own Goals</th>
             <th>Own Position</th>
             <th>Own Manager Name</th>
-            <th>City of Birth</th>
             <th>Opponent ID</th>
             <th>Opponent Goals</th>
             <th>Opponent Position</th>
@@ -79,7 +68,6 @@
             <td>{{ club_game[8] }}</td>
             <td>{{ club_game[9] }}</td>
             <td>{{ club_game[10] }}</td>
-            <td>{{ club_game[11] }}</td>
         </tr>
         {% endfor %}
     </table>

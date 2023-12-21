@@ -821,11 +821,22 @@ def view_club_games():
     page = request.args.get('page', 1, type=int)
     offset = (page - 1) * PER_PAGE
     
-    query = f"SELECT * FROM club_games WHERE game_id = %s OR club_id = %s OR opponent_id = %s OR own_manager_name LIKE %s OR opponent_manager_name LIKE %s LIMIT %s OFFSET %s"
+    query = """SELECT cg.game_id, cg.club_id, c1.name, cg.own_goals, cg.own_position, cg.own_manager_name,
+                        cg.opponent_id, c2.name, cg.opponent_goals, cg. opponent_position, cg.opponent_manager_name, 
+                        cg.hosting, cg.is_win 
+                        FROM club_games cg 
+                        LEFT JOIN clubs c1 ON cg.club_id = c1.club_id
+                        LEFT JOIN clubs c2 ON cg.opponent_id = c2.club_id
+                        WHERE cg.game_id = %s OR cg.club_id = %s OR cg.opponent_id = %s OR c1.name LIKE %s OR c2.name LIKE %s
+                        ORDER BY cg.game_id DESC LIMIT %s OFFSET %s"""
     cursor.execute(query, (search_query, search_query, search_query, f'%{search_query}%', f'%{search_query}%', PER_PAGE, offset))
     club_games = cursor.fetchall()
     
-    total_query = "SELECT COUNT(*) FROM club_games WHERE game_id = %s OR club_id = %s OR opponent_id = %s OR own_manager_name LIKE %s OR opponent_manager_name LIKE %s"
+    total_query = """SELECT COUNT(*) FROM club_games cg 
+                        LEFT JOIN clubs c1 ON cg.club_id = c1.club_id
+                        LEFT JOIN clubs c2 ON cg.opponent_id = c2.club_id
+                        WHERE cg.game_id = %s OR cg.club_id = %s OR cg.opponent_id = %s OR c1.name LIKE %s OR c2.name LIKE %s
+                        ORDER BY cg.game_id DESC"""
     cursor.execute(total_query, (search_query, search_query, search_query, f'%{search_query}%', f'%{search_query}%'))  
     total_club_games = cursor.fetchone()[0]
 
@@ -906,8 +917,6 @@ def sort_filter_club_games():
     offset = (page - 1) * PER_PAGE 
     
     filters = { 
-        'club_id': request.args.get('club_id'),
-        'opponent_id': request.args.get('opponent_id'), 
         'own_manager_name': request.args.get('own_manager_name'), 
         'opponent_manager_name': request.args.get('opponent_manager_name'),  
         'hosting': request.args.get('hosting'), 
@@ -928,8 +937,8 @@ def sort_filter_club_games():
     if where_clauses: 
         data_query += " WHERE " + " AND ".join(where_clauses)
         
-    if filters['sort_by'] in ['club_id', 'opponent_id', 'own_goals', 'own_position', 'opponent_goals', 'opponent_position']:
-        data_query += f" ORDER BY {filters['sort_by']} ASC" 
+    if filters['sort_by'] in ['own_goals', 'own_position', 'opponent_goals', 'opponent_position']:
+        data_query += f" ORDER BY {filters['sort_by']} DESC" 
     data_query += " LIMIT %s OFFSET %s" 
     
     cursor.execute(data_query, tuple(query_params + [PER_PAGE, offset]))

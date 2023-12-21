@@ -8,7 +8,7 @@
 </head>
 <body>
     <form method="post" action="{{ url_for('view_club_games') }}" class="search-form">
-        <input type="text" name="search_query" placeholder="Search by ID or manager name..." value="{{ search_query }}">
+        <input type="text" name="search_query" placeholder="Search by game ID, club_id or club name..." value="{{ search_query }}">
         <button type="submit">Search</button>
     </form>
 
@@ -23,10 +23,12 @@
         <tr>
             <th>Game ID</th>
             <th>Club ID</th>
+            <th>Club Name</th>
             <th>Own Goals</th>
             <th>Own Position</th>
             <th>Own Manager Name</th>
             <th>Opponent ID</th>
+            <th>Opponent Club Name</th>
             <th>Opponent Goals</th>
             <th>Opponent Position</th>
             <th>Opponent Manager Name</th>
@@ -37,8 +39,8 @@
         </tr>
         {% for club_game in club_games %}
         <tr>
-            <td>{{ club_game[0] }}</td>  <!-- this each row indicates a column in table-->
-            <td>{{ club_game[1] }}</td>
+            <td>{{ club_game[0] }}</td>
+            <td>{{ club_game[1] }}</td>  <!-- this each row indicates a column in table-->
             <td>{{ club_game[2] }}</td>
             <td>{{ club_game[3] }}</td>
             <td>{{ club_game[4] }}</td>
@@ -48,6 +50,8 @@
             <td>{{ club_game[8] }}</td>
             <td>{{ club_game[9] }}</td>
             <td>{{ club_game[10] }}</td>
+            <td>{{ club_game[11] }}</td>
+            <td>{{ club_game[12] }}</td>
             <td><a class="update-box" href="{{ url_for('update_club_game', game_id=club_game[0], club_id=club_game[1]) }}">✎</a></td>
             <td>
                 <div class="delete-box" onclick="confirmDelete('{{ club_game[0] }}')">X</div>
