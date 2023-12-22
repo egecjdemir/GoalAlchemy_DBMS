@@ -159,7 +159,6 @@ def add_club():
         total_market_value = request.form.get('total_market_value')
         squad_size = request.form.get('squad_size')
         average_age = request.form.get('average_age')
-        competition_id = request.form.get('competition_id')
         foreigners_number = request.form.get('foreigners_number')
         foreigners_percentage = request.form.get('foreigners_percentage')
         national_team_players = request.form.get('national_team_players')

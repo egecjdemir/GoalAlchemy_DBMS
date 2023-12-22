@@ -9,8 +9,8 @@
 </head>
 <body>
     <a href="{{ url_for('view_clubs') }}" class="go-back">Back to Clubs</a>
-    <div class="add-club-container">
-        <h2 class="add-club-title">Add Club</h2>
+    <div class="add-player-container">
+        <h2 class="add-player-title">Add Club</h2>
         {% if error_message %}
             <div class="alert-error">
                 {{ error_message }}
@@ -102,7 +102,7 @@
                 <input type="text" id="url" name="url" placeholder="e.g. https://www.transfermarkt.com/galatasaray-istanbul/startseite/verein/141">
             </div>
             <br>
-            <button type="submit" class="add-club-submit-button">Add Club</button>
+            <button type="submit" class="add-player-submit-button">Add Club</button>
         </form>
     </div>
 </body>
