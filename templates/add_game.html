@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="UTF-8">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Game</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <a href="{{ url_for('view_games') }}" class="go-back">Back to Games</a>
+    <div class="add-player-container">
+        <h2 class="add-player-title">Add Game</h2>
+        {% if error_message %}
+            <div class="alert-error">
+                {{ error_message }}
+            </div>
+        {% endif %}
+        
+        <form method="post" action="{{ url_for('add_game') }}" class="add-game-form">
+            <div class="form-group">
+                <label for="game_id">Game ID:<span class="required">*</span></label>
+                <input type="number" id="game_id" name="game_id" placeholder="e.g. 1234" required>
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="competition_id">Competition ID:<span class="required">*</span></label>
+                <input type="text" id="competition_id" name="competition_id" placeholder="e.g. ES1">
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="season">Season:</label>
+                <input type="number" id="season" name="season" placeholder="e.g. 2020">
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="round">Round:</label>
+                <input type="text" id="round" name="round" placeholder="e.g. 1">
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="date">Date:<span class="required">*</span></label>
+                <input type="date" id="date" name="date" required>
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="home_club_id">Home Club ID:<span class="required">*</span></label>
+                <input type="number" id="home_club_id" name="home_club_id" placeholder="e.g. 100">
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="away_club_id">Away Club ID<span class="required">*</span>:</label>
+                <input type="number" id="away_club_id" name="away_club_id" placeholder="e.g. 101">
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="home_club_goals">Home Club Goals:</label>
+                <input type="number" id="home_club_goals" name="home_club_goals" placeholder="e.g. 2">
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="away_club_goals">Away Club Goals:</label>
+                <input type="number" id="away_club_goals" name="away_club_goals" placeholder="e.g. 1">
+            </div>
+            <br>
+            
+            <div class="form-group">
+                <label for="home_club_position">Home Club Position:</label>
+                <input type="number" id="home_club_position" name="home_club_position" placeholder="e.g. 3">
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="away_club_position">Away Club Position:</label>
+                <input type="number" id="away_club_position" name="away_club_position" placeholder="e.g. 5">
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="home_club_manager_name">Home Club Manager Name:</label>
+                <input type="text" id="home_club_manager_name" name="home_club_manager_name" placeholder="e.g. John Doe">
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="away_club_manager_name">Away Club Manager Name:</label>
+                <input type="text" id="away_club_manager_name" name="away_club_manager_name" placeholder="e.g. Jane Smith">
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="stadium">Stadium:</label>
+                <input type="text" id="stadium" name="stadium" placeholder="e.g. Anfield">
+            </div>
+            <br>
+
+            <div class="form-group">
+                <label for="attendance">Attendance:</label>
+                <input type="number" id="attendance" name="attendance" placeholder="e.g. 50000">
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="referee">Referee:</label>
+                <input type="text" id="referee" name="referee" placeholder="e.g. Mark Clattenburg">
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="url">URL:</label>
+                <input type="text" id="url" name="url" placeholder="e.g. https://www.example.com/game">
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="home_club_name">Home Club Name:</label>
+                <input type="text" id="home_club_name" name="home_club_name" placeholder="e.g. FC Barcelona">
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="away_club_name">Away Club Name:</label>
+                <input type="text" id="away_club_name" name="away_club_name" placeholder="e.g. Real Madrid">
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="aggregate">Aggregate:</label>
+                <input type="text" id="aggregate" name="aggregate" placeholder="e.g. 3-2">
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="competition_type">Competition Type:</label>
+                <input type="text" id="competition_type" name="competition_type" placeholder="e.g. League">
+            </div>
+            <br>            
+            
+            <button type="submit" class="add-player-submit-button">Add Game</button>
+        </form>
+    </div>
+</body>
+</html>

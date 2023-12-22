@@ -372,6 +372,121 @@ def sort_filter_games():
                            start_page=start_page, end_page=end_page)
 
 
+@app.route('/view_games/add_game', methods=['GET', 'POST'])
+def add_game():
+    if request.method == 'POST':
+        # Collecting form data
+        game_id = request.form.get('game_id')
+        competition_id = request.form.get('competition_id')
+        season = request.form.get('season')
+        round = request.form.get('round')
+        date = request.form.get('date')
+        home_club_id = request.form.get('home_club_id')
+        away_club_id = request.form.get('away_club_id')
+        home_club_goals = request.form.get('home_club_goals') or 0
+        away_club_goals = request.form.get('away_club_goals') or 0
+        home_club_position = request.form.get('home_club_position') or 0
+        away_club_position = request.form.get('away_club_position') or 0
+        home_club_manager_name = request.form.get('home_club_manager_name')
+        away_club_manager_name = request.form.get('away_club_manager_name')
+        stadium = request.form.get('stadium')
+        attendance = request.form.get('attendance')
+        referee = request.form.get('referee')
+        url = request.form.get('url')
+        home_club_name = request.form.get('home_club_name')
+        away_club_name = request.form.get('away_club_name')
+        aggregate = request.form.get('aggregate')
+        competition_type = request.form.get('competition_type')
+
+        season = int(season) if season else None
+        home_club_goals = int(home_club_goals)
+        away_club_goals = int(away_club_goals)
+        attendance = int(attendance) if attendance else None
+        
+        try:
+            query = """
+                INSERT INTO games 
+                (game_id, competition_id, season, round, date, home_club_id, away_club_id,
+                home_club_goals, away_club_goals, home_club_position, away_club_position,
+                home_club_manager_name, away_club_manager_name, stadium, attendance,
+                referee, url, home_club_name, away_club_name, aggregate, competition_type)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            """
+            cursor.execute(query, (
+                game_id, competition_id, season, round, date, home_club_id, away_club_id,
+                home_club_goals, away_club_goals, home_club_position, away_club_position,
+                home_club_manager_name, away_club_manager_name, stadium, attendance,
+                referee, url, home_club_name, away_club_name, aggregate, competition_type
+            ))
+            db.commit()
+            return redirect(url_for('view_games'))
+        except ValueError as e:
+            error_message = "Invalid input values. Please try again."
+            return render_template('add_game.html', error_message=error_message)
+
+    return render_template('add_game.html')
+
+@app.route('/update_games/<int:game_id>', methods=['GET', 'POST'])
+def update_game(game_id):
+    get_game_query = "SELECT * FROM games WHERE game_id = %s"
+    cursor.execute(get_game_query, (game_id,))
+    game_details = cursor.fetchone()
+
+    if request.method == 'POST':
+        competition_id = request.form.get('competition_id')
+        season = request.form.get('season')
+        round = request.form.get('round')
+        date = request.form.get('date')
+        home_club_id = request.form.get('home_club_id')
+        away_club_id = request.form.get('away_club_id')
+        home_club_goals = request.form.get('home_club_goals')
+        away_club_goals = request.form.get('away_club_goals')
+        home_club_position = request.form.get('home_club_position')
+        away_club_position = request.form.get('away_club_position')
+        home_club_manager_name = request.form.get('home_club_manager_name')
+        away_club_manager_name = request.form.get('away_club_manager_name')
+        stadium = request.form.get('stadium')
+        attendance = request.form.get('attendance')
+        referee = request.form.get('referee')
+        url = request.form.get('url')
+        home_club_name = request.form.get('home_club_name')
+        away_club_name = request.form.get('away_club_name')
+        aggregate = request.form.get('aggregate')
+        competition_type = request.form.get('competition_type')
+
+        try:
+            update_query = """
+                UPDATE games
+                SET competition_id = %s, season = %s, round = %s, 
+                    date = %s, home_club_id = %s, away_club_id = %s,
+                    home_club_goals = %s, away_club_goals = %s, 
+                    home_club_position = %s, away_club_position = %s,
+                    home_club_manager_name = %s, away_club_manager_name = %s,
+                    stadium = %s, attendance = %s, referee = %s,
+                    url = %s, home_club_name = %s, away_club_name = %s,
+                    aggregate = %s, competition_type = %s
+                WHERE game_id = %s
+                """
+            cursor.execute(update_query, (
+                competition_id, season, round, date, home_club_id, away_club_id,
+                home_club_goals, away_club_goals, home_club_position, away_club_position,
+                home_club_manager_name, away_club_manager_name, stadium, attendance,
+                referee, url, home_club_name, away_club_name, aggregate, competition_type,
+                game_id
+            ))
+            db.commit()
+            return redirect(url_for('view_games'))
+
+        except ValueError as e:
+            error_message = "Invalid input values. Please try again."
+            return render_template('update_game.html', error_message=error_message, game_details=game_details)
+
+    if game_details:
+        return render_template('update_game.html', game_details=game_details)
+
+    return redirect(url_for('view_games'))
+
+
 @app.route('/delete_game/<string:game_id>', methods=['GET', 'POST'])
 def delete_game(game_id):
     if request.method == 'POST':
