@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="UTF-8">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Update Club</title>
+</head>
+<body>
+    <div class="update-club-container">
+        <h1 class="update-title">Update Club</h1>
+        
+        {% if error_message %}
+            <div class="alert-error">
+                {{ error_message }}
+            </div>
+        {% endif %}
+
+        <form method="POST" action="{{ url_for('update_club', club_id=club_details[0]) }}", class="update-club-form">
+
+            <div class="form-group">
+                <label for="club_code">Club Code:</label>
+                <input type="text" id="club_code" name="club_code" value="{{ club_details[1] }}">
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="name">Club Name:</label>
+                <input type="text" id="name" name="name" value="{{ club_details[2] }}">
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="domestic_competition_id">Domestic Competition ID:</label> 
+                <input type="text" id="domestic_competition_id" name="domestic_competition_id" value="{{ club_details[3] }}">
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="total_market_value">Total Market Value:</label>
+                <input type="text" id="total_market_value" name="total_market_value" value="{{ club_details[4] }}">
+            </div>
+            <br>
+            <br>
+            <div class="form-group">
+                <label for="squad_size">Squad Size:</label>
+                <input type="number" id="squad_size" name="squad_size" value="{{ club_details[5] }}">
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="average_age">Average Age:</label>
+                <input type="decimal" id="average_age" name="average_age" value="{{ club_details[6] }}">
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="foreigners_number">Foreigners Number:</label>
+                <input type="number" id="foreigners_number" name="foreigners_number" value="{{ club_details[7] }}">
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="foreigners_percentage">Foreigners Percentage:</label>
+                <input type="number" id="foreigners_percentage" name="foreigners_percentage" value="{{ club_details[8] }}">
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="national_team_players">National Team Players:</label>
+                <input type="number" id="national_team_players" name="national_team_players" value="{{ club_details[9] }}">
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="stadium_name">Stadium Name:</label>
+                <input type="text" id="stadium_name" name="stadium_name" value="{{ club_details[10] }}">
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="stadium_seats">Stadium Seats:</label>
+                <input type="number" id="stadium_seats" name="stadium_seats" value="{{ club_details[11] }}">
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="net_transfer_record">Net Transfer Record:</label>
+                <input type="text" id="net_transfer_record" name="net_transfer_record" value="{{ club_details[12] }}">
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="coach_name">Coach Name:</label>
+                <input type="text" id="coach_name" name="coach_name" value="{{ club_details[13] }}">
+            </div>
+            <br>
+
+            <br>
+            <div class="form-group">
+                <label for="last_season">Last Season:</label>
+                <input type="number" id="last_season" name="last_season" value="{{ club_details[14] }}">
+            </div>
+            <br>
+            <br>
+            <div class="form-group">
+                <label for="url">URL</label>
+                <input type="text" id="url" name="url" value="{{ club_details[15] }}">
+            </div>
+            <br>
+
+            <button class="update-club-submit-button"type="submit">Update Club</button>
+            <a href="{{ url_for('view_clubs') }}" class="update-go-back">Go Back to Clubs</a>
+        </form>
+    </div>
+</body>
+</html>

@@ -149,6 +149,107 @@ def delete_club(club_id):
     return render_template('delete_club.html', club=club)
 
 
+@app.route('/view_clubs/add_club', methods=['GET', 'POST'])
+def add_club():
+    if request.method == 'POST':
+        club_id = request.form.get('club_id')
+        club_code = request.form.get('club_code')
+        name = request.form.get('name')
+        domestic_competition_id = request.form.get('domestic_competition_id')
+        total_market_value = request.form.get('total_market_value')
+        squad_size = request.form.get('squad_size')
+        average_age = request.form.get('average_age')
+        competition_id = request.form.get('competition_id')
+        foreigners_number = request.form.get('foreigners_number')
+        foreigners_percentage = request.form.get('foreigners_percentage')
+        national_team_players = request.form.get('national_team_players')
+        stadium_name = request.form.get('stadium_name')
+        stadium_seats = request.form.get('stadium_seats')
+        net_transfer_record = request.form.get('net_transfer_record')
+        coach_name = request.form.get('coach_name')
+        last_season = request.form.get('last_season')
+        url = request.form.get('url')
+        
+        try:
+            query = """
+                INSERT INTO clubs 
+                (club_id, club_code, name, domestic_competition_id, total_market_value,
+                 squad_size, average_age, foreigners_number, foreigners_percentage,
+                 national_team_players, stadium_name, stadium_seats,
+                 net_transfer_record, coach_name, last_season, url)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            """
+            cursor.execute(query, (club_id, club_code, name, domestic_competition_id, total_market_value, squad_size, average_age,
+                                   foreigners_number, foreigners_percentage, national_team_players, stadium_name, stadium_seats,
+                                   net_transfer_record, coach_name, last_season, url))
+            db.commit()
+            return redirect(url_for('view_clubs'))
+        except ValueError as e:
+            error_message = "Invalid input values. Please try again."
+            return render_template('add_club.html', error_message=error_message)
+
+    return render_template('add_club.html')
+
+
+@app.route('/update_clubs/<string:club_id>', methods=['GET', 'POST'])
+def update_club(club_id):
+    get_club_query = "SELECT * FROM clubs WHERE club_id = %s"
+    cursor.execute(get_club_query, (club_id,))
+    club_details = cursor.fetchone()
+    
+    if request.method == 'POST':
+        try: 
+            updated_club_code = request.form.get('club_code')
+            updated_name = request.form.get('name')
+            updated_domestic_competition_id = request.form.get('domestic_competition_id')
+            updated_total_market_value = request.form.get('total_market_value')
+            updated_squad_size = request.form.get('squad_size')
+            updated_average_age = request.form.get('average_age')
+            updated_foreigners_number = request.form.get('foreigners_number')
+            updated_foreigners_percentage = request.form.get('foreigners_percentage')
+            updated_national_team_players = request.form.get('national_team_players')
+            updated_stadium_name = request.form.get('stadium_name')
+            updated_stadium_seats = request.form.get('stadium_seats')
+            updated_net_transfer_record = request.form.get('net_transfer_record')
+            updated_coach_name = request.form.get('coach_name')
+            updated_last_season = request.form.get('last_season')
+            updated_url = request.form.get('url')
+            
+
+            update_query = """
+                UPDATE clubs 
+                SET club_code = %s, name = %s, 
+                    domestic_competition_id = %s, total_market_value = %s, 
+                    squad_size = %s, average_age = %s, 
+                    foreigners_number = %s, 
+                    foreigners_percentage = %s, national_team_players = %s, 
+                    stadium_name = %s, stadium_seats = %s, 
+                    net_transfer_record = %s, coach_name = %s, 
+                    last_season = %s, url = %s
+                WHERE club_id = %s
+                """
+
+            cursor.execute(update_query, (
+                updated_club_code, updated_name, updated_domestic_competition_id,
+                updated_total_market_value, updated_squad_size, updated_average_age, 
+                updated_foreigners_number, updated_foreigners_percentage, updated_national_team_players, 
+                updated_stadium_name, updated_stadium_seats, updated_net_transfer_record, 
+                updated_coach_name, updated_last_season, updated_url, club_id
+            ))
+
+            db.commit()
+            return redirect(url_for('view_clubs'))
+            
+        except ValueError as e:
+            error_message = "Invalid input values. Please try again."
+            return render_template('update_club.html', error_message=error_message, club_details=club_details)
+            
+    if club_details:
+        return render_template('update_club.html', club_details=club_details)
+
+    return redirect(url_for('view_clubs'))
+
+
 @app.route('/view_games')
 def view_games():
     page = request.args.get('page', 1, type=int)

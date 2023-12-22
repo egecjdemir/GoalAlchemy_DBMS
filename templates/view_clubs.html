@@ -9,6 +9,7 @@
 </head>
 <body>
     <a href="{{ url_for('sort_filter_clubs') }}" class="sort-filter-button">Sort or Filter Clubs</a>
+    <a href="{{ url_for('add_club') }}" class="sort-filter-button">Add Club</a>
     <h1>Clubs</h1>
     <table border="1">
         <tr>
@@ -27,6 +28,7 @@
             <th>Net Transfer Record</th>
         <!-- <th>Coach Name</th> -->
             <th>Last Season</th>
+            <th>Update</th>
             <th>Delete</th>
         </tr>
         {% for club in clubs %}
@@ -46,6 +48,7 @@
             <td>{{ club[12] }}</td>
         <!-- <td>{{ club[13] }}</td> -->
             <td>{{ club[14] }}</td>
+            <td><a class="update-box" href="{{ url_for('update_club', club_id=club[0]) }}">✎</a></td>
             <td>
                 <div class="delete-box" onclick="confirmDelete('{{ club[0] }}')">X</div>
             </td>

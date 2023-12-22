@@ -9,6 +9,7 @@
 <body>
 
     <a href="{{ url_for('sort_filter_games') }}" class="sort-filter-button">Sort or Filter Games</a>
+    <a href="{{ url_for('add_game') }}" class="sort-filter-button">Add Game</a>
     <h1>Football Games</h1>
     <table border="1">
         <tr>
@@ -31,6 +32,7 @@
             <th>Stadium</th>
             <th>Attendance</th>
             <th>Referee Name</th>
+            <th>Update</th>
             <th>Delete</th>
         </tr>
         {% for game in games %}
@@ -54,6 +56,7 @@
             <td>{{ game[13] }}</td>
             <td>{{ game[14] }}</td>
             <td>{{ game[15] }}</td>
+            <td><a class="update-box" href="{{ url_for('update_game', game_id=game[0]) }}">✎</a></td>
             <td>
                 <div class="delete-box" onclick="confirmDelete('{{ game[0] }}')">X</div>
             </td>   
