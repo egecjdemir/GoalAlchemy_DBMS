@@ -224,6 +224,14 @@ def update_club(club_id):
             updated_url = request.form.get('url')
             
 
+            updated_squad_size = int(updated_squad_size) if updated_squad_size else 0
+            updated_average_age = float(updated_average_age) if updated_average_age else 0
+            updated_foreigners_number = int(updated_foreigners_number) if updated_foreigners_number else 0
+            updated_foreigners_percentage = float(updated_foreigners_percentage) if updated_foreigners_percentage else 0
+            updated_national_team_players = int(updated_national_team_players) if updated_national_team_players else 0
+            updated_stadium_seats = int(updated_stadium_seats) if updated_stadium_seats else 0
+            updated_last_season = int(updated_last_season) if updated_last_season else 0
+
             update_query = """
                 UPDATE clubs 
                 SET club_code = %s, name = %s, 
@@ -447,10 +455,10 @@ def update_game(game_id):
         date = request.form.get('date')
         home_club_id = request.form.get('home_club_id')
         away_club_id = request.form.get('away_club_id')
-        home_club_goals = request.form.get('home_club_goals')
-        away_club_goals = request.form.get('away_club_goals')
-        home_club_position = request.form.get('home_club_position')
-        away_club_position = request.form.get('away_club_position')
+        home_club_goals = request.form.get('home_club_goals') or 0
+        away_club_goals = request.form.get('away_club_goals') or 0
+        home_club_position = request.form.get('home_club_position') or 0
+        away_club_position = request.form.get('away_club_position') or 0
         home_club_manager_name = request.form.get('home_club_manager_name')
         away_club_manager_name = request.form.get('away_club_manager_name')
         stadium = request.form.get('stadium')
@@ -461,6 +469,11 @@ def update_game(game_id):
         away_club_name = request.form.get('away_club_name')
         aggregate = request.form.get('aggregate')
         competition_type = request.form.get('competition_type')
+
+        season = int(season) if season else None
+        home_club_goals = int(home_club_goals)
+        away_club_goals = int(away_club_goals)
+        attendance = int(attendance) if attendance else None
 
         try:
             update_query = """
