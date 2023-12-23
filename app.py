@@ -169,6 +169,15 @@ def add_club():
         last_season = request.form.get('last_season')
         url = request.form.get('url')
         
+
+        squad_size = int(squad_size) if squad_size else None
+        average_age = float(average_age) if average_age else None
+        foreigners_number = int(foreigners_number) if foreigners_number else None
+        foreigners_percentage = float(foreigners_percentage) if foreigners_percentage else None
+        national_team_players = int(national_team_players) if national_team_players else None
+        stadium_seats = int(stadium_seats) if stadium_seats else None
+        last_season = int(last_season) if last_season else None
+
         try:
             query = """
                 INSERT INTO clubs 
