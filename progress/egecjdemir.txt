@@ -23,3 +23,17 @@ Added sorting and filtering functionalities for clubs and games tables to app.py
 Created HTML files for both tables to show sorted and filtered games and clubs
 Added pagination functionality to sort_filter_clubs and limit the max number of showed clubs.
   Also updated the HTML file for this too
+
+Week 12:
+
+Added insertion and update operations to games and clubs tables
+
+Updated view_games route
+	Added join operation to query in order to show competition by name instead of ID
+
+Updated view_clubs route
+	Added join operation to query in order to show competition by name instead of ID
+	Merged home_club_goals, and away_club_goals columns as the score column.
+	Replaced home_club_id and away_club_id with home_club_name and away_club_name.
+
+Cleaned clubs.csv with pandas
