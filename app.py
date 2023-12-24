@@ -71,30 +71,27 @@ def sort_filter_clubs():
     offset = (page - 1) * PER_PAGE
     
     # Get sorting and filtering parameters from the query string
-    sort_by = request.args.get('sort_by')
-    name = request.args.get('name')
-    stadium_name = request.args.get('stadium_name')
-    domestic_competition_name = request.args.get('domestic_competition_name')
+    
+    filters = {
+    "name" : request.args.get('name'),
+    "sort_by" : request.args.get('sort_by'),
+    "stadium_name" : request.args.get('stadium_name'),
+    "domestic_competition_name" : request.args.get('domestic_competition_name')
+    }
 
     # Construct the base query
     base_query = """
     FROM clubs c
     LEFT JOIN competitions comp ON c.domestic_competition_id = comp.domestic_league_code
     """
-    where_clauses = ["comp.type LIKE 'domestic_league'"]  # Start with this condition
+    where_clauses = []
     query_params = []
 
     # Add filtering conditions
-    if name:
-        where_clauses.append("c.name LIKE %s")  # Prefix with 'c.' for the clubs table
-        query_params.append(f"%{name}%")
-    if stadium_name:
-        where_clauses.append("c.stadium_name LIKE %s")  # Prefix with 'c.' for the clubs table
-        query_params.append(f"%{stadium_name}%")
-    if domestic_competition_name:
-        where_clauses.append("REPLACE(comp.name, '-', ' ') LIKE %s")  # Use 'comp.name' with REPLACE function
-        query_params.append(f"%{domestic_competition_name}%")
-
+    for key, value in filters.items():
+        if key != 'sort_by' and value:
+            where_clauses.append(f"{key} LIKE %s")
+            query_params.append(f"%{value}%")
 
     # Complete SQL query for fetching data
     data_query = """
@@ -104,8 +101,8 @@ def sort_filter_clubs():
         data_query += " WHERE " + " AND ".join(where_clauses)
 
     # Add sorting condition
-    if sort_by in ['stadium_seats', 'average_age', 'national_team_players', 'foreigners_percentage']:
-        data_query += f" ORDER BY {sort_by} DESC"
+    if filters['sort_by'] in ['stadium_seats', 'average_age', 'national_team_players', 'foreigners_percentage']:
+        data_query += f" ORDER BY {filters['sort_by']} DESC"
     else:
         data_query += f" ORDER BY c.club_id ASC"
     data_query += " LIMIT %s OFFSET %s"
@@ -115,10 +112,10 @@ def sort_filter_clubs():
     clubs = cursor.fetchall()
 
     # Complete SQL query for counting total games
-    count_query = "SELECT COUNT(*) " + base_query
+    count_query = f"SELECT COUNT(*) {base_query}"
     if where_clauses:
         count_query += " WHERE " + " AND ".join(where_clauses)
-    
+
     # Execute the query for counting total games
     cursor.execute(count_query, tuple(query_params))
     total_clubs = cursor.fetchone()[0]
@@ -131,7 +128,7 @@ def sort_filter_clubs():
     end_page = min(total_pages, start_page + visible_pages - 1)
 
     return render_template('sort_filter_clubs.html', clubs=clubs, page=page, total_pages=total_pages,
-                           start_page=start_page, end_page=end_page)
+                           start_page=start_page, end_page=end_page, **filters)
 
 @app.route('/delete_club/<string:club_id>', methods=['GET', 'POST'])
 def delete_club(club_id):
@@ -312,8 +309,8 @@ def sort_filter_games():
     offset = (page - 1) * PER_PAGE
 
     # Sorting and filtering parameters
-    sort_by = request.args.get('sort_by')
-    filter_params = {
+    filters = {
+        'sort_by' : request.args.get('sort_by'),
         'competition_name': request.args.get('competition_name'),
         'round': request.args.get('round'),
         'home_club_manager_name': request.args.get('home_club_manager_name'),
@@ -336,8 +333,8 @@ def sort_filter_games():
     query_params = []
 
     # Add filtering conditions
-    for key, value in filter_params.items():
-        if value:
+    for key, value in filters.items():
+        if key != 'sort_by' and value:
             if key == 'competition_name':
                 where_clauses.append("REPLACE(comp.name, '-', ' ') LIKE %s")
                 query_params.append(f"%{value}%")
@@ -348,20 +345,22 @@ def sort_filter_games():
                 where_clauses.append(f"g.{key} LIKE %s")  # Ensure to prefix with 'g.'
                 query_params.append(f"%{value}%")
 
-    # Complete SQL query for fetching data
+
     data_query = """
-    SELECT g.*,
-    REPLACE(comp.name, '-', ' ') AS competition_name,
-    CONCAT(CAST(g.home_club_goals AS CHAR), '-', CAST(g.away_club_goals AS CHAR)) AS score,
-    home_club.name AS home_club_name,
-    away_club.name AS away_club_name
-    """ + base_query
+        SELECT g.*,
+        REPLACE(comp.name, '-', ' ') AS competition_name,
+        CONCAT(CAST(g.home_club_goals AS CHAR), '-', CAST(g.away_club_goals AS CHAR)) AS score,
+        home_club.name AS home_club_name,
+        away_club.name AS away_club_name
+        """ + base_query
     if where_clauses:
         data_query += " WHERE " + " AND ".join(where_clauses)
-    if sort_by:
-        data_query += f" ORDER BY g.{sort_by}" 
+
+    # Add sorting condition
+    if filters['sort_by'] in ['season', 'attendance', 'home_club_goals', 'away_club_goals', 'date']:
+        data_query += f" ORDER BY {filters['sort_by']} DESC"
     else:
-        data_query += f" ORDER BY g.game_id ASC" 
+        data_query += f" ORDER BY g.game_id ASC"
     data_query += " LIMIT %s OFFSET %s"
 
     # Execute the query for fetching data
@@ -369,7 +368,7 @@ def sort_filter_games():
     games = cursor.fetchall()
 
     # Complete SQL query for counting total games
-    count_query = "SELECT COUNT(*) " + base_query
+    count_query = f"SELECT COUNT(*) {base_query}"
     if where_clauses:
         count_query += " WHERE " + " AND ".join(where_clauses)
 
@@ -385,8 +384,7 @@ def sort_filter_games():
     end_page = min(total_pages, start_page + visible_pages - 1)
 
     return render_template('sort_filter_games.html', games=games, page=page, total_pages=total_pages,
-                           start_page=start_page, end_page=end_page)
-
+                           start_page=start_page, end_page=end_page, **filters)
 
 @app.route('/view_games/add_game', methods=['GET', 'POST'])
 def add_game():
