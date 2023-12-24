@@ -573,30 +573,189 @@ def view_appearances():
     
 @app.route('/view_appearances/add_appearance', methods=['GET', 'POST'])
 def add_appearance():
+    
     if request.method == 'POST':
-        appearance_id = request.form.get('appearance_id')
-        game_id = request.form.get('game_id')
-        player_id = request.form.get('player_id')
-        player_club_id = request.form.get('player_club_id')
-        player_current_club_id = request.form.get('player_current_club_id')
-        date = request.form.get('date')
-        player_name = request.form.get('player_name')
-        competition_id = request.form.get('competition_id')
-        yellow_cards = request.form.get('yellow_cards')
-        red_cards = request.form.get('red_cards')
-        goals = request.form.get('goals')
-        assists = request.form.get('assists')
-        minutes_played = request.form.get('minutes_played')
+        try:
+            appearance_id = request.form.get('appearance_id')
+            
+            game_id_input = request.form.get('game_id')
+            game_id = int(game_id_input) if game_id_input else None
+            
+            player_id_input = request.form.get('player_id')
+            player_id = int(player_id_input) if player_id_input else None
+            
+            check_appearance_query = "SELECT appearance_id FROM appearances WHERE appearance_id = %s"
+            cursor.execute(check_appearance_query, (appearance_id,))
+            existing_appearance = cursor.fetchone()
+
+            if existing_appearance:
+                # appearance ID already exists, show an error message
+                error_message = "Appearance ID already taken. Please choose a different ID."
+                return render_template('add_appearance.html', error_message=error_message)
+            
+            player_club_id_input = request.form.get('player_club_id')
+            player_club_id = int(player_club_id_input) if player_club_id_input else None
+            
+            player_current_club_id_input = request.form.get('player_current_club_id')
+            player_current_club_id = int(player_current_club_id_input) if player_current_club_id_input else None
+            
+            date = None
+            date_input = request.form.get('date')
+            if date_input:
+                try:
+                    # Assuming the date format is '%Y-%m-%d'
+                    date = datetime.strptime(date_input, '%Y-%m-%d').date()
+                except ValueError:
+                    # Handle invalid date format as needed
+                    pass
+            
+            player_name = request.form.get('player_name')
+            
+            competition_id = request.form.get('competition_id')
+            
+            yellow_cards_input = request.form.get('yellow_cards')
+            yellow_cards = int(yellow_cards_input) if yellow_cards_input else None
+            
+            red_cards_input = request.form.get('red_cards')
+            red_cards = int(red_cards_input) if red_cards_input else None
+            
+            goals_input = request.form.get('goals')
+            goals = int(goals_input) if goals_input else None
+            
+            assists_input = request.form.get('assists')
+            assists = int(assists_input) if assists_input else None
+            
+            minutes_played_input = request.form.get('minutes_played')
+            minutes_played = int(minutes_played_input) if minutes_played_input else None
+            
+            existing_game = None
+            if game_id is not None:
+                # Check if the game with the given game_id exists
+                check_game_query = "SELECT game_id FROM games WHERE game_id = %s"
+                cursor.execute(check_game_query, (game_id,))
+                existing_game = cursor.fetchone()
+            
+            existing_player = None
+            if player_id is not None:
+                # Check if the player with the given player_id exists
+                check_player_query = "SELECT player_id FROM players WHERE player_id = %s"
+                cursor.execute(check_player_query, (player_id,))
+                existing_player = cursor.fetchone()
+            
+            if competition_id.isdigit() or player_name.isdigit() or appearance_id.isdigit():
+                error_message = "Invalid input values. Please try again."
+                return render_template('add_appearance.html', error_message=error_message)
+            
+            if existing_game and existing_player:
+                query = """
+                    INSERT INTO appearances
+                    (appearance_id, game_id, player_id, player_club_id, player_current_club_id, date, player_name, competition_id, yellow_cards, red_cards, goals, assists, minutes_played)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
+                cursor.execute(query, (appearance_id, game_id, player_id, player_club_id, player_current_club_id, date, player_name, competition_id, yellow_cards, red_cards, goals, assists, minutes_played))
+                db.commit()
+            
+                return redirect(url_for('view_appearances'))
         
-        query = """
-            INSERT INTO appearances 
-            (appearance_id, game_id, player_id, player_club_id, player_current_club_id, date, player_name, competition_id, yellow_cards, red_cards, goals, assists, minutes_played)"""
-        cursor.execute(query, (appearance_id, game_id, player_id, player_club_id, player_current_club_id, date, player_name, competition_id, yellow_cards, red_cards, goals, assists, minutes_played))
-        db.commit()
-        
-        return redirect(url_for('view_appearances'))
+            else:
+                error_message = "Selected game or player does not exist. Please choose an existing game or player or add a new game or player."
+                return render_template('add_appearance.html', error_message=error_message)
+            
+        except ValueError as e:
+            error_message = "Invalid input values. Please try again."
+            return render_template('add_appearance.html', error_message=error_message)        
     
     return render_template('add_appearance.html')
+
+@app.route('/update_appearance/<string:appearance_id>', methods=['GET', 'POST'])
+def update_appearance(appearance_id):
+    get_appearance_query = "SELECT * FROM appearances WHERE appearance_id = %s"
+    cursor.execute(get_appearance_query, (appearance_id,))
+    appearance_details = cursor.fetchone()
+    
+    if request.method == 'POST':
+        try:
+            updated_game_id_input = request.form.get('game_id')
+            updated_game_id = int(updated_game_id_input) if updated_game_id_input else None
+            
+            updated_player_id_input = request.form.get('player_id')
+            updated_player_id = int(updated_player_id_input) if updated_player_id_input else None
+            
+            updated_player_club_id_input = request.form.get('player_club_id')
+            updated_player_club_id = int(updated_player_club_id_input) if updated_player_club_id_input else None
+            
+            updated_player_current_club_id_input = request.form.get('player_current_club_id')
+            updated_player_current_club_id = int(updated_player_current_club_id_input) if updated_player_current_club_id_input else None
+            
+            updated_date = None
+            updated_date_input = request.form.get('date')
+            if updated_date_input:
+                try:
+                    # Assuming the date format is '%Y-%m-%d'
+                    updated_date = datetime.strptime(updated_date_input, '%Y-%m-%d').date()
+                except ValueError:
+                    # Handle invalid date format as needed
+                    pass
+                
+            updated_player_name = request.form.get('player_name')
+            
+            updated_competition_id = request.form.get('competition_id')
+            
+            updated_yellow_cards_input = request.form.get('yellow_cards')
+            updated_yellow_cards = int(updated_yellow_cards_input) if updated_yellow_cards_input else None
+            
+            updated_red_cards_input = request.form.get('red_cards')
+            updated_red_cards = int(updated_red_cards_input) if updated_red_cards_input else None
+            
+            updated_goals_input = request.form.get('goals')
+            updated_goals = int(updated_goals_input) if updated_goals_input else None
+            
+            updated_assists_input = request.form.get('assists')
+            updated_assists = int(updated_assists_input) if updated_assists_input else None
+            
+            updated_minutes_played_input = request.form.get('minutes_played')
+            updated_minutes_played = int(updated_minutes_played_input) if updated_minutes_played_input else None
+            
+            existing_game = None
+            if updated_game_id is not None:
+                # Check if the game with the given game_id exists
+                check_game_query = "SELECT game_id FROM games WHERE game_id = %s"
+                cursor.execute(check_game_query, (updated_game_id,))
+                existing_game = cursor.fetchone()
+
+            existing_player = None
+            if updated_player_id is not None:
+                # Check if the player with the given player_id exists
+                check_player_query = "SELECT player_id FROM players WHERE player_id = %s"
+                cursor.execute(check_player_query, (updated_player_id,))
+                existing_player = cursor.fetchone()
+                
+            if updated_competition_id.isdigit() or updated_player_name.isdigit() or appearance_id.isdigit():
+                error_message = "Invalid input values. Please try again."
+                return render_template('update_appearance.html', error_message=error_message, appearance_details=appearance_details)
+            
+            if existing_game and existing_player:
+                update_query = """
+                    UPDATE appearances 
+                    SET game_id = %s, player_id = %s, player_club_id = %s, player_current_club_id = %s, date = %s, player_name = %s, competition_id = %s, yellow_cards = %s, red_cards = %s, goals = %s, assists = %s, minutes_played = %s
+                    WHERE appearance_id = %s
+                    """
+                cursor.execute(update_query, (updated_game_id, updated_player_id, updated_player_club_id, updated_player_current_club_id, updated_date, updated_player_name, updated_competition_id, updated_yellow_cards, updated_red_cards, updated_goals, updated_assists, updated_minutes_played, appearance_id))
+                db.commit()
+            
+                return redirect(url_for('view_appearances'))
+            
+            else:
+                error_message = "Selected game or player does not exist. Please choose an existing game or player or add a new game or player."
+                return render_template('update_appearance.html', error_message=error_message, appearance_details=appearance_details)
+            
+        except ValueError as e:
+            error_message = "Invalid input values. Please try again."
+            return render_template('update_appearance.html', error_message=error_message, appearance_details=appearance_details)
+        
+    if appearance_details:
+        return render_template('update_appearance.html', appearance_details=appearance_details)
+    
+    return redirect(url_for('view_appearances'))
 
 @app.route('/delete_appearance/<appearance_id>', methods=['GET', 'POST'])
 def delete_appearance(appearance_id):

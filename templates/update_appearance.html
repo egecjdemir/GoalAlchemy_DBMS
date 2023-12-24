@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="UTF-8">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Update Appearance</title>
+</head>
+<body>
+    <a href="{{ url_for('view_appearances') }}" class="go-back">Back to Appearance</a>
+    <div class="update-player-container">
+        <h1 class="update-title">Update Appearance</h1>
+        
+        {% if error_message %}
+            <div class="alert-error">
+                {{ error_message }}
+            </div>
+        {% endif %}
+
+        <form method="POST" action="{{ url_for('update_appearance', appearance_id=appearance_details[0]) }}", class="update-player-form">
+            <div class="form-group">
+                <label for="game_id">Game ID:</label>
+                <input type="text" id="game_id" name="game_id" value="{{ appearance_details[1] }}">
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="player_id">Player ID:</label>
+                <input type="text" id="player_id" name="player_id" value="{{ appearance_details[2] }}">
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="player_club_id">Player Club ID:</label>
+                <input type="text" id="player_club_id" name="player_club_id" value="{{ appearance_details[3] }}">
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="player_current_club_id">Player Current Club ID:</label>
+                <input type="text" id="player_current_club_id" name="player_current_club_id" value="{{ appearance_details[4] }}">
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="date">Date:</label>
+                <input type="date" id="date" name="date" value="{{ appearance_details[5] }}">
+            </div>
+            <br>    
+            <div class="form-group">
+                <label for="player_name">Player Name:</label>
+                <input type="text" id="player_name" name="player_name" value="{{ appearance_details[6] }}">
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="competition_id">Competition ID:</label>
+                <input type="text" id="competition_id" name="competition_id" value="{{ appearance_details[7] }}">
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="yellow_cards">Yellow Cards:</label>
+                <input type="text" id="yellow_cards" name="yellow_cards" value="{{ appearance_details[8] }}">
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="red_cards">Red Cards:</label>
+                <input type="text" id="red_cards" name="red_cards" value="{{ appearance_details[9] }}">
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="goals">Goals:</label>
+                <input type="text" id="goals" name="goals" value="{{ appearance_details[10] }}">
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="assists">Assists:</label>
+                <input type="text" id="assists" name="assists" value="{{ appearance_details[11] }}">
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="minutes_played">Minutes Played:</label>
+                <input type="text" id="minutes_played" name="minutes_played" value="{{ appearance_details[12] }}">
+            </div>
+            <br>
+            <button class="update-player-submit-button"type="submit">Update Appearance</button>
+        </form>
+    </div>
+</body>
+</html>

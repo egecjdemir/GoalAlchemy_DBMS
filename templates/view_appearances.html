@@ -13,6 +13,8 @@
         <button type="submit">Search</button>
     </form>
     <a href="{{ url_for('sort_filter_appearances') }}" class="sort-filter-button">Sort and Filter Appearances</a>
+    <a href="{{ url_for('add_appearance') }}" class="sort-filter-button">Add Appearance</a>
+
     <h1>Appearances</h1>
     <table border="1">
     <tr>
@@ -29,6 +31,7 @@
         <th>Goals</th>
         <th>Assists</th>
         <th>Minutes Played</th>
+        <th>Update</th>
         <th>Delete</th>
     </tr>
     {% for appearance in appearances %}
@@ -46,6 +49,7 @@
         <td>{{ appearance[10] }}</td>
         <td>{{ appearance[11] }}</td>
         <td>{{ appearance[12] }}</td>
+        <td><a class="update-box" href="{{ url_for('update_appearance', appearance_id=appearance[0]) }}">✎</a></td>
         <td>
             <div class="delete-box" onclick="confirmDelete('{{ appearance[0] }}')">X</div>
         </td>
