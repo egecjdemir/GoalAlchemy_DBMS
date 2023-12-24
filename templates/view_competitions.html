@@ -13,6 +13,7 @@
     </form>
     
     <a href="{{ url_for('sort_filter_competitions') }}" class="sort-filter-button">Sort and Filter Competitions</a>
+    <a href="{{ url_for('add_competition') }}" class="sort-filter-button">Add Competition</a>
 
     {% if search_query %}
         <a href="{{ url_for('view_competitions') }}" class="go-back-button">Go Back to Competitions</a>
@@ -70,7 +71,6 @@
         {% endif %}
     </div>
     <a href="{{ url_for('index') }}" class="back-button">Back to Main Page</a>
-    <a href="{{ url_for('add_competition') }}" class="add-competition-button">Add Competition</a>
 </body>
 <script>
     function confirmDelete(competitionId) {

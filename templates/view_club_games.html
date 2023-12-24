@@ -13,6 +13,8 @@
     </form>
 
     <a href="{{ url_for('sort_filter_club_games') }}" class="sort-filter-button">Sort and Filter Club Games</a>
+    <a href="{{ url_for('club_game_statistics') }}" class="sort-filter-button">Club Game Top 10 Statistics</a>
+    <a href="{{ url_for('add_club_game') }}" class="sort-filter-button">Add Club Game</a>
 
     {% if search_query %}
         <a href="{{ url_for('view_club_games') }}" class="go-back-button">Go Back to Club Games</a>
@@ -78,7 +80,6 @@
         {% endif %}
     </div>
     <a href="{{ url_for('index') }}" class="back-button">Back to Main Page</a>
-    <a href="{{ url_for('add_club_game') }}" class="add-club_game-button">Add Club Game</a>
 </body>
 <script>
     function confirmDelete(gameID) {

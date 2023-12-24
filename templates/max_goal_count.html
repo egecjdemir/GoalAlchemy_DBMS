@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Top 10 Competitors With Maximum Goal Count</title>
+</head>
+<body>
+    <a href="{{ url_for('club_game_statistics') }}" class="go-back">Club Game Top 10 Statistics</a>
+    <h1>Top 10 Competitors With Maximum Goal Count</h1>
+    <table border="1">
+        <tr>
+            <th>Home Club Name</th>
+            <th>Away Club Name</th>
+            <th>Total Goals</th>
+        </tr>
+        {% for result in result %}
+            <tr>
+                <td>{{ result[0] }}</td>
+                <td>{{ result[1] }}</td>
+                <td>{{ result[2] }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

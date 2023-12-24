@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Club Game Top 10 Statistics</title>
+</head>
+<body>
+    <a href="{{ url_for('view_club_games') }}" class="go-back">Back to Club Games</a>
+    <h1>Club Game Top 10 Statistics</h1>
+    <div class="club-game-statistics">
+        <a href="{{ url_for('max_goal_count') }}" class="feature-button">Top 10 Competitors With Maximum Goal Count</a>
+        <a href="{{ url_for('away_game_success') }}" class="feature-button">Top 10 Clubs Successful in Away Games</a>
+        <a href="{{ url_for('top_managers') }}" class="feature-button">Top 10 Managers With Winning Counts</a>      
+    </div>
+    <a href="{{ url_for('index') }}" class="back-button">Back to Main Page</a>
+</body>

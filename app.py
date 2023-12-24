@@ -1556,6 +1556,52 @@ def view_club_games():
     return render_template('view_club_games.html', club_games=club_games, page=page, total_pages=total_pages,
                             start_page=start_page, end_page=end_page, search_query=search_query)
 
+
+
+@app.route('/club_game_statistics')
+def club_game_statistics():
+    return render_template('club_game_statistics.html')
+
+@app.route('/top_managers')
+def top_managers():
+    query = """SELECT own_manager_name, COUNT(is_win) AS winning
+            FROM club_games
+            GROUP BY own_manager_name
+            ORDER BY COUNT(is_win) DESC
+            LIMIT 10
+            """
+    cursor.execute(query)
+    result = cursor.fetchall()
+    return render_template('top_managers.html', result=result)
+
+
+@app.route('/max_goal_count')
+def max_goal_count(): 
+    query = """SELECT g.home_club_name, g.away_club_name,
+            SUM(cg.own_goals + cg.opponent_goals) AS total_goals
+            FROM club_games cg
+            JOIN games g ON cg.game_id = g.game_id
+            GROUP BY g.home_club_name, g.away_club_name
+            HAVING g.home_club_name IS NOT NULL AND g.away_club_name IS NOT NULL
+            ORDER BY total_goals DESC
+            LIMIT 10"""
+    cursor.execute(query)
+    result = cursor.fetchall()
+    return render_template('max_goal_count.html', result=result)
+
+@app.route('/away_game_success')
+def away_game_success():
+    query = """SELECT g.away_club_name, COUNT(cg.is_win)
+            FROM club_games cg
+            JOIN games g ON cg.game_id = g.game_id
+            GROUP BY g.away_club_name
+            HAVING g.away_club_name IS NOT NULL
+            ORDER BY COUNT(is_win) DESC
+            LIMIT 10"""
+    cursor.execute(query)
+    result = cursor.fetchall()
+    return render_template('away_game_success.html', result=result)
+
 @app.route('/view_club_games/add_club_game', methods=['GET', 'POST'])
 def add_club_game():
     if request.method == 'POST':  

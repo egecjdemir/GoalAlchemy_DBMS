@@ -628,7 +628,15 @@ p {
     background-color: #2980b9;
 }
 
-<<<<<<< Updated upstream
+.club-game-statistics {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin-top: 50px;
+    margin-left: 300px;
+    margin-right: 300px;
+}
+
 .update-competition-form {  
 display: flex; 
 flex-direction: column;  
@@ -849,7 +857,6 @@ border: 1px solid #ddd;
 border-radius: 5px; 
 font-size: 16px; 
 }
-=======
 .update-title {
     text-align: center;
     color: #000276;
@@ -885,4 +892,3 @@ font-size: 16px;
     border-radius: 5px;
     margin-left: 90px;
 }
->>>>>>> Stashed changes
